@@ -1,0 +1,4 @@
+[
+  {"id":1,"urlType":0,"url":"http://192.168.0.100:8080/a.mp4","name":"a_url"},
+  {"id":2,"urlType":1,"url":"http://192.168.1.100:8080/b.mp4-SPAD-http://192.168.1.101:8080/b.mp4","name":"b_url"}
+]

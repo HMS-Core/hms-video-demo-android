@@ -1,0 +1,41 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.huawei.video.kit.demo.activity.HomePageActivity">
+    <item
+        android:id="@+id/video_type_setting"
+        android:orderInCategory="100"
+        android:title="@string/video_type"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/video_view_setting"
+        android:orderInCategory="100"
+        android:title="@string/video_view_setting"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/video_mute_setting"
+        android:orderInCategory="100"
+        android:title="@string/video_mute_setting"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/video_play_setting"
+        android:orderInCategory="100"
+        android:title="@string/play_mode"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/video_bandwidth_setting"
+        android:orderInCategory="100"
+        android:title="@string/automatic_adaptation"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/video_init_bitrate_setting"
+        android:orderInCategory="100"
+        android:title="@string/video_init_bitrate_setting"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/video_bitrate_range_setting"
+        android:orderInCategory="100"
+        android:title="@string/video_bitrate_range_setting"
+        app:showAsAction="never" />
+</menu>
