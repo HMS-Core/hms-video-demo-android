@@ -43,10 +43,7 @@ For more development details, please refer to the following link:
 To play a video using the sample code, ensure that HMS Core (APK) 5.0.0.300 or a later version has been installed on your phone.
 
 ## Result
-   <img src="result_1.jpg" width = 30% height = 30%>
-   <img src="result_2.jpg" width = 30% height = 30%>
-   <img src="result_3.jpg" width = 30% height = 30%>
-   <img src="result_4.jpg" width = 30% height = 30%>
+<img src="result_1.jpg" width = 30% height = 30%> <img src="result_2.jpg" width = 30% height = 30%> <img src="result_3.jpg" width = 30% height = 30%> <img src="result_4.jpg" width = 30% height = 30%>
 
 ## License
    Video Kit Android Sample is licensed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
