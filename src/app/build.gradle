@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.huawei.agconnect'  // HUAWEI agconnect Gradle plugin
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.huawei.video.kit.demo"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 10000300
-        versionName "1.0.0.300"
+        versionCode 10002304
+        versionName "1.0.2.304"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
@@ -43,6 +43,14 @@ dependencies {
     implementation "com.huawei.hms:videokit-player:${android.defaultConfig.versionName}"
 
     // Dependency on a local binary
-    // implementation 'com.huawei.hms:dynamic-api:1.0.13.303'
+    // implementation 'com.huawei.hms:dynamic-api:1.0.15.301'
     // implementation files("libs/videokit-player-${android.defaultConfig.versionName}.aar")
+    implementation "com.huawei.hms:network-grs:4.0.20.301"
+    implementation 'com.huawei.hms:device:5.1.0.300'
+    implementation 'com.huawei.hms:base:5.1.0.300'
+    implementation 'com.huawei.android.hms:security-base:1.1.5.301'
+    implementation 'com.huawei.android.hms:security-ssl:1.1.5.301'
+    implementation 'com.huawei.android.hms:security-encrypt:1.1.5.301'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.2'
+    implementation 'com.google.code.gson:gson:2.8.6'
 }

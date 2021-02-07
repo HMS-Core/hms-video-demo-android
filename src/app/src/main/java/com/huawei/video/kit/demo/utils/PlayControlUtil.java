@@ -16,6 +16,7 @@
 
 package com.huawei.video.kit.demo.utils;
 
+import com.huawei.hms.videokit.player.Preloader;
 import com.huawei.hms.videokit.player.common.PlayerConstants.PlayMode;
 
 import java.util.HashMap;
@@ -107,6 +108,13 @@ public class PlayControlUtil {
     private static int maxBitrate;
 
     private static boolean isLoadBuff = true;
+
+    /**
+     * 预加载初始化结果
+     */
+    private static int initResult = -1;
+
+    private static Preloader preloader;
 
     public static boolean isSurfaceView() {
         return isSurfaceView;
@@ -262,5 +270,21 @@ public class PlayControlUtil {
 
     public static void setLoadBuff(boolean isLoadBuff) {
         PlayControlUtil.isLoadBuff = isLoadBuff;
+    }
+
+    public static int getInitResult() {
+        return initResult;
+    }
+
+    public static void setInitResult(int initResult) {
+        PlayControlUtil.initResult = initResult;
+    }
+
+    public static Preloader getPreloader() {
+        return preloader;
+    }
+
+    public static void setPreloader(Preloader preloader) {
+        PlayControlUtil.preloader = preloader;
     }
 }

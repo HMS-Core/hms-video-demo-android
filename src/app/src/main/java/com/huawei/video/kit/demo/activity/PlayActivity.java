@@ -37,7 +37,9 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.huawei.hms.videokit.player.StreamInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
+import com.huawei.hms.videokit.player.common.PlayerConstants;
 import com.huawei.hms.videokit.player.common.PlayerConstants.BandwidthSwitchMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.PlayMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.ResumeType;
@@ -46,6 +48,7 @@ import com.huawei.video.kit.demo.contract.OnDialogInputValueListener;
 import com.huawei.video.kit.demo.contract.OnPlayWindowListener;
 import com.huawei.video.kit.demo.contract.OnWisePlayerListener;
 import com.huawei.video.kit.demo.control.PlayControl;
+import com.huawei.video.kit.demo.entity.BitrateInfo;
 import com.huawei.video.kit.demo.entity.PlayEntity;
 import com.huawei.video.kit.demo.utils.Constants;
 import com.huawei.video.kit.demo.utils.DataFormatUtil;
@@ -234,6 +237,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     @Override
     public void onStartPlaying(WisePlayer wisePlayer) {
         LogUtil.d(TAG, "onStartPlaying");
+        playView.dismissBufferingView();
         isPlayComplete = false;
     }
 
@@ -311,6 +315,9 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                     break;
                 case Constants.PLAY_ERROR_FINISH:
                     finish();
+                    break;
+                case Constants.UPDATE_SWITCH_BITRATE_SUCCESS:
+                    playView.hiddenSwitchingBitrateTextView();
                     break;
                 default:
                     break;
@@ -398,14 +405,23 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
             } else {
                 playControl.switchBitrateDesignated(0);
             }
-        } else {
-            if (isAutoSwitchBitrate) {
-                playControl.switchBitrateSmooth(Integer.parseInt(itemSelect));
+            playView.showSwitchingBitrateTextView(itemSelect);
+        } else if (playControl.getSwitchBitrateList() != null) {
+            int index = playControl.getSwitchBitrateList().indexOf(itemSelect);
+            if (index != -1 && index <= playControl.getBitrateRangeList().size()) {
+                BitrateInfo bitrateInfo = playControl.getBitrateRangeList().get(index);
+                if (isAutoSwitchBitrate) {
+                    playControl.setBitrateRange(bitrateInfo.getMinBitrate(), bitrateInfo.getMaxBitrate());
+                    playControl.switchBitrateSmooth(bitrateInfo.getCurrentBitrate());
+                } else {
+                    playControl.switchBitrateDesignated(bitrateInfo.getCurrentBitrate());
+                }
             } else {
-                playControl.switchBitrateDesignated(Integer.parseInt(itemSelect));
+                LogUtil.i(TAG, "get bitrate error");
+                return;
             }
+            playView.showSwitchingBitrateTextView(itemSelect);
         }
-
     }
 
     /**
@@ -495,14 +511,17 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
      * @param isAuto Whether it is smooth
      */
     private void switchBitrateMenu(boolean isAuto) {
-        List<String> bitrateList = playControl.getBitrateList();
-        bitrateList.add(StringUtil.getStringFromResId(PlayActivity.this, R.string.automatic_adaptation));
+        List<String> bitrateList = playControl.getBitrateStringList();
+        if (bitrateList == null || bitrateList.size() == 0) {
+            Toast.makeText(this, getString(R.string.switch_bitrate_enable), Toast.LENGTH_SHORT).show();
+            return;
+        }
         isAutoSwitchBitrate = isAuto;
         int selectedValueIndex;
         int currentBitrate = playControl.getCurrentBitrate();
         LogUtil.i(TAG, "currentBitrate:" + currentBitrate);
         if (currentBitrate == 0) {
-            selectedValueIndex = bitrateList.size() - 1;
+            selectedValueIndex = 0;
         } else {
             selectedValueIndex = playControl.getCurrentBitrateIndex();
         }
@@ -537,6 +556,9 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 break;
             case R.id.setting_tv:
                 onSettingDialog();
+                break;
+            case R.id.switch_bitrate_tv:
+                switchBitrateAuto();
                 break;
             default:
                 break;
@@ -576,6 +598,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
             getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
             playControl.setSurfaceChange();
+            playView.showSwitchBitrateTextView();
         }
     }
 
@@ -594,6 +617,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
      */
     private void backPress() {
         if (!DeviceUtil.isPortrait(getApplicationContext())) {
+            playView.hiddenSwitchBitrateTextView();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             playView.setPortraitView();
             // Remove the full screen
@@ -649,6 +673,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         if (updateViewHandler != null) {
             updateViewHandler.removeCallbacksAndMessages(null);
         }
+
         PlayEntity playEntity = playControl.getPlayFromPosition(pos);
         if (playEntity != null) {
             playControl.reset();
@@ -775,7 +800,13 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
 
     @Override
     public boolean onEvent(WisePlayer wisePlayer, int what, int extra, Object o) {
-        LogUtil.d(TAG, "onInfo = " + what + " extra = " + extra);
+        LogUtil.d(TAG, "onEvent = " + what + " extra = " + extra);
+        if (what == PlayerConstants.EventCode.BITRATE_SWITCH_COMPLETE) {
+            playView.updateSwitchingBitrateTextView(getString(R.string.resolution_switched_auto));
+            playView.setSwitchBitrateTv(playControl.getCurrentVideoHeight());
+            updateViewHandler.sendEmptyMessageDelayed(Constants.UPDATE_SWITCH_BITRATE_SUCCESS,
+                Constants.DELAY_MILLIS_1000);
+        }
         isPlaying = false;
         return true;
     }

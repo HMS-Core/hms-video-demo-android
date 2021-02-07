@@ -19,9 +19,11 @@ package com.huawei.video.kit.demo.control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.TextureView;
 
@@ -33,7 +35,9 @@ import com.huawei.hms.videokit.player.common.PlayerConstants.CycleMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.ScenarioType;
 import com.huawei.video.kit.demo.VideoKitPlayApplication;
 import com.huawei.video.kit.demo.contract.OnWisePlayerListener;
+import com.huawei.video.kit.demo.entity.BitrateInfo;
 import com.huawei.video.kit.demo.entity.PlayEntity;
+import com.huawei.video.kit.demo.utils.Constants;
 import com.huawei.video.kit.demo.utils.Constants.UrlType;
 import com.huawei.video.kit.demo.utils.DataFormatUtil;
 import com.huawei.video.kit.demo.utils.LogUtil;
@@ -63,6 +67,12 @@ public class PlayControl {
 
     // Video play url start with Http/Https
     private boolean isHttpVideo = true;
+
+    // Video bitrate range list
+    private List<BitrateInfo> bitrateRangeList;
+
+    // Video bitrate list
+    private List<String> switchBitrateList;
 
     /**
      * Constructor
@@ -143,6 +153,9 @@ public class PlayControl {
                 setHttpVideo(true);
                 String[] strings = StringUtil.getStringArray(currentPlayData.getUrl(), "-SPAD-");
                 wisePlayer.setPlayUrl(strings);
+            } else if (currentPlayData.getUrlType() == UrlType.URL_JSON_FORMAT) {
+                setHttpVideo(false);
+                wisePlayer.setPlayUrl(currentPlayData.getUrl(), currentPlayData.getAppId(), ScenarioType.ONLINE, currentPlayData.getVideoFormat());
             } else {
                 setHttpVideo(true);
                 wisePlayer.setPlayUrl(new String[] {currentPlayData.getUrl()});
@@ -181,6 +194,7 @@ public class PlayControl {
 
     /**
      * Get total time
+     * 
      * @return Total time
      */
     public int getDuration() {
@@ -242,6 +256,21 @@ public class PlayControl {
             wisePlayer.release();
             wisePlayer = null;
         }
+        clearBitrateList();
+    }
+
+    /**
+     * clear video bitrate list
+     */
+    private void clearBitrateList() {
+        if (bitrateRangeList != null) {
+            bitrateRangeList.clear();
+            bitrateRangeList = null;
+        }
+        if (switchBitrateList != null) {
+            switchBitrateList.clear();
+            switchBitrateList = null;
+        }
     }
 
     /**
@@ -255,6 +284,7 @@ public class PlayControl {
 
     /**
      * Set the play/pause state
+     * 
      * @param isPlaying The player status
      */
     public void setPlayData(boolean isPlaying) {
@@ -360,38 +390,99 @@ public class PlayControl {
 
     /**
      * Get bitrate list data (String)
-     *
+     * 
      * @return Bitrate list data
      */
-    public List<String> getBitrateList() {
-        List<String> bitrateList = new ArrayList<>();
-        List<Integer> bitrateIntList = getBitrateIntegerList();
-        for (int i = 0; i < bitrateIntList.size(); i++) {
-            bitrateList.add(String.valueOf(bitrateIntList.get(i)));
+    public List<String> getBitrateStringList() {
+        if (switchBitrateList == null || switchBitrateList.size() == 0) {
+            switchBitrateList = new ArrayList<>();
+            bitrateRangeList = new ArrayList<>();
+            if (wisePlayer != null) {
+                VideoInfo videoInfo = wisePlayer.getVideoInfo();
+                if (videoInfo != null && videoInfo.getStreamInfos() != null) {
+                    Collections.sort(videoInfo.getStreamInfos(), new StreamInfoList());
+                    for (StreamInfo streamInfo : videoInfo.getStreamInfos()) {
+                        if (streamInfo != null) {
+                            String bitrateValue = DataFormatUtil.getVideoQuality(context, streamInfo.getVideoHeight());
+                            if (!TextUtils.isEmpty(bitrateValue) && !switchBitrateList.contains(bitrateValue)) {
+                                switchBitrateList.add(bitrateValue);
+                            }
+                            addBitrateRangeList(streamInfo);
+                        }
+                    }
+                }
+            }
         }
-        return bitrateList;
-
+        return switchBitrateList;
     }
 
     /**
-     * Get bitrate list data (Integer)
-     *
-     * @return Bitrate list data
+     * Set the bitrate range
+     * 
+     * @param minBitrate The min bitrate value
+     * @param maxBitrate The max bitrate value
      */
-    private List<Integer> getBitrateIntegerList() {
-        List<Integer> bitrateIntList = new ArrayList<>();
+    public void setBitrateRange(int minBitrate, int maxBitrate) {
         if (wisePlayer != null) {
-            VideoInfo videoInfo = wisePlayer.getVideoInfo();
-            if (videoInfo != null && videoInfo.getStreamInfos() != null) {
-                for (StreamInfo streamInfo : videoInfo.getStreamInfos()) {
-                    if (streamInfo != null) {
-                        bitrateIntList.add(streamInfo.getBitrate());
-                    }
-                }
-                Collections.sort(bitrateIntList);
+            wisePlayer.setBitrateRange(minBitrate, maxBitrate);
+        }
+    }
+
+    /**
+     * Add bitrate range list data
+     * 
+     * @param streamInfo Bitrate data
+     */
+    private void addBitrateRangeList(StreamInfo streamInfo) {
+        BitrateInfo bitrateInfo = new BitrateInfo();
+        bitrateInfo.setCurrentBitrate(streamInfo.getBitrate());
+        bitrateInfo.setMaxBitrate(streamInfo.getBitrate());
+        bitrateInfo.setVideoHeight(streamInfo.getVideoHeight());
+        if (bitrateRangeList.size() == 0) {
+            bitrateInfo.setMinBitrate(0);
+            bitrateRangeList.add(bitrateInfo);
+        } else {
+            BitrateInfo lastBitrateInfo = bitrateRangeList.get(bitrateRangeList.size() - 1);
+            bitrateInfo.setMinBitrate(lastBitrateInfo.getCurrentBitrate());
+            if (isContainsVideoHeight(streamInfo.getVideoHeight())) {
+                bitrateRangeList.set(bitrateRangeList.size() - 1, bitrateInfo);
+            } else {
+                bitrateRangeList.add(bitrateInfo);
             }
         }
-        return bitrateIntList;
+    }
+
+    /**
+     * check Whether add video height or not
+     * 
+     * @param videoHeight video height
+     * @return Whether or not
+     */
+    private boolean isContainsVideoHeight(int videoHeight) {
+        for (BitrateInfo bitrateInfo : bitrateRangeList) {
+            if (bitrateInfo.getVideoHeight() == videoHeight) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get bitrate range list
+     * 
+     * @return Bitrate range list
+     */
+    public List<BitrateInfo> getBitrateRangeList() {
+        return bitrateRangeList;
+    }
+
+    /**
+     * Get bitrate list
+     * 
+     * @return Bitrate list
+     */
+    public List<String> getSwitchBitrateList() {
+        return switchBitrateList;
     }
 
     /**
@@ -400,12 +491,17 @@ public class PlayControl {
      * @return The location of the current rate, the default back to the first
      */
     public int getCurrentBitrateIndex() {
-        List<Integer> bitrateIntList = getBitrateIntegerList();
-        if (bitrateIntList.size() > 0) {
-            return bitrateIntList.indexOf(getCurrentBitrate());
-        } else {
-            return 0;
+        StreamInfo streamInfo = wisePlayer.getCurrentStreamInfo();
+        if (bitrateRangeList != null) {
+            for (int i = 0; i < bitrateRangeList.size(); i++) {
+                BitrateInfo bitrateInfo = bitrateRangeList.get(i);
+                if (streamInfo.getBitrate() >= (bitrateInfo.getMinBitrate() + Constants.BITRATE_WITHIN_RANGE)
+                    && streamInfo.getBitrate() <= (bitrateInfo.getMaxBitrate() + Constants.BITRATE_WITHIN_RANGE)) {
+                    return i;
+                }
+            }
         }
+        return 0;
     }
 
     /**
@@ -442,6 +538,23 @@ public class PlayControl {
             StreamInfo streamInfo = wisePlayer.getCurrentStreamInfo();
             if (streamInfo != null) {
                 return streamInfo.getBitrate();
+            } else {
+                LogUtil.d(TAG, "get current bitrate info is empty!");
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Get the video height
+     *
+     * @return The video height
+     */
+    public int getCurrentVideoHeight() {
+        if (wisePlayer != null) {
+            StreamInfo streamInfo = wisePlayer.getCurrentStreamInfo();
+            if (streamInfo != null) {
+                return streamInfo.getVideoHeight();
             } else {
                 LogUtil.d(TAG, "get current bitrate info is empty!");
             }
@@ -675,6 +788,7 @@ public class PlayControl {
         if (wisePlayer != null) {
             wisePlayer.reset();
         }
+        clearBitrateList();
     }
 
     /**
@@ -707,5 +821,22 @@ public class PlayControl {
 
     private void setHttpVideo(boolean httpVideo) {
         isHttpVideo = httpVideo;
+    }
+
+    /**
+     * Stream data sorting class
+     */
+    static class StreamInfoList implements Comparator<StreamInfo>, Serializable {
+
+        private static final long serialVersionUID = -7763024398518367069L;
+
+        @Override
+        public int compare(StreamInfo streamInfo, StreamInfo lastStreamInfo) {
+            if (streamInfo.getBitrate() >= lastStreamInfo.getBitrate()) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
     }
 }

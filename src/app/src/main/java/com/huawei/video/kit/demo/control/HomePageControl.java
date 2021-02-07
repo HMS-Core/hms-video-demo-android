@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import com.huawei.video.kit.demo.R;
 import com.huawei.video.kit.demo.entity.PlayEntity;
 import com.huawei.video.kit.demo.utils.Constants.UrlType;
 import com.huawei.video.kit.demo.utils.DataFormatUtil;
@@ -182,5 +184,53 @@ public class HomePageControl {
         playEntity.setUrl(inputUrl);
         playEntity.setUrlType(UrlType.URL);
         return playEntity;
+    }
+
+    /**
+     * pause load
+     */
+    public void pauseAllTasks() {
+        if (PlayControlUtil.getPreloader() != null) {
+            PlayControlUtil.getPreloader().pauseAllTasks();
+        } else {
+            showPreloadFailToast();
+        }
+    }
+
+    /**
+     * resume load
+     */
+    public void resumeAllTasks() {
+        if (PlayControlUtil.getPreloader() != null) {
+            PlayControlUtil.getPreloader().resumeAllTasks();
+        } else {
+            showPreloadFailToast();
+        }
+    }
+
+    /**
+     * remove all cache
+     */
+    public void removeAllCache() {
+        if (PlayControlUtil.getPreloader() != null) {
+            PlayControlUtil.getPreloader().removeAllCache();
+        } else {
+            showPreloadFailToast();
+        }
+    }
+
+    /**
+     * remove all task
+     */
+    public void removeAllTasks() {
+        if (PlayControlUtil.getPreloader() != null) {
+            PlayControlUtil.getPreloader().removeAllTasks();
+        } else {
+            showPreloadFailToast();
+        }
+    }
+
+    private void showPreloadFailToast() {
+        Toast.makeText(context, context.getString(R.string.video_add_single_cache_fail), Toast.LENGTH_SHORT).show();
     }
 }

@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.huawei.video.kit.demo.R;
 import com.huawei.video.kit.demo.entity.PlayEntity;
 
 /**
@@ -54,6 +55,7 @@ public class DataFormatUtil {
                     playEntity.setUrl(jsonObject.optString("url"));
                     playEntity.setUrlType(jsonObject.optInt("urlType"));
                     playEntity.setName(jsonObject.optString("name"));
+                    playEntity.setVideoFormat(jsonObject.optInt("videoFormat"));
                     list.add(playEntity);
                 }
             }
@@ -115,5 +117,26 @@ public class DataFormatUtil {
      */
     public static boolean isFloatEqual(float originalValue, float targetValue) {
         return Math.abs(originalValue - targetValue) < 0.05;
+    }
+
+    /**
+     * Get video height text
+     * @param context Context
+     * @param videoHeight The video height
+     * @return video height text
+     */
+    public static String getVideoQuality(Context context, int videoHeight) {
+        switch (videoHeight) {
+            case Constants.DISPLAY_HEIGHT_SMOOTH:
+                return context.getString(R.string.fluency_definition, videoHeight);
+            case Constants.DISPLAY_HEIGHT_SD:
+                return context.getString(R.string.standard_definition, videoHeight);
+            case Constants.DISPLAY_HEIGHT_HD:
+                return context.getString(R.string.high_definition, videoHeight);
+            case Constants.DISPLAY_HEIGHT_BLUE_RAY:
+                return context.getString(R.string.super_definition, videoHeight);
+            default:
+                return context.getString(R.string.auto_definition);
+        }
     }
 }

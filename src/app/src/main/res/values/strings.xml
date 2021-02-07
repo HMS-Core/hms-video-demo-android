@@ -57,6 +57,40 @@
     <string name="video_bitrate_width">Resolution width:</string>
     <string name="video_bitrate_init">Playback start bitrate:</string>
     <string name="video_volume_range">0-1.0</string>
+    <string name="super_definition">"Blu-ray (%dP)"</string>
+    <string name="high_definition">"HD (%dP)"</string>
+    <string name="standard_definition">"SD (%dP)"</string>
+    <string name="fluency_definition">"Smooth (%dP)"</string>
+    <string name="auto_definition">Auto</string>
+    <string name="resolution_switching">Switching to <![CDATA[<font color="#FF7500">%s</font>]]>... Please wait.</string>
+    <string name="switch_bitrate_enable">The bitrate cannot be changed.</string>
+    <string name="resolution_switched_auto">Switched successfully.</string>
+    <string name="video_init_preloader">Initialize preload</string>
+    <string name="video_preloader_path">Preload path:</string>
+    <string name="video_preloader_total_size">Max. size:</string>
+    <string name="create_file_fail">Failed to create the preload path.</string>
+    <string name="video_add_single_cache">Add preload task</string>
+    <string name="video_add_single_cache_url">url</string>
+    <string name="video_add_single_cache_playparam">playParam</string>
+    <string name="video_add_single_cache_appId">appId</string>
+    <string name="video_add_single_cache_width">width</string>
+    <string name="video_add_single_cache_height">height</string>
+    <string name="video_add_single_cache_size">cacheSize</string>
+    <string name="video_add_single_cache_priority">priority</string>
+    <string name="video_add_single_cache_fail">Settings failed. Perform preload initialization first.</string>
+    <string name="video_pause_cache">Pause preload task</string>
+    <string name="video_resume_cache">Resume preload task</string>
+    <string name="video_remove_cache">Delete all preloaded data</string>
+    <string name="video_remove_tasks">Delete all preload tasks</string>
+    <string name="video_init_preload">No permission. Preload initialization is not allowed.</string>
+    <string name="video_preload_url">The URL for preload cannot be empty.</string>
+    <string name="get_recommend_info">Obtain recommendations</string>
+    <string name="update_server_country">Change country/region code</string>
+    <string name="update_server_country_toast_empty">Enter a country/region code.</string>
+    <string name="update_server_country_toast_length">Enter an uppercase two-letter country/region code.</string>
+    <string name="video_add_single_cache_video_format">videoFormat</string>
+    <string name="update_server_country_title">Change country/region code</string>
+    <string name="server_country_limit">Two uppercase letters</string>
     <string-array name="play_speed_text">
         <item>0.5x</item>
         <item>0.75x</item>

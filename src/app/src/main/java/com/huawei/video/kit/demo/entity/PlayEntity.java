@@ -46,6 +46,11 @@ public class PlayEntity implements Serializable {
      */
     private String appId;
 
+    /**
+     * Video format
+     */
+    private int videoFormat;
+
     public String getName() {
         return name;
     }
@@ -76,5 +81,13 @@ public class PlayEntity implements Serializable {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public int getVideoFormat() {
+        return videoFormat;
+    }
+
+    public void setVideoFormat(int videoFormat) {
+        this.videoFormat = videoFormat;
     }
 }

@@ -19,6 +19,8 @@ package com.huawei.video.kit.demo.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.Manifest.permission;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -27,15 +29,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.huawei.hms.videokit.player.common.PlayerConstants;
+import com.huawei.hms.videokit.player.WisePlayer;
+import com.huawei.hms.videokit.player.bean.recommend.RecommendOptions;
+import com.huawei.hms.videokit.player.bean.recommend.RecommendVideo;
 import com.huawei.hms.videokit.player.common.PlayerConstants.BandwidthSwitchMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.PlayMode;
 import com.huawei.video.kit.demo.R;
+import com.huawei.video.kit.demo.VideoKitPlayApplication;
+import com.huawei.video.kit.demo.contract.OnDialogConfirmListener;
 import com.huawei.video.kit.demo.contract.OnHomePageListener;
 import com.huawei.video.kit.demo.control.HomePageControl;
 import com.huawei.video.kit.demo.entity.PlayEntity;
 import com.huawei.video.kit.demo.utils.Constants;
 import com.huawei.video.kit.demo.utils.DialogUtil;
+import com.huawei.video.kit.demo.utils.LogUtil;
+import com.huawei.video.kit.demo.utils.PermissionUtils;
 import com.huawei.video.kit.demo.utils.PlayControlUtil;
 import com.huawei.video.kit.demo.view.HomePageView;
 
@@ -43,6 +51,19 @@ import com.huawei.video.kit.demo.view.HomePageView;
  * Home page activity
  */
 public class HomePageActivity extends AppCompatActivity implements OnHomePageListener {
+    private static final int MSG_REQUEST_WRITE_SDCARD = 1;
+
+    private static WisePlayer.IRecommendVideoCallback recommendVideoCallback =
+        new WisePlayer.IRecommendVideoCallback() {
+            @Override
+            public void onSuccess(List<RecommendVideo> list) {
+            }
+
+            @Override
+            public void onFailed(int what, int extra, Object obj) {
+            }
+        };
+
     // Home page view
     private HomePageView homePageView;
 
@@ -55,6 +76,8 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
         homePageView = new HomePageView(this, this);
         homePageControl = new HomePageControl(this);
         setContentView(homePageView.getContentView());
+        PermissionUtils.requestPermissionsIfNeed(this, new String[] {permission.WRITE_EXTERNAL_STORAGE},
+            MSG_REQUEST_WRITE_SDCARD);
     }
 
     /**
@@ -69,6 +92,24 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
     protected void onStart() {
         super.onStart();
         updateView();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (grantResults.length == 0) {
+            LogUtil.i("current request permissions grant result is empty!");
+            return;
+        }
+        switch (requestCode) {
+            case MSG_REQUEST_WRITE_SDCARD:
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, this.getString(R.string.video_init_preload), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                LogUtil.d("Apply access failure");
+                break;
+        }
     }
 
     @Override
@@ -149,6 +190,41 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                 break;
             case R.id.video_bitrate_range_setting:
                 DialogUtil.showBitrateRangeDialog(this);
+                break;
+            case R.id.video_init_preloader:
+                DialogUtil.initPreloaderDialog(this, new OnDialogConfirmListener() {
+                    @Override
+                    public void onConfirm() {
+                        DialogUtil.addSingleCacheDialog(HomePageActivity.this);
+                    }
+                });
+                break;
+            case R.id.video_add_single_cache:
+                DialogUtil.addSingleCacheDialog(HomePageActivity.this);
+                break;
+            case R.id.video_pause_cache:
+                homePageControl.pauseAllTasks();
+                break;
+            case R.id.video_resume_cache:
+                homePageControl.resumeAllTasks();
+                break;
+            case R.id.video_remove_cache:
+                homePageControl.removeAllCache();
+                break;
+            case R.id.video_remove_tasks:
+                homePageControl.removeAllTasks();
+                break;
+            case R.id.video_update_country:
+                DialogUtil.updateServerCountryDialog(this);
+                break;
+            case R.id.recommend_video_info:
+                RecommendOptions recommendOptions = new RecommendOptions();
+                recommendOptions.setLanguage("zh_CN");
+                VideoKitPlayApplication.getWisePlayerFactory()
+                    .createWisePlayer()
+                    .getRecommendVideoList("8859289", recommendOptions,
+                        "CgB6e3x9cDTitEyidsqxd/Q6cmh/gEKQBehAEs5xcnc81KAY8MS7L8fNop7IMq0LaXmTRjUSZVoG9UrBfFDvt76D",
+                        recommendVideoCallback);
                 break;
             default:
                 break;

@@ -55,6 +55,11 @@ public class Constants {
     public static final int PLAY_ERROR_FINISH = 5;
 
     /**
+     * Update switch bitrate success
+     */
+    public static final int UPDATE_SWITCH_BITRATE_SUCCESS = 6;
+
+    /**
      * Switch bitrate
      */
     public static final int PLAYER_SWITCH_STOP_REQUEST_STREAM = 7;
@@ -159,6 +164,19 @@ public class Constants {
      */
     public static final int VIDEO_TYPE_ON_DEMAND = 0;
 
+    public static final int DISPLAY_HEIGHT_SMOOTH = 270;
+
+    public static final int DISPLAY_HEIGHT_SD = 480;
+
+    public static final int DISPLAY_HEIGHT_HD = 720;
+
+    public static final int DISPLAY_HEIGHT_BLUE_RAY = 1080;
+
+    /**
+     * BITRATE WITHIN RANGE
+     */
+    public static final int BITRATE_WITHIN_RANGE = 100;
+
     /**
      * Url type
      */
@@ -177,5 +195,10 @@ public class Constants {
          * Huawei managed video address
          */
         public static final int URL_JSON = 2;
+
+        /**
+         * Huawei managed video address(Set video format)
+         */
+        public static final int URL_JSON_FORMAT = 3;
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -42,6 +43,7 @@ import com.huawei.video.kit.demo.contract.OnPlayWindowListener;
 import com.huawei.video.kit.demo.contract.OnWisePlayerListener;
 import com.huawei.video.kit.demo.entity.PlayEntity;
 import com.huawei.video.kit.demo.utils.Constants;
+import com.huawei.video.kit.demo.utils.DataFormatUtil;
 import com.huawei.video.kit.demo.utils.DeviceUtil;
 import com.huawei.video.kit.demo.utils.DialogUtil;
 import com.huawei.video.kit.demo.utils.LogUtil;
@@ -127,6 +129,12 @@ public class PlayView {
     // VideoKit SDK listener
     private OnWisePlayerListener onWisePlayerListener;
 
+    // Switch bitrate
+    private TextView switchBitrateTv;
+
+    // Switching bitrate prompt
+    private TextView switchingBitrateTv;
+
     /**
      * Constructor
      *
@@ -199,6 +207,11 @@ public class PlayView {
             videoTimeTv = (TextView) view.findViewById(R.id.video_time);
             videoDownloadTv = (TextView) view.findViewById(R.id.video_download_speed);
             videoBitrateTv = (TextView) view.findViewById(R.id.video_bitrate);
+            switchBitrateTv = (TextView) view.findViewById(R.id.switch_bitrate_tv);
+            switchBitrateTv.setOnClickListener(onPlayWindowListener);
+            switchBitrateTv.setVisibility(View.GONE);
+            switchingBitrateTv = (TextView) view.findViewById(R.id.switching_bitrate_tv);
+            switchingBitrateTv.setVisibility(View.GONE);
         }
     }
 
@@ -427,5 +440,62 @@ public class PlayView {
         showBufferingView();
         playImg.setImageResource(R.drawable.ic_play);
         showDefaultValueView();
+        hiddenSwitchingBitrateTextView();
+        hiddenSwitchBitrateTextView();
+        setSwitchBitrateTv(0);
+    }
+
+    /**
+     * Show switch bitrate textView
+     */
+    public void showSwitchBitrateTextView() {
+        if (switchBitrateTv.getVisibility() == View.GONE) {
+            switchBitrateTv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Hidden switch bitrate textView
+     */
+    public void hiddenSwitchBitrateTextView() {
+        if (switchBitrateTv.getVisibility() == View.VISIBLE) {
+            switchBitrateTv.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * set switch bitrate textView
+     * @param videoHeight  video height
+     */
+    public void setSwitchBitrateTv(int videoHeight) {
+        switchBitrateTv.setText(DataFormatUtil.getVideoQuality(context, videoHeight));
+    }
+
+    /**
+     * Show switching bitrate textView
+     */
+    public void showSwitchingBitrateTextView(String textValue) {
+        if (switchingBitrateTv.getVisibility() == View.GONE) {
+            switchingBitrateTv.setVisibility(View.VISIBLE);
+        }
+        switchingBitrateTv.setText(Html.fromHtml(context.getString(R.string.resolution_switching, textValue)));
+    }
+
+    /**
+     * Update textView show value
+     * 
+     * @param textValue value
+     */
+    public void updateSwitchingBitrateTextView(String textValue) {
+        switchingBitrateTv.setText(textValue);
+    }
+
+    /**
+     * Hidden switching bitrate textView
+     */
+    public void hiddenSwitchingBitrateTextView() {
+        if (switchingBitrateTv.getVisibility() == View.VISIBLE) {
+            switchingBitrateTv.setVisibility(View.GONE);
+        }
     }
 }

@@ -16,10 +16,12 @@
 
 package com.huawei.video.kit.demo.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * File tools
@@ -61,4 +63,20 @@ public class FileUtil {
         return StringUtil.emptyStringValue();
     }
 
+    /**
+     * Create file
+     * @param filePath File path
+     * @return Create or not
+     */
+    public static boolean createFile(String filePath) {
+        if (!TextUtils.isEmpty(filePath)) {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                return file.mkdirs();
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 }
