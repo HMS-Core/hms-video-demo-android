@@ -105,6 +105,21 @@ public class Constants {
     public static final int PLAYER_SWITCH_VIDEO_MUTE_MODE = 15;
 
     /**
+     * Switch subtitle
+     */
+    public static final int PLAYER_SWITCH_SUBTITLE = 16;
+
+    /**
+     * Get Audio track
+     */
+    public static final int PLAYER_GET_AUDIO_TRACKS = 17; 
+
+    /**
+     * Switch Audio track
+     */
+    public static final int PLAYER_SWITCH_AUDIO_TRACK = 18; 
+
+    /**
      * Set the video type
      */
     public static final int PLAYER_SWITCH_VIDEO_MODE = 0;
@@ -145,6 +160,11 @@ public class Constants {
     public static final int PLAYER_SWITCH_CLOSE_LOGO_EFFECT = 8;
 
     /**
+     * Set Prefer Audio Track
+     */
+    public static final int PLAYER_SET_PREFER_LANG = 10;
+
+    /**
      * The first options dialog
      */
     public static final int DIALOG_INDEX_ONE = 0;
@@ -176,6 +196,11 @@ public class Constants {
      * BITRATE WITHIN RANGE
      */
     public static final int BITRATE_WITHIN_RANGE = 100;
+
+    /**
+     * Set download thread
+     */
+    public static final int DOWNLOAD_LINK_NUM = 11;
 
     /**
      * Url type

@@ -1,0 +1,12 @@
+{
+	"client":{
+		"cp_id":"2850086000368044238",
+		"product_id":"736430079244472371",
+		"client_id":"370924713490252800",
+		"client_secret":"0ED2B0BC6EA817B9232311581131D2FC694F2ED563FD26B905A081D19041A11D",
+		"app_id":"102285491",
+		"package_name":"com.huawei.video.kit.demo",
+		"api_key":"CV70f9IEo49COUzODYWteMkO1W6nMtgZB9t7MOfr+cOBSxaFNrBGRqSbB+pAaPqB7t5BOBOIMm2JYA+5YZzsBwwQ6iBA"
+	},
+	"configuration_version":"1.0"
+}

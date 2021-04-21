@@ -16,6 +16,7 @@
     <string name="video_stop_downloading">Download control</string>
     <string name="video_set_play_speed">Playback speed</string>
     <string name="video_set_bandwidth_mode">Bandwidth adaptation</string>
+    <string name="video_switch_subtitle">Switch subtitle</string>
     <string name="setting_cancel">Cancel</string>
     <string name="setting_ok">OK</string>
     <string name="video_stop_download">Stop download</string>
@@ -56,6 +57,8 @@
     <string name="video_bitrate_height">Resolution height:</string>
     <string name="video_bitrate_width">Resolution width:</string>
     <string name="video_bitrate_init">Playback start bitrate:</string>
+    <string name="subtitle_preset_language_setting">Subtitle preset language</string>
+    <string name="subtitle_preset_language_setting_title">Subtitle preset language (valid only for the next video)</string>
     <string name="video_volume_range">0-1.0</string>
     <string name="super_definition">"Blu-ray (%dP)"</string>
     <string name="high_definition">"HD (%dP)"</string>
@@ -99,4 +102,26 @@
         <item>1.5x</item>
         <item>2.0x</item>
     </string-array>
+    <string name="video_set_alg_para">Setting playback startup parameters</string>
+    <string name="video_modify_window_para">Modify default window param</string>
+    <string name="video_display_msg">Click \'+\' to add data</string>
+    <string name="video_min_bitrate">Min Bitrate</string>
+    <string name="video_max_bitrate">Max Bitrate</string>
+    <string name="video_delay">Delay</string>
+    <string name="switch_audio_track">Switch Audio Track</string>
+    <string name="audio_set_prefer_audio">Setting prefer audio</string>
+    <string name="gettings">Gettings</string>
+    <string name="get_audio_track_info">Get audioTracks info</string>
+    <string name="current_audio_track">Get current AudioTrack</string>
+    <string name="audio_tracks">Get AudioTracks</string>
+
+    <string name="socks_proxy_setting">Socks proxy</string>
+    <string name="set_socks_proxy">Setting socks proxy</string>
+    <string name="socks_proxy_ip">Setting proxy ip</string>
+    <string name="socks_proxy_port">Setting proxy port</string>
+    <string name="socks_proxy_user">Setting proxy username</string>
+    <string name="socks_proxy_password">Setting proxy password</string>
+    <string name="download_link_num">Download link num</string>
+    <string name="download_link_single">Download link single</string>
+    <string name="download_link_multi">Download link multi</string>
 </resources>

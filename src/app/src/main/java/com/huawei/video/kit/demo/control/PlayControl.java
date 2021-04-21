@@ -29,8 +29,10 @@ import android.view.TextureView;
 
 import com.huawei.hms.videokit.player.InitBitrateParam;
 import com.huawei.hms.videokit.player.StreamInfo;
+import com.huawei.hms.videokit.player.SubtitleTrackInfo;
 import com.huawei.hms.videokit.player.VideoInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
+import com.huawei.hms.videokit.player.common.PlayerConstants;
 import com.huawei.hms.videokit.player.common.PlayerConstants.CycleMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.ScenarioType;
 import com.huawei.video.kit.demo.VideoKitPlayApplication;
@@ -43,6 +45,7 @@ import com.huawei.video.kit.demo.utils.DataFormatUtil;
 import com.huawei.video.kit.demo.utils.LogUtil;
 import com.huawei.video.kit.demo.utils.PlayControlUtil;
 import com.huawei.video.kit.demo.utils.StringUtil;
+import com.huawei.hms.videokit.player.AudioTrackInfo;
 
 /**
  * Play controls class
@@ -160,14 +163,19 @@ public class PlayControl {
                 setHttpVideo(true);
                 wisePlayer.setPlayUrl(new String[] {currentPlayData.getUrl()});
             }
+            setProxyInfo();
+            setDownloadLink();
             setBookmark();
             setPlayMode(PlayControlUtil.getPlayMode(), false);
             setMute(PlayControlUtil.isMute());
             setVideoType(PlayControlUtil.getVideoType(), false);
             setBandwidthSwitchMode(PlayControlUtil.getBandwidthSwitchMode(), false);
             setInitBitrateEnable();
+            setInitBufferTimeStrategy();
             setBitrateRange();
+            setSubtitlePresetLanguage();
             setCloseLogo();
+            setPreferAudioLang();
             wisePlayer.ready();
         }
     }
@@ -723,6 +731,17 @@ public class PlayControl {
     }
 
     /**
+     * setting init BufferTime
+     */
+    public void setInitBufferTimeStrategy() {
+        if (wisePlayer != null) {
+            LogUtil.d("begin set InitBufferTimeStrategy");
+            wisePlayer.setInitBufferTimeStrategy(PlayControlUtil.getInitBufferTimeStrategy());
+            PlayControlUtil.setInitBufferTimeStrategy(null);
+        }
+    }
+
+    /**
      * Remove the current play bookmark
      */
     public void clearPlayProgress() {
@@ -766,6 +785,15 @@ public class PlayControl {
             playEntityList.addAll(DataFormatUtil.getPlayList(context));
         }
         return playEntityList;
+    }
+
+    /**
+     * refresh play url
+     */
+    public void refresh() {
+        if (wisePlayer != null && currentPlayData != null) {
+            wisePlayer.refreshPlayUrl(currentPlayData.getUrl());
+        }
     }
 
     /**
@@ -824,6 +852,34 @@ public class PlayControl {
     }
 
     /**
+     * Switch subtitle
+     *
+     * @param trackId 字幕 track id
+     */
+    public void switchSubtitle(int trackId) {
+        LogUtil.d(TAG, "switchSubtitle trackId：" + trackId);
+        wisePlayer.selectSubtitleTrack(trackId);
+    }
+
+    /**
+     * Close subtitle
+     */
+    public void closeSubtitle() {
+        LogUtil.d(TAG, "closeSubtitle");
+        wisePlayer.deselectSubtitleTrack();
+    }
+
+    /**
+     * Set subtitle preset language
+     */
+    public void setSubtitlePresetLanguage() {
+        if (PlayControlUtil.isSubtitlePresetLanguageEnable() && wisePlayer != null) {
+            wisePlayer.presetSubtitleLanguage(PlayControlUtil.getSubtitlePresetLanguage());
+            PlayControlUtil.clearSubtitlePresetLanguage();
+        }
+    }
+
+    /**
      * Stream data sorting class
      */
     static class StreamInfoList implements Comparator<StreamInfo>, Serializable {
@@ -837,6 +893,89 @@ public class PlayControl {
             } else {
                 return -1;
             }
+        }
+    }
+
+    public AudioTrackInfo[] getAudioTracks() {
+        AudioTrackInfo[] audioTrack = null;
+        if (wisePlayer != null) {
+            audioTrack = wisePlayer.getAudioTracks();
+            if (audioTrack == null || audioTrack.length == 0 ) {
+                LogUtil.d(TAG, "getAudioTracks get null");
+                return null;
+            }
+            if (audioTrack instanceof AudioTrackInfo[]) {
+                for (int i = 0; i < audioTrack.length; i++) {
+                    LogUtil.d(TAG, "getAudioTracks is:" + audioTrack[i].getId() + " desc:" + audioTrack[i].getDesc() +
+                            " select:" + audioTrack[i].getSelected());
+                }
+            }
+        }
+        return audioTrack;
+    }
+
+    public AudioTrackInfo getSelectedAudioTrack() {
+        AudioTrackInfo audioTrack = null;
+        if (wisePlayer != null) {
+            Object obj = wisePlayer.getSelectedAudioTrack();
+            if (obj == null) {
+                LogUtil.d(TAG, "getSelectedAudioTrack get null");
+                return null;
+            }
+            audioTrack = (AudioTrackInfo)obj;
+            LogUtil.d(TAG, "getSelectedAudioTrack is:" + audioTrack.getId() + " desc:" + audioTrack.getDesc() +
+                        " select:" + audioTrack.getSelected());
+        }
+        return audioTrack;
+    }
+
+    public void switchAudioTrack(String audioTrackname) {
+        LogUtil.d(TAG, "switchAudioTrack the audio switch to is:" + audioTrackname);
+        if (wisePlayer != null) {
+            AudioTrackInfo[] audioTrack = null;
+            audioTrack = wisePlayer.getAudioTracks();
+                if (audioTrack == null) {
+                    return;
+                }
+
+                if (audioTrack instanceof AudioTrackInfo[]) {
+                    for (int i = 0; i < audioTrack.length; i++) {
+                        if (audioTrack[i].getDesc().equals(audioTrackname)) {
+                            LogUtil.d(TAG, "switchAudioTrack switch to:" + audioTrack[i].getId() );
+                            wisePlayer.selectAudioTrack(audioTrack[i].getId());
+                            break;
+                        }
+                    }
+                }
+        }
+    }
+
+    public int getAudioLangIndex() {
+        if (wisePlayer != null) {
+            return wisePlayer.getSelectedAudioTrack().getId();
+        } else {
+            return 0;
+        }
+    }
+
+    public void setPreferAudioLang() {
+        if (wisePlayer != null) {
+            LogUtil.d("start set prefer language");
+            wisePlayer.presetAudioLanguage(PlayControlUtil.getPreferAudio());
+        }
+    }
+
+    public void setProxyInfo() {
+        if (wisePlayer != null) {
+            LogUtil.d("start setProxyInfo");
+            wisePlayer.setProxy(PlayControlUtil.getProxyInfo());
+        }
+    }
+
+    public void setDownloadLink() {
+        if (wisePlayer != null) {
+            LogUtil.d("setDownloadLink, is download link single:" + PlayControlUtil.isDownloadLinkSingle());
+            wisePlayer.setProperties(PlayerConstants.Properties.SINGLE_LINK_DOWNLOAD, PlayControlUtil.isDownloadLinkSingle());
         }
     }
 }

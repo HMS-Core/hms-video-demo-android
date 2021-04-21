@@ -75,6 +75,9 @@ public class PlayView {
     // Play/Stop button
     private ImageView playImg;
 
+    // refresh button
+    private ImageView playRefreshImg;
+
     // Video buffer view
     private RelativeLayout videoBufferLayout;
 
@@ -188,6 +191,8 @@ public class PlayView {
             totalTimeTv = (TextView) view.findViewById(R.id.total_time_tv);
             playImg = (ImageView) view.findViewById(R.id.play_btn);
             playImg.setOnClickListener(onPlayWindowListener);
+            playRefreshImg = (ImageView) view.findViewById(R.id.play_refresh);
+            playRefreshImg.setOnClickListener(onPlayWindowListener);
             backTv = (TextView) view.findViewById(R.id.back_tv);
             backTv.setOnClickListener(onPlayWindowListener);
             fullScreenBt = (Button) view.findViewById(R.id.fullscreen_btn);
@@ -408,6 +413,17 @@ public class PlayView {
      */
     public void showSettingDialogValue(int settingType, List<String> showTextList, String selectValue) {
         DialogUtil.onSettingDialogSelectValue(context, settingType, showTextList, selectValue, onPlayWindowListener);
+    }
+
+    /**
+     * Show getting dialog
+     * 
+     * @param gettingType Getting type
+     * @param showTextList Setting text list
+     * @param selectValue Default select value
+     */
+    public void showGettingDialog(int gettingType, List<String> showTextList, int selectIndex) {
+        DialogUtil.onGettingDialogSelectIndex(context, gettingType, showTextList, selectIndex, onPlayWindowListener);
     }
 
     /**

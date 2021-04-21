@@ -233,4 +233,12 @@ public class HomePageControl {
     private void showPreloadFailToast() {
         Toast.makeText(context, context.getString(R.string.video_add_single_cache_fail), Toast.LENGTH_SHORT).show();
     }
+
+    /**
+     * Set whether to use single connection Download
+     * @param isDownloadLinkSingle Whether to use single connection Download
+     */
+    public void setDownloadLink(boolean isDownloadLinkSingle) {
+        PlayControlUtil.setIsDownloadLinkSingle(isDownloadLinkSingle);
+    }
 }

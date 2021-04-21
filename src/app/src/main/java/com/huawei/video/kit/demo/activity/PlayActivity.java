@@ -37,6 +37,7 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.huawei.hms.videokit.player.SubtitleTrackInfo;
 import com.huawei.hms.videokit.player.StreamInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
 import com.huawei.hms.videokit.player.common.PlayerConstants;
@@ -58,6 +59,8 @@ import com.huawei.video.kit.demo.utils.LogUtil;
 import com.huawei.video.kit.demo.utils.PlayControlUtil;
 import com.huawei.video.kit.demo.utils.StringUtil;
 import com.huawei.video.kit.demo.view.PlayView;
+import com.huawei.hms.videokit.player.AudioTrackInfo;
+import com.huawei.video.kit.demo.utils.SelectDialog;
 
 /**
  * Play Activity
@@ -94,6 +97,12 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
 
     // Play the View is created
     private boolean hasSurfaceCreated = false;
+
+    // WisePlayer instance
+    private WisePlayer wisePlayer = null;
+
+    // List of subtitle track info
+    private SubtitleTrackInfo[] infoList = null;
 
     // Play status
     private boolean isPlaying = false;
@@ -237,8 +246,13 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     @Override
     public void onStartPlaying(WisePlayer wisePlayer) {
         LogUtil.d(TAG, "onStartPlaying");
-        playView.dismissBufferingView();
-        isPlayComplete = false;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playView.dismissBufferingView();
+                isPlayComplete = false;
+            }
+        });
     }
 
     @Override
@@ -246,7 +260,12 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         LogUtil.d(TAG, "onError what:" + what + " extra:" + extra);
         Toast.makeText(this, "error:" + what + " extra:" + extra, Toast.LENGTH_SHORT).show();
 
-        playView.dismissBufferingView();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playView.dismissBufferingView();
+            }
+        });
         updateViewHandler.sendEmptyMessageDelayed(Constants.PLAY_ERROR_FINISH, Constants.DELAY_MILLIS_3000);
         return false;
     }
@@ -462,6 +481,40 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     }
 
     /**
+     * Switch Subtitle
+     */
+    private void switchSubtitle() {
+        if (this.wisePlayer != null) {
+            infoList = this.wisePlayer.getSubtitleTracks();
+            if (infoList == null) {
+                LogUtil.d(TAG, "switchSubtitle infoList == null");
+                return;
+            }
+            if (infoList.length > 0) {
+                List<String> showTextList = new ArrayList<>();
+                LogUtil.d(TAG, "switchSubtitle infoList.length:" + infoList.length);
+                for (int i = 0; i < infoList.length; i++) {
+                    String desc = infoList[i].getDesc();
+                    int id = infoList[i].getId();
+                    LogUtil.d(TAG, "switchSubtitle desc:" + desc + ", id:" + id);
+                    showTextList.add(desc);
+                }
+                int selectedIndex = -1;
+                SubtitleTrackInfo info = wisePlayer.getSelectedSubtitleTrack();
+                if (info != null) {
+                    selectedIndex = info.getId();
+                    LogUtil.d(TAG, "switchSubtitle selectedIndex:" + selectedIndex);
+                }
+                if (selectedIndex == -1 || selectedIndex >= infoList.length) {
+                    selectedIndex = infoList.length;
+                }
+                showTextList.add("close");
+                playView.showSettingDialog(Constants.PLAYER_SWITCH_SUBTITLE, showTextList, selectedIndex);
+            }
+        }
+    }
+
+    /**
      * Set the play mode
      */
     private void switchPlayMode() {
@@ -560,6 +613,9 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
             case R.id.switch_bitrate_tv:
                 switchBitrateAuto();
                 break;
+            case R.id.play_refresh:
+                playControl.refresh();
+                break;
             default:
                 break;
         }
@@ -581,6 +637,9 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         showTextList.add(StringUtil.getStringFromResId(this, R.string.video_set_loop_play));
         showTextList.add(StringUtil.getStringFromResId(this, R.string.video_mute_setting));
         showTextList.add(StringUtil.getStringFromResId(this, R.string.video_set_volume));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_switch_subtitle));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.get_audio_track_info));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.switch_audio_track)); 
         playView.showSettingDialog(Constants.MSG_SETTING, showTextList, 0);
     }
 
@@ -706,6 +765,9 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                     StringUtil.getStringFromResId(PlayActivity.this, R.string.video_set_bandwidth_mode))) {
                     switchBandwidthMode();
                 } else if (TextUtils.equals(itemSelect,
+                    StringUtil.getStringFromResId(PlayActivity.this, R.string.video_switch_subtitle))) {
+                    switchSubtitle();
+                } else if (TextUtils.equals(itemSelect,
                     StringUtil.getStringFromResId(PlayActivity.this, R.string.close_logo))) {
                     closeLogo();
                 } else if (TextUtils.equals(itemSelect,
@@ -720,6 +782,12 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 } else if (TextUtils.equals(itemSelect,
                     StringUtil.getStringFromResId(PlayActivity.this, R.string.video_set_volume))) {
                     setVideoVolume();
+                } else if (TextUtils.equals(itemSelect, 
+                        StringUtil.getStringFromResId(PlayActivity.this, R.string.switch_audio_track))) {
+                    getSwitchAudioTrack();
+                } else if (TextUtils.equals(itemSelect,  
+                        StringUtil.getStringFromResId(PlayActivity.this, R.string.get_audio_track_info))) {
+                    getAudioTracks();
                 } else {
                     LogUtil.i(TAG, "current settings type is " + itemSelect);
                 }
@@ -744,6 +812,21 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                     playControl.setBandwidthSwitchMode(BandwidthSwitchMode.AUTO_SWITCH_MODE, true);
                 } else {
                     playControl.setBandwidthSwitchMode(BandwidthSwitchMode.MANUAL_SWITCH_MODE, true);
+                }
+                break;
+            case Constants.PLAYER_SWITCH_SUBTITLE:
+                if (infoList != null) {
+                    if (itemSelect.equals("close")) {
+                        playControl.closeSubtitle();
+                    } else {
+                        for (int i = 0; i < infoList.length; i++) {
+                            String desc = infoList[i].getDesc();
+                            int id = infoList[i].getId();
+                            if (desc.equals(itemSelect)) {
+                                playControl.switchSubtitle(id);
+                            }
+                        }
+                    }
                 }
                 break;
             case Constants.PLAYER_SWITCH_PLAY_MODE:
@@ -772,6 +855,19 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 break;
             case Constants.PLAYER_SWITCH_BITRATE:
                 onSwitchBitrate(itemSelect);
+                break;
+            case Constants.PLAYER_GET_AUDIO_TRACKS:
+                if (TextUtils.equals(itemSelect,
+                        StringUtil.getStringFromResId(PlayActivity.this, R.string.current_audio_track))) {
+                    LogUtil.d(TAG, "getSelectedAudioTrack is :" + itemSelect);
+                    playControl.getSelectedAudioTrack();
+                } else {
+                    LogUtil.d(TAG, "getAudioTracks is :" + itemSelect);
+                    playControl.getAudioTracks();
+                }
+                break;
+            case Constants.PLAYER_SWITCH_AUDIO_TRACK:
+                playControl.switchAudioTrack(itemSelect);
                 break;
             default:
                 break;
@@ -822,6 +918,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
 
     @Override
     public void onReady(final WisePlayer wisePlayer) {
+        this.wisePlayer = wisePlayer;
         LogUtil.d(TAG, "onReady");
         playControl.start();
         isPlaying = true;
@@ -848,5 +945,37 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     @Override
     public void onSeekEnd(WisePlayer wisePlayer) {
 
+    }
+
+    public void getAudioTracks() {
+        List<String> showTextList = new ArrayList<>();
+        showTextList.add(getResources().getString(R.string.current_audio_track));
+        showTextList.add(getResources().getString(R.string.audio_tracks));
+        playView.showGettingDialog(Constants.PLAYER_GET_AUDIO_TRACKS, showTextList, Constants.DIALOG_INDEX_ONE);
+    }
+
+    public void getSwitchAudioTrack() {
+        Object obj = null;
+        AudioTrackInfo[] audioTrack = null;
+        if ((obj = playControl.getAudioTracks()) != null) {
+            audioTrack = (AudioTrackInfo[]) obj;
+        }
+
+        if (audioTrack == null) {
+            LogUtil.w(TAG, "switchAudio no audio track");
+
+            SelectDialog dialog = new SelectDialog(this);
+            dialog.setTitle("switchAudio  no audiotrack");
+            dialog.setHandler(updateViewHandler, Constants.PLAYER_SWITCH_AUDIO_TRACK);
+            dialog.setNegativeButton("Cancle",null);
+            dialog.show();
+            return;
+        }
+        List<String> showTextList = new ArrayList<>();
+        for (int i = 0; i < audioTrack.length; ++i) {
+            showTextList.add(audioTrack[i].getDesc());
+        }
+        LogUtil.d(TAG, "getSwitchAudioTrack current audiotrack:" + playControl.getAudioLangIndex());
+        playView.showSettingDialog(Constants.PLAYER_SWITCH_AUDIO_TRACK, showTextList, playControl.getAudioLangIndex());
     }
 }

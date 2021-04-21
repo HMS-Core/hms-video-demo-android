@@ -16,9 +16,6 @@
 
 package com.huawei.video.kit.demo.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.Manifest.permission;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -47,22 +44,14 @@ import com.huawei.video.kit.demo.utils.PermissionUtils;
 import com.huawei.video.kit.demo.utils.PlayControlUtil;
 import com.huawei.video.kit.demo.view.HomePageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Home page activity
  */
 public class HomePageActivity extends AppCompatActivity implements OnHomePageListener {
     private static final int MSG_REQUEST_WRITE_SDCARD = 1;
-
-    private static WisePlayer.IRecommendVideoCallback recommendVideoCallback =
-        new WisePlayer.IRecommendVideoCallback() {
-            @Override
-            public void onSuccess(List<RecommendVideo> list) {
-            }
-
-            @Override
-            public void onFailed(int what, int extra, Object obj) {
-            }
-        };
 
     // Home page view
     private HomePageView homePageView;
@@ -70,14 +59,31 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
     // Home page control
     private HomePageControl homePageControl;
 
+    //parms context
+    private String PARMS_CONTEXT = "gEKQBehAEs5xcnc81KAY8MS7L8fNop7IMq0LaXmTRjUSZVoG9UrBfFDvt76D";
+
+    //abstract
+    private static WisePlayer.IRecommendVideoCallback recommendVideoCallback =
+            new WisePlayer.IRecommendVideoCallback() {
+                @Override
+                public void onSuccess(List<RecommendVideo> list) {
+                    LogUtil.i("query recommend video success.");
+                }
+
+                @Override
+                public void onFailed(int what, int extra, Object obj) {
+                    LogUtil.i("query recommend video fail, and error code is " + what);
+                }
+            };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homePageView = new HomePageView(this, this);
         homePageControl = new HomePageControl(this);
         setContentView(homePageView.getContentView());
-        PermissionUtils.requestPermissionsIfNeed(this, new String[] {permission.WRITE_EXTERNAL_STORAGE},
-            MSG_REQUEST_WRITE_SDCARD);
+        PermissionUtils.requestPermissionsIfNeed(this, new String[]{permission.WRITE_EXTERNAL_STORAGE},
+                MSG_REQUEST_WRITE_SDCARD);
     }
 
     /**
@@ -151,42 +157,42 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                 list.add(getResources().getString(R.string.video_on_demand));
                 list.add(getResources().getString(R.string.video_live));
                 homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_MODE, list,
-                    PlayControlUtil.getVideoType());
+                        PlayControlUtil.getVideoType());
                 break;
             case R.id.video_view_setting:
                 list.clear();
                 list.add(getResources().getString(R.string.video_surfaceview_setting));
                 list.add(getResources().getString(R.string.video_textureview_setting));
                 homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_VIEW, list,
-                    PlayControlUtil.isSurfaceView() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+                        PlayControlUtil.isSurfaceView() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
                 break;
             case R.id.video_mute_setting:
                 list.clear();
                 list.add(getResources().getString(R.string.video_mute));
                 list.add(getResources().getString(R.string.video_not_mute));
                 homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_MUTE, list,
-                    PlayControlUtil.isMute() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+                        PlayControlUtil.isMute() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
                 break;
             case R.id.video_play_setting:
                 list.clear();
                 list.add(getResources().getString(R.string.play_video));
                 list.add(getResources().getString(R.string.play_audio));
                 homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_PLAY, list,
-                    PlayControlUtil.getPlayMode());
+                        PlayControlUtil.getPlayMode());
                 break;
             case R.id.video_bandwidth_setting:
                 list.clear();
                 list.add(getResources().getString(R.string.open_adaptive_bandwidth));
                 list.add(getResources().getString(R.string.close_adaptive_bandwidth));
                 homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_BANDWIDTH, list,
-                    PlayControlUtil.getBandwidthSwitchMode());
+                        PlayControlUtil.getBandwidthSwitchMode());
                 break;
             case R.id.video_init_bitrate_setting:
                 list.clear();
                 list.add(getResources().getString(R.string.video_init_bitrate_use));
                 list.add(getResources().getString(R.string.video_init_bitrate_not_use));
                 homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_INIT_BANDWIDTH, list,
-                    PlayControlUtil.isInitBitrateEnable() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+                        PlayControlUtil.isInitBitrateEnable() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
                 break;
             case R.id.video_bitrate_range_setting:
                 DialogUtil.showBitrateRangeDialog(this);
@@ -214,6 +220,9 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
             case R.id.video_remove_tasks:
                 homePageControl.removeAllTasks();
                 break;
+            case R.id.video_set_alg_param:
+                DialogUtil.setInitBufferTimeStrategy(this);
+                break;
             case R.id.video_update_country:
                 DialogUtil.updateServerCountryDialog(this);
                 break;
@@ -221,10 +230,26 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                 RecommendOptions recommendOptions = new RecommendOptions();
                 recommendOptions.setLanguage("zh_CN");
                 VideoKitPlayApplication.getWisePlayerFactory()
-                    .createWisePlayer()
-                    .getRecommendVideoList("8859289", recommendOptions,
-                        "CgB6e3x9cDTitEyidsqxd/Q6cmh/gEKQBehAEs5xcnc81KAY8MS7L8fNop7IMq0LaXmTRjUSZVoG9UrBfFDvt76D",
-                        recommendVideoCallback);
+                        .createWisePlayer()
+                        .getRecommendVideoList("8859289", recommendOptions,
+                                "CgB6e3x9cDTitEyidsqxd/Q6cmh/" + PARMS_CONTEXT,
+                                recommendVideoCallback);
+                break;
+            case R.id.subtitle_preset_language_setting:
+                DialogUtil.showSubtitlePresetLanguageDialog(this);
+                break;
+            case R.id.audio_set_prefer_audio:
+                DialogUtil.showPreferAudioLangDialog(this);
+                break;
+            case R.id.socks_proxy:
+                DialogUtil.showProxyInfoDialog(this);
+                break;
+            case R.id.download_link_num_setting:
+                list.clear();
+                list.add(getResources().getString(R.string.download_link_single));
+                list.add(getResources().getString(R.string.download_link_multi));
+                homePageView.showVideoTypeDialog(Constants.DOWNLOAD_LINK_NUM, list,
+                        PlayControlUtil.isDownloadLinkSingle() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
                 break;
             default:
                 break;
@@ -286,7 +311,7 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                     list.add(getResources().getString(R.string.video_close_logo_one));
                     list.add(getResources().getString(R.string.video_close_logo_all));
                     homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_CLOSE_LOGO_EFFECT, list,
-                        PlayControlUtil.isTakeEffectOfAll() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
+                            PlayControlUtil.isTakeEffectOfAll() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
                 }
                 break;
             case Constants.PLAYER_SWITCH_CLOSE_LOGO_EFFECT:
@@ -297,9 +322,15 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                     homePageControl.setBandwidthSwitchMode(false);
                 }
                 break;
+            case Constants.DOWNLOAD_LINK_NUM:
+                if (TextUtils.equals(itemSelect, getResources().getString(R.string.download_link_single))) {
+                    homePageControl.setDownloadLink(true);
+                } else {
+                    homePageControl.setDownloadLink(false);
+                }
+                break;
             default:
                 break;
         }
     }
-
 }

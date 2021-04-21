@@ -16,6 +16,7 @@
     <string name="video_stop_downloading">是否停止下载</string>
     <string name="video_set_play_speed">设置播放倍速</string>
     <string name="video_set_bandwidth_mode">设置带宽切换</string>
+    <string name="video_switch_subtitle">切换字幕</string>
     <string name="setting_cancel">取消</string>
     <string name="setting_ok">确定</string>
     <string name="video_stop_download">停止下载</string>
@@ -56,6 +57,8 @@
     <string name="video_bitrate_height">分辨率高:</string>
     <string name="video_bitrate_width">分辨率宽:</string>
     <string name="video_bitrate_init">起播码率:</string>
+    <string name="subtitle_preset_language_setting">设置字幕偏好语言</string>
+    <string name="subtitle_preset_language_setting_title">设置字幕偏好语言,只对下一视频生效</string>
     <string name="video_volume_range">音量在0--1.0之间</string>
     <string name="super_definition">"蓝光%dP"</string>
     <string name="high_definition">"高清%dP"</string>
@@ -91,4 +94,25 @@
     <string name="update_server_country_title">更新国家/地区码</string>
     <string name="server_country_limit">国家/地区码大写，长度为2</string>
     <string name="video_add_single_cache_video_format">videoFormat</string>
+    <string name="video_set_alg_para">设置起播参数</string>
+    <string name="video_modify_window_para">修改默认window参数</string>
+    <string name="video_display_msg">请点击\'+\'号添加数据</string>
+    <string name="video_min_bitrate">最小码率</string>
+    <string name="video_max_bitrate">最大码率</string>
+    <string name="video_delay">时延</string>
+    <string name="switch_audio_track">切换音轨</string>
+    <string name="audio_set_prefer_audio">设置偏好音轨</string>
+    <string name="gettings">获取</string>
+    <string name="get_audio_track_info">获取音轨信息</string>
+    <string name="current_audio_track">获取当前音轨</string>
+    <string name="audio_tracks">获取所有音轨</string>
+    <string name="socks_proxy_setting">设置socks代理</string>
+    <string name="set_socks_proxy">设置socks代理</string>
+    <string name="socks_proxy_ip">socks代理ip</string>
+    <string name="socks_proxy_port">socks代理port</string>
+    <string name="socks_proxy_user">socks代理用户名</string>
+    <string name="socks_proxy_password">socks代理密码</string>
+    <string name="download_link_num">设置下载连接数</string>
+    <string name="download_link_single">单线程下载</string>
+    <string name="download_link_multi">多线程下载</string>
 </resources>

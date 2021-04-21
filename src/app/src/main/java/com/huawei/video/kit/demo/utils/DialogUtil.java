@@ -16,8 +16,6 @@
 
 package com.huawei.video.kit.demo.utils;
 
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.InputType;
@@ -32,8 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huawei.hms.videokit.player.CacheInfo;
+import com.huawei.hms.videokit.player.InitBufferTimeStrategy;
 import com.huawei.hms.videokit.player.Preloader;
 import com.huawei.hms.videokit.player.WisePlayerFactory;
+import com.huawei.hms.videokit.player.bean.Proxy;
 import com.huawei.video.kit.demo.R;
 import com.huawei.video.kit.demo.VideoKitPlayApplication;
 import com.huawei.video.kit.demo.contract.OnDialogConfirmListener;
@@ -42,10 +42,16 @@ import com.huawei.video.kit.demo.contract.OnHomePageListener;
 import com.huawei.video.kit.demo.contract.OnPlaySettingListener;
 import com.huawei.video.kit.demo.view.PlaySettingDialog;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Dialog tools
  */
 public class DialogUtil {
+    private static final String TAG = "DialogUtil";
     /**
      * Set Bitrate dialog
      *
@@ -133,6 +139,25 @@ public class DialogUtil {
     }
 
     /**
+     *  Play activity Gettings dialog
+     *
+     * @param context Context
+     * @param gettingType Get the play type
+     * @param showTextList Get the list of options
+     * @param selectIndex The default Gettings index
+     * @param onPlaySettingListener Click listener
+     */
+    public static void onGettingDialogSelectIndex(Context context, int gettingType, List<String> showTextList,
+        int selectIndex, OnPlaySettingListener onPlaySettingListener) {
+        PlaySettingDialog dialog = new PlaySettingDialog(context).setList(showTextList);
+        dialog.setTitle(StringUtil.getStringFromResId(context, R.string.gettings));
+        dialog.setSelectIndex(selectIndex);
+        dialog.setNegativeButton(StringUtil.getStringFromResId(context, R.string.setting_cancel), null);
+        dialog.initDialog(onPlaySettingListener, gettingType);
+        dialog.show();
+    }
+
+    /**
      * Play activity Settings dialog
      *
      * @param context Context
@@ -208,11 +233,44 @@ public class DialogUtil {
         okBt.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bitrateMinSetting.getText() != null) {
+                // No bitrate setting, no limit by default
+                if (bitrateMinSetting.getText() != null && !TextUtils.isEmpty(bitrateMinSetting.getText().toString())) {
                     PlayControlUtil.setMinBitrate(Integer.parseInt(bitrateMinSetting.getText().toString()));
                 }
-                if (bitrateMaxSetting.getText() != null) {
+                if (bitrateMaxSetting.getText() != null && !TextUtils.isEmpty(bitrateMaxSetting.getText().toString())) {
                     PlayControlUtil.setMaxBitrate(Integer.parseInt(bitrateMaxSetting.getText().toString()));
+                }
+                dialog.dismiss();
+            }
+        });
+        cancelBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * Set subtitle preset language dialog
+     *
+     * @param context Context
+     */
+    public static void showSubtitlePresetLanguageDialog(Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.subtitle_preset_language_dialog, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(StringUtil.getStringFromResId(context, R.string.subtitle_preset_language_setting_title))
+                .setView(view)
+                .create();
+        dialog.show();
+        final EditText subtitleLanguageSetting = (EditText) view.findViewById(R.id.subtitle_language_setting);
+        Button okBt = (Button) view.findViewById(R.id.set_volume_bt_ok);
+        Button cancelBt = (Button) view.findViewById(R.id.set_volume_bt_cancel);
+        okBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (subtitleLanguageSetting.getText() != null) {
+                    PlayControlUtil.setSubtitlePresetLanguage(subtitleLanguageSetting.getText().toString());
                 }
                 dialog.dismiss();
             }
@@ -354,9 +412,117 @@ public class DialogUtil {
     }
 
     /**
+     * set InitBufferTimeStrategy dialog
+     *
+     * @param context current context
+     */
+    public static void setInitBufferTimeStrategy(Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.set_alg_para, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(StringUtil.getStringFromResId(context, R.string.video_set_alg_para))
+                .setView(view)
+                .create();
+        dialog.show();
+        AtomicInteger maxBufferTime = new AtomicInteger();
+        StringBuilder stringBuilder = new StringBuilder();
+        // direct seeding
+        if (PlayControlUtil.getVideoType() == 1) {
+            maxBufferTime.set(4000);
+        } else {
+            maxBufferTime.set(30000);
+        }
+        List<InitBufferTimeStrategy.DownloadMultipleZone> downloadMultipleZones = new ArrayList<>();
+        AtomicReference<InitBufferTimeStrategy.Builder> initBufferTimeStrategy = new AtomicReference<>();
+        final EditText algTopBitrate = (EditText) view.findViewById(R.id.alg_bitrate_top_min);
+        final EditText algTopDelay = (EditText) view.findViewById(R.id.alg_top_delay);
+        final TextView displayValue = (TextView) view.findViewById(R.id.alg_total);
+        view.findViewById(R.id.alg_top_add).setOnClickListener(v -> {
+            String getTopBitrate = algTopBitrate.getText().toString().trim();
+            String getTopDelay = algTopDelay.getText().toString().trim();
+            if (TextUtils.isEmpty(getTopBitrate) || TextUtils.isEmpty(getTopDelay)) {
+                return;
+            }
+
+            int minBitrate = Integer.parseInt(getTopBitrate);
+            int topDelay = Integer.parseInt(getTopDelay);
+
+            stringBuilder.append(minBitrate);
+            stringBuilder.append(":");
+            stringBuilder.append(Integer.MAX_VALUE);
+            stringBuilder.append("-");
+            stringBuilder.append(topDelay);
+            stringBuilder.append(",");
+            downloadMultipleZones.add(new InitBufferTimeStrategy.DownloadMultipleZone(minBitrate, Integer.MAX_VALUE, topDelay));
+            displayValue.setText(stringBuilder.toString());
+        });
+        final EditText algDelay = (EditText) view.findViewById(R.id.alg_delay);
+        final EditText algBitrateMax = (EditText) view.findViewById(R.id.alg_bitrate_max);
+        final EditText algBitrateMin = (EditText) view.findViewById(R.id.alg_bitrate_min);
+
+        view.findViewById(R.id.alg_add).setOnClickListener(v -> {
+            String delayValue = algDelay.getText().toString().trim();
+            String defaultMax = algBitrateMax.getText().toString().trim();
+            String defaultMin = algBitrateMin.getText().toString().trim();
+            if (TextUtils.isEmpty(delayValue) || TextUtils.isEmpty(defaultMax) || TextUtils.isEmpty(defaultMin)) {
+                return;
+            }
+
+            int bitDelayValue = Integer.parseInt(delayValue);
+            int birateMax = Integer.parseInt(defaultMax);
+            int birateMin = Integer.parseInt(defaultMin);
+
+            stringBuilder.append(birateMin);
+            stringBuilder.append(":");
+            stringBuilder.append(birateMax);
+            stringBuilder.append("-");
+            stringBuilder.append(bitDelayValue);
+            stringBuilder.append(",");
+            try {
+                downloadMultipleZones.add(new InitBufferTimeStrategy.DownloadMultipleZone(birateMin, birateMax, bitDelayValue));
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(context, "IllegalArgumentException", Toast.LENGTH_LONG).show();
+            }
+            algDelay.setText("");
+            algBitrateMax.setText("");
+            algBitrateMin.setText("");
+            displayValue.setText(stringBuilder.toString());
+        });
+
+        final EditText algWindowsValue = (EditText) view.findViewById(R.id.alg_windows_value);
+        view.findViewById(R.id.modify_default_value).setOnClickListener(v -> {
+            String defaultWindowsValue = algWindowsValue.getText().toString().trim();
+            if (TextUtils.isEmpty(defaultWindowsValue)) {
+                return;
+            }
+            int windows = Integer.parseInt(defaultWindowsValue);
+            maxBufferTime.set(windows);
+        });
+
+        Button okBt = (Button) view.findViewById(R.id.set_volume_bt_ok);
+        Button cancelBt = (Button) view.findViewById(R.id.set_volume_bt_cancel);
+        okBt.setOnClickListener(v -> {
+            try {
+                if (downloadMultipleZones.size() == 0) {
+                    Toast.makeText(context, context.getString(R.string.video_display_msg), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                initBufferTimeStrategy.set(new InitBufferTimeStrategy.Builder(maxBufferTime.get()));
+                for (InitBufferTimeStrategy.DownloadMultipleZone zone : downloadMultipleZones) {
+                    initBufferTimeStrategy.get().append(zone.getMin(), zone.getMax(), zone.getBufferTime());
+                }
+                PlayControlUtil.setInitBufferTimeStrategy(initBufferTimeStrategy.get().build());
+            } catch (InitBufferTimeStrategy.DownloadMultipleZoneException | IllegalArgumentException e) {
+                Toast.makeText(context, "Data Error", Toast.LENGTH_LONG).show();
+            }
+            dialog.dismiss();
+        });
+        cancelBt.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    /**
      * Update Server country dialog
      *
-     * @param context Context
+     * @param context 上下文
      */
     public static void updateServerCountryDialog(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.update_country_dialog, null);
@@ -381,6 +547,83 @@ public class DialogUtil {
                     WisePlayerFactory.updateServeCountry(bitrateMaxSetting.getText().toString());
                     dialog.dismiss();
                 }
+            }
+        });
+        cancelBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * Set audio preset language dialog
+     *
+     * @param context Context
+     */
+    public static void showPreferAudioLangDialog(Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.set_prefer_audio, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(StringUtil.getStringFromResId(context, R.string.audio_set_prefer_audio))
+                .setView(view)
+                .create();
+        dialog.show();
+        final EditText preferlangSetting = (EditText) view.findViewById(R.id.prefer_audio_setting);
+        preferlangSetting.setText(PlayControlUtil.getPreferAudio());
+        Button okBt = (Button) view.findViewById(R.id.set_prefer_audio_ok);
+        Button cancelBt = (Button) view.findViewById(R.id.set_prefer_audio_cancel);
+        okBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (preferlangSetting.getText() != null) {
+                    PlayControlUtil.setPreferAudio(preferlangSetting.getText().toString());
+                }
+                dialog.dismiss();
+            }
+        });
+        cancelBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public static void showProxyInfoDialog(Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.set_proxy_info, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle(StringUtil.getStringFromResId(context, R.string.socks_proxy_setting))
+                .setView(view)
+                .create();
+        dialog.show();
+        final EditText proxyIPSetting = (EditText) view.findViewById(R.id.socks_proxy_ip);
+        final EditText proxyPortSetting = (EditText) view.findViewById(R.id.socks_proxy_port);
+        final EditText proxyUserSetting = (EditText) view.findViewById(R.id.socks_proxy_user);
+        final EditText proxyPasswordSetting = (EditText) view.findViewById(R.id.socks_proxy_password);
+
+        Button okBt = (Button) view.findViewById(R.id.set_proxy_ok);
+        Button cancelBt = (Button) view.findViewById(R.id.set_proxy_cancel);
+        okBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String proxyHost = proxyIPSetting.getText().toString();
+                String proxyPort = proxyPortSetting.getText().toString();
+                String proxyUser = proxyUserSetting.getText().toString();
+                String proxyPassword = proxyPasswordSetting.getText().toString();
+                if (!proxyHost.isEmpty() && !proxyPort.isEmpty() && !proxyUser.isEmpty() && !proxyPassword.isEmpty()) {
+                    LogUtil.d(TAG, "showProxyInfoDialog value:" + proxyHost + ":" + proxyPort + ":" + proxyUser);
+                    Proxy socksProxy = new Proxy();
+                    socksProxy.setType(Proxy.Type.SOCKS);
+                    socksProxy.setHost(proxyHost);
+                    socksProxy.setPort(proxyPort);
+                    socksProxy.setUser(proxyUser);
+                    socksProxy.setPasswd(proxyPassword);
+                    PlayControlUtil.setProxyInfo(socksProxy);
+                } else {
+                    PlayControlUtil.setProxyInfo(null);
+                }
+                dialog.dismiss();
             }
         });
         cancelBt.setOnClickListener(new OnClickListener() {

@@ -16,7 +16,9 @@
 
 package com.huawei.video.kit.demo.utils;
 
+import com.huawei.hms.videokit.player.InitBufferTimeStrategy;
 import com.huawei.hms.videokit.player.Preloader;
+import com.huawei.hms.videokit.player.bean.Proxy;
 import com.huawei.hms.videokit.player.common.PlayerConstants.PlayMode;
 
 import java.util.HashMap;
@@ -114,7 +116,29 @@ public class PlayControlUtil {
      */
     private static int initResult = -1;
 
+    /**
+     * Subtitle preset language
+     */
+    private static String subtitlePresetLanguage = "";
+
+    /**
+     * Play back init bufferTime
+     */
+    private static InitBufferTimeStrategy initBufferTimeStrategy;
+
+    /**
+     * audio preset language
+     */
+    private static String preferAudio = null;
+
     private static Preloader preloader;
+
+    /**
+     * 是否使用单线程下载
+     */
+    private static boolean isDownloadLinkSingle = false;
+
+    private static Proxy socksProxy = null;
 
     public static boolean isSurfaceView() {
         return isSurfaceView;
@@ -286,5 +310,101 @@ public class PlayControlUtil {
 
     public static void setPreloader(Preloader preloader) {
         PlayControlUtil.preloader = preloader;
+    }
+
+    /**
+     * Set subtitle preset language
+     *
+     * @param language subtitle preset language
+     */
+    public static void setSubtitlePresetLanguage(String language) {
+        PlayControlUtil.subtitlePresetLanguage = language;
+    }
+
+    /**
+     * Get subtitle preset language
+     *
+     * @return subtitle preset language
+     */
+    public static String getSubtitlePresetLanguage() {
+        return subtitlePresetLanguage;
+    }
+
+    /**
+     * If subtitle preset language is set
+     *
+     * @return true：set; false：not set
+     */
+    public static boolean isSubtitlePresetLanguageEnable() {
+        return !subtitlePresetLanguage.isEmpty();
+    }
+
+    /**
+     * Get initBufferTimeStrategy
+     *
+     * @return InitBufferTimeStrategy
+     */
+    public static InitBufferTimeStrategy getInitBufferTimeStrategy() {
+        return initBufferTimeStrategy;
+    }
+
+    /**
+     * Set initBufferTimeStrategy
+     *
+     * @param initBufferTimeStrategy setting param
+     */
+    public static void setInitBufferTimeStrategy(InitBufferTimeStrategy initBufferTimeStrategy) {
+        PlayControlUtil.initBufferTimeStrategy = initBufferTimeStrategy;
+    }
+
+    /**
+     * Clear subtitle preset language
+     */
+    public static void clearSubtitlePresetLanguage() {
+        subtitlePresetLanguage = "";
+    }
+
+    /**
+     * Set audio preset language
+     *
+     * @param preferaudio audio preset language
+     */
+    public static void setPreferAudio(String preferaudio) {
+        PlayControlUtil.preferAudio = preferaudio;
+    }
+
+    /**
+     * Get audio preset language
+     *
+     * @return audio preset language
+     */
+    public static String getPreferAudio() {
+        return preferAudio;
+    }
+
+    public static void setProxyInfo(Proxy proxy) {
+        PlayControlUtil.socksProxy = proxy;
+    }
+
+    public static Proxy getProxyInfo() {
+        return socksProxy;
+    }
+
+    /**
+     * 设置是否使用单线程下载
+     *
+     * @param isDownloadLinkSingle 是否为单线程
+     */
+    public static void setIsDownloadLinkSingle(boolean isDownloadLinkSingle) {
+        PlayControlUtil.isDownloadLinkSingle = isDownloadLinkSingle;
+    }
+
+    /**
+     * 获取是否是单线程
+     *
+     * @return 是否为单线程
+     */
+    public static boolean isDownloadLinkSingle() {
+        return isDownloadLinkSingle;
     }
 }
