@@ -1,13 +1,13 @@
 # Video Kit Android Sample
 
 ## Table of Contents
- * [Introduction](#Introduction)
- * [Installation](#Installation)
- * [Configuration](#Configuration)
- * [Supported Environments](#Supported Environments)
- * [Sample Code](#Sample Code)
- * [Result](#Result)
- * [License](#License)
+ * [Introduction](#introduction)
+ * [Installation](#installation)
+ * [Configuration](#configuration)
+ * [Supported Environments](#supported-environments)
+ * [Sample Code](#sample-code)
+ * [Result](#result)
+ * [License](#license)
 
 ## Introduction
    The sample code is used to implement the function of playing videos through the Video Kit player SDK.
