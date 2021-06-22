@@ -29,7 +29,8 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -38,7 +39,6 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.huawei.hms.videokit.player.SubtitleTrackInfo;
-import com.huawei.hms.videokit.player.StreamInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
 import com.huawei.hms.videokit.player.common.PlayerConstants;
 import com.huawei.hms.videokit.player.common.PlayerConstants.BandwidthSwitchMode;
@@ -61,7 +61,7 @@ import com.huawei.video.kit.demo.utils.StringUtil;
 import com.huawei.video.kit.demo.view.PlayView;
 import com.huawei.hms.videokit.player.AudioTrackInfo;
 import com.huawei.video.kit.demo.utils.SelectDialog;
-
+import com.huawei.hms.videokit.player.internal.SubtitleInfo;
 /**
  * Play Activity
  */
@@ -110,9 +110,6 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Keep the screen on
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initView();
         playControl = new PlayControl(this, this);
         // Some of the properties of preserving vertical screen
@@ -268,6 +265,23 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         });
         updateViewHandler.sendEmptyMessageDelayed(Constants.PLAY_ERROR_FINISH, Constants.DELAY_MILLIS_3000);
         return false;
+    }
+
+    @Override
+    public void onSubtitleUpdate(WisePlayer wisePlayer, Parcelable[] subtitles) {
+        LogUtil.d(TAG, "onSubtitleUpdate length:" + subtitles.length);
+        if (subtitles.length > 0) {
+            SubtitleInfo[] subtmp = new SubtitleInfo[subtitles.length];
+            for (int i = 0; i < subtitles.length; i++) {
+                if (subtitles[i] instanceof SubtitleInfo) {
+                    subtmp[i] = (SubtitleInfo) subtitles[i];
+                    if (subtmp[i] != null) {
+                        LogUtil.d(TAG, "onSubtitleUpdate subtitle:" + subtmp[i].getSubtitle() + ",startTS:" +
+                                subtmp[i].getStartTS() + ",endTS:" + subtmp[i].getEndTS());
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -639,7 +653,8 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         showTextList.add(StringUtil.getStringFromResId(this, R.string.video_set_volume));
         showTextList.add(StringUtil.getStringFromResId(this, R.string.video_switch_subtitle));
         showTextList.add(StringUtil.getStringFromResId(this, R.string.get_audio_track_info));
-        showTextList.add(StringUtil.getStringFromResId(this, R.string.switch_audio_track)); 
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.switch_audio_track));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.set_wake_mode));
         playView.showSettingDialog(Constants.MSG_SETTING, showTextList, 0);
     }
 
@@ -788,6 +803,9 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 } else if (TextUtils.equals(itemSelect,  
                         StringUtil.getStringFromResId(PlayActivity.this, R.string.get_audio_track_info))) {
                     getAudioTracks();
+                } else if (TextUtils.equals(itemSelect,
+                        StringUtil.getStringFromResId(PlayActivity.this, R.string.set_wake_mode))) {
+                    setWakeMode();
                 } else {
                     LogUtil.i(TAG, "current settings type is " + itemSelect);
                 }
@@ -868,6 +886,14 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 break;
             case Constants.PLAYER_SWITCH_AUDIO_TRACK:
                 playControl.switchAudioTrack(itemSelect);
+                break;
+            case Constants.PLAYER_SET_WAKE_MODE:
+                if (TextUtils.equals(itemSelect,
+                        StringUtil.getStringFromResId(PlayActivity.this, R.string.set_wake_mode))) {
+                    playControl.setWakeMode(true);
+                } else {
+                    playControl.setWakeMode(false);
+                }
                 break;
             default:
                 break;
@@ -952,6 +978,15 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         showTextList.add(getResources().getString(R.string.current_audio_track));
         showTextList.add(getResources().getString(R.string.audio_tracks));
         playView.showGettingDialog(Constants.PLAYER_GET_AUDIO_TRACKS, showTextList, Constants.DIALOG_INDEX_ONE);
+    }
+
+    private void setWakeMode() {
+        List<String> list = new ArrayList<>();
+        list.clear();
+        list.add(getResources().getString(R.string.set_wake_mode));
+        list.add(getResources().getString(R.string.close_wake_mode));
+        playView.showSettingDialog(Constants.PLAYER_SET_WAKE_MODE, list,
+                PlayControlUtil.isWakeOn() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
     }
 
     public void getSwitchAudioTrack() {

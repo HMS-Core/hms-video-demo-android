@@ -17,9 +17,10 @@
 package com.huawei.video.kit.demo.activity;
 
 import android.Manifest.permission;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -251,6 +252,20 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                 homePageView.showVideoTypeDialog(Constants.DOWNLOAD_LINK_NUM, list,
                         PlayControlUtil.isDownloadLinkSingle() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
                 break;
+            case R.id.set_wake_mode:
+                list.clear();
+                list.add(getResources().getString(R.string.set_wake_mode));
+                list.add(getResources().getString(R.string.close_wake_mode));
+                homePageView.showVideoTypeDialog(Constants.SET_WAKE_MODE, list,
+                        PlayControlUtil.isWakeOn() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+                break;
+            case R.id.subtitle_render:
+                list.clear();
+                list.add(getResources().getString(R.string.subtitle_render_player));
+                list.add(getResources().getString(R.string.subtitle_render_demo));
+                homePageView.showVideoTypeDialog(Constants.SET_SUBTITLE_RENDER_MODE, list,
+                        PlayControlUtil.isSubtitleRenderByDemo() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
+                break;
             default:
                 break;
         }
@@ -327,6 +342,20 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                     homePageControl.setDownloadLink(true);
                 } else {
                     homePageControl.setDownloadLink(false);
+                }
+                break;
+            case Constants.SET_WAKE_MODE:
+                if (TextUtils.equals(itemSelect, getResources().getString(R.string.set_wake_mode))) {
+                    homePageControl.setWakeMode(true);
+                } else {
+                    homePageControl.setWakeMode(false);
+                }
+                break;
+            case Constants.SET_SUBTITLE_RENDER_MODE:
+                if (TextUtils.equals(itemSelect, getResources().getString(R.string.subtitle_render_player))) {
+                    homePageControl.setSubtitleRenderByDemo(false);
+                } else {
+                    homePageControl.setSubtitleRenderByDemo(true);
                 }
                 break;
             default:

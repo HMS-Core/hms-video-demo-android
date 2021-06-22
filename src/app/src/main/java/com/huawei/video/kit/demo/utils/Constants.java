@@ -117,7 +117,12 @@ public class Constants {
     /**
      * Switch Audio track
      */
-    public static final int PLAYER_SWITCH_AUDIO_TRACK = 18; 
+    public static final int PLAYER_SWITCH_AUDIO_TRACK = 18;
+
+    /**
+     * Set keep wake up
+     */
+    public static final int PLAYER_SET_WAKE_MODE = 19;
 
     /**
      * Set the video type
@@ -201,6 +206,51 @@ public class Constants {
      * Set download thread
      */
     public static final int DOWNLOAD_LINK_NUM = 11;
+
+    /**
+     * Set keep wake up
+     */
+    public static final int SET_WAKE_MODE = 12;
+
+    /**
+     * Set subtitle render mode
+     */
+    public static final int SET_SUBTITLE_RENDER_MODE = 13;
+
+    /**
+     * Log size
+     */
+    public static final int LOG_FILE_SIZE = 1024;
+
+    /**
+     * Log number
+     */
+    public static final int LOG_FILE_NUM = 20;
+
+    /**
+     * Debug
+     */
+    public static final int LEVEL_DEBUG = 0;
+
+    /**
+     * INFO
+     */
+    public static final int LEVEL_INFO = 1;
+
+    /**
+     * WARN
+     */
+    public static final int LEVEL_WARN = 2;
+
+    /**
+     * ERROR
+     */
+    public static final int LEVEL_ERROR = 3;
+
+    /**
+     * CLOSE
+     */
+    public static final int LEVEL_CLOSE = 10;
 
     /**
      * Url type

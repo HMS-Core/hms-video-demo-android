@@ -140,6 +140,10 @@ public class PlayControlUtil {
 
     private static Proxy socksProxy = null;
 
+    private static boolean isWakeOn = true;
+
+    private static boolean isSubtitleRenderByDemo = false;
+
     public static boolean isSurfaceView() {
         return isSurfaceView;
     }
@@ -406,5 +410,21 @@ public class PlayControlUtil {
      */
     public static boolean isDownloadLinkSingle() {
         return isDownloadLinkSingle;
+    }
+
+    public static boolean isWakeOn() {
+        return isWakeOn;
+    }
+
+    public static void setWakeOn(boolean wakeOn) {
+        isWakeOn = wakeOn;
+    }
+
+    public static boolean isSubtitleRenderByDemo() {
+        return isSubtitleRenderByDemo;
+    }
+
+    public static void setSubtitleRenderByDemo(boolean renderByDemo) {
+        isSubtitleRenderByDemo = renderByDemo;
     }
 }

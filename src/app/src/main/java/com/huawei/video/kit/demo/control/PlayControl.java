@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
+import android.os.PowerManager;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -109,6 +110,11 @@ public class PlayControl {
             wisePlayer.setLoadingListener(onWisePlayerListener);
             wisePlayer.setPlayEndListener(onWisePlayerListener);
             wisePlayer.setSeekEndListener(onWisePlayerListener);
+            if (PlayControlUtil.isSubtitleRenderByDemo()) {
+                wisePlayer.setSubtitleUpdateListener(onWisePlayerListener);
+            } else {
+                wisePlayer.setSubtitleUpdateListener(null);
+            }
         }
     }
 
@@ -176,6 +182,8 @@ public class PlayControl {
             setSubtitlePresetLanguage();
             setCloseLogo();
             setPreferAudioLang();
+            setWakeMode(PlayControlUtil.isWakeOn());
+            setSubtitleRenderByDemo(PlayControlUtil.isSubtitleRenderByDemo());
             wisePlayer.ready();
         }
     }
@@ -976,6 +984,23 @@ public class PlayControl {
         if (wisePlayer != null) {
             LogUtil.d("setDownloadLink, is download link single:" + PlayControlUtil.isDownloadLinkSingle());
             wisePlayer.setProperties(PlayerConstants.Properties.SINGLE_LINK_DOWNLOAD, PlayControlUtil.isDownloadLinkSingle());
+        }
+    }
+
+    public void setWakeMode(boolean isWakeOn) {
+        if (isWakeOn) {
+            wisePlayer.setWakeMode(context, PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE);
+        } else {
+            wisePlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+        }
+    }
+
+    public void setSubtitleRenderByDemo(boolean isRenderByDemo) {
+        PlayControlUtil.setSubtitleRenderByDemo(isRenderByDemo);
+        if (isRenderByDemo) {
+            wisePlayer.setSubtitleUpdateListener(onWisePlayerListener);
+        } else {
+            wisePlayer.setSubtitleUpdateListener(null);
         }
     }
 }

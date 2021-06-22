@@ -19,14 +19,12 @@ package com.huawei.video.kit.demo.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
-import android.support.v4.content.PermissionChecker;
+
+import androidx.core.content.PermissionChecker;
 
 /**
  * Permission control

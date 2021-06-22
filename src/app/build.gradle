@@ -8,8 +8,8 @@ android {
         applicationId "com.huawei.video.kit.demo"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 10005300
-        versionName "1.0.5.300"
+        versionCode 10007301
+        versionName "1.0.7.301"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
@@ -41,8 +41,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     // Dependency on a remote binary
     implementation "com.huawei.hms:videokit-player:${android.defaultConfig.versionName}"

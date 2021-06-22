@@ -115,4 +115,10 @@
     <string name="download_link_num">设置下载连接数</string>
     <string name="download_link_single">单线程下载</string>
     <string name="download_link_multi">多线程下载</string>
+    <string name="set_wake_mode">设置常亮</string>
+    <string name="close_wake_mode">关闭常亮</string>
+
+    <string name="subtitle_render">字幕渲染</string>
+    <string name="subtitle_render_demo">VideoKitDemo渲染</string>
+    <string name="subtitle_render_player">播放器渲染</string>
 </resources>

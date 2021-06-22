@@ -124,4 +124,10 @@
     <string name="download_link_num">Download link num</string>
     <string name="download_link_single">Download link single</string>
     <string name="download_link_multi">Download link multi</string>
+    <string name="set_wake_mode">Set wake mode</string>
+    <string name="close_wake_mode">Close wake mode</string>
+
+    <string name="subtitle_render">Subtitle Render</string>
+    <string name="subtitle_render_demo">VideoKitDemo</string>
+    <string name="subtitle_render_player">DmpPlayer</string>
 </resources>

@@ -25,5 +25,6 @@ import com.huawei.hms.videokit.player.WisePlayer;
  */
 public interface OnWisePlayerListener extends WisePlayer.ErrorListener, WisePlayer.ReadyListener,
     WisePlayer.EventListener, WisePlayer.PlayEndListener, WisePlayer.ResolutionUpdatedListener,
-    WisePlayer.SeekEndListener, WisePlayer.LoadingListener, OnSeekBarChangeListener {
+    WisePlayer.SeekEndListener, WisePlayer.LoadingListener, OnSeekBarChangeListener,
+    WisePlayer.SubtitleUpdateListener {
 }

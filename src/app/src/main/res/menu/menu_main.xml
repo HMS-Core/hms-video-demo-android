@@ -104,4 +104,16 @@
         android:orderInCategory="100"
         android:title="@string/download_link_num"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/set_wake_mode"
+        android:orderInCategory="100"
+        android:title="@string/set_wake_mode"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/subtitle_render"
+        android:orderInCategory="100"
+        android:title="@string/subtitle_render"
+        app:showAsAction="never" />
 </menu>

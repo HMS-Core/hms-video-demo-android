@@ -19,9 +19,10 @@ package com.huawei.video.kit.demo;
 import android.app.Application;
 
 import com.huawei.hms.videokit.player.InitFactoryCallback;
+import com.huawei.hms.videokit.player.LogConfigInfo;
 import com.huawei.hms.videokit.player.WisePlayerFactory;
-import com.huawei.hms.videokit.player.WisePlayerFactoryOptions;
 import com.huawei.hms.videokit.player.WisePlayerFactoryOptionsExt;
+import com.huawei.video.kit.demo.utils.Constants;
 import com.huawei.video.kit.demo.utils.LogUtil;
 
 /**
@@ -43,8 +44,12 @@ public class VideoKitPlayApplication extends Application {
      */
     private void initPlayer() {
         // DeviceId test is used in the demo, specific access to incoming deviceId after encryption
-        WisePlayerFactoryOptionsExt factoryOptions = new WisePlayerFactoryOptionsExt.Builder().setDeviceId("xxx").setServeCountry("XX").build();
-        WisePlayerFactory.initFactory(this, factoryOptions, initFactoryCallback);
+        WisePlayerFactoryOptionsExt.Builder factoryOptions =
+            new WisePlayerFactoryOptionsExt.Builder().setDeviceId("xxx");
+        LogConfigInfo logCfgInfo =
+            new LogConfigInfo(Constants.LEVEL_DEBUG, "", Constants.LOG_FILE_NUM, Constants.LOG_FILE_SIZE);
+        factoryOptions.setLogConfigInfo(logCfgInfo);
+        WisePlayerFactory.initFactory(this, factoryOptions.build(), initFactoryCallback);
     }
 
     /**

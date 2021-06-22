@@ -241,4 +241,20 @@ public class HomePageControl {
     public void setDownloadLink(boolean isDownloadLinkSingle) {
         PlayControlUtil.setIsDownloadLinkSingle(isDownloadLinkSingle);
     }
+
+    /**
+     * Set whether to keep wake up
+     * @param isWakeOn whether to keep wake up
+     */
+    public void setWakeMode(boolean isWakeOn) {
+        PlayControlUtil.setWakeOn(isWakeOn);
+    }
+
+    /**
+     * Set subtitle render mode
+     * @param isRenderByDemo wheather to render by Demo
+     */
+    public void setSubtitleRenderByDemo(boolean isRenderByDemo) {
+        PlayControlUtil.setSubtitleRenderByDemo(isRenderByDemo);
+    }
 }
