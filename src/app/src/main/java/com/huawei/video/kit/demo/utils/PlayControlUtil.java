@@ -112,7 +112,7 @@ public class PlayControlUtil {
     private static boolean isLoadBuff = true;
 
     /**
-     * 预加载初始化结果
+     * Preload initialization results
      */
     private static int initResult = -1;
 
@@ -134,7 +134,7 @@ public class PlayControlUtil {
     private static Preloader preloader;
 
     /**
-     * 是否使用单线程下载
+     * Use single threaded download
      */
     private static boolean isDownloadLinkSingle = false;
 
@@ -395,18 +395,18 @@ public class PlayControlUtil {
     }
 
     /**
-     * 设置是否使用单线程下载
+     * Set whether to use single thread Download
      *
-     * @param isDownloadLinkSingle 是否为单线程
+     * @param isDownloadLinkSingle is single threaded
      */
     public static void setIsDownloadLinkSingle(boolean isDownloadLinkSingle) {
         PlayControlUtil.isDownloadLinkSingle = isDownloadLinkSingle;
     }
 
     /**
-     * 获取是否是单线程
+     * Gets whether it is single threaded
      *
-     * @return 是否为单线程
+     * @return is single threaded
      */
     public static boolean isDownloadLinkSingle() {
         return isDownloadLinkSingle;

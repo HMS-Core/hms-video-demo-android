@@ -522,7 +522,7 @@ public class DialogUtil {
     /**
      * Update Server country dialog
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void updateServerCountryDialog(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.update_country_dialog, null);
