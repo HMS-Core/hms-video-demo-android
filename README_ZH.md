@@ -30,7 +30,7 @@
 
 3. 使用gradlew build命令编辑该工程。
 
-4. 在AppGallery Connect中新建应用，获取agconnect-services.json文件并将其添加到项目中。生成签名证书指纹，将证书文件添加到项目中，并配置build.gradle文件。详情请参见[配置AppGallery Connect](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/config-agc-0000001050738427)。
+4. 在AppGallery Connect中新建应用，获取agconnect-services.json文件并将其添加到项目中。生成签名证书指纹，将证书文件添加到项目中，并配置build.gradle文件。详情请参见[配置AppGallery Connect](https://developer.huawei.com/consumer/cn/doc/development/Media-Guides/config-agc-0000001050738427?ha_source=hms1)。
 如想了解更多信息，请前往:
 
 - [开发指南](https://developer.huawei.com/consumer/cn/doc/development/Media-Guides/introduction-0000001050439577?ha_source=hms1)
