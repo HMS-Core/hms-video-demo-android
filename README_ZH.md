@@ -33,8 +33,8 @@
 4. 在AppGallery Connect中新建应用，获取agconnect-services.json文件并将其添加到项目中。生成签名证书指纹，将证书文件添加到项目中，并配置build.gradle文件。详情请参见[配置AppGallery Connect](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/config-agc-0000001050738427)。
 如想了解更多信息，请前往:
 
-- [开发指南](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides-V5/introduction-0000001050439577-V5)
-- [API参考](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-References-V5/overview-0000001050439393-V5)
+- [开发指南](https://developer.huawei.com/consumer/cn/doc/development/Media-Guides/introduction-0000001050439577?ha_source=hms1)
+- [API参考](https://developer.huawei.com/consumer/cn/doc/development/Media-References/video-description-0000001076873506?ha_source=hms1)
 
 ## 环境要求
 推荐使用EMUI 3.0及以上版本、JDK 1.8及以上版本。使用示例代码播放视频时，请确保您的手机已安装HMS Core (APK) 5.0.0.300及以上版本。
@@ -46,7 +46,7 @@
 如果您对HMS Core还处于评估阶段，可在[Reddit社区](https://www.reddit.com/r/HuaweiDevelopers/)获取关于HMS Core的最新讯息，并与其他开发者交流见解。
 
 如果您对使用HMS示例代码有疑问，请尝试：
-- 开发过程遇到问题上[Stack Overflow](https://stackoverflow.com/questions/tagged/huawei-mobile-services)，在`huawei-mobile-services`标签下提问，有华为研发专家在线一对一解决您的问题。
+- 开发过程遇到问题上[Stack Overflow](https://stackoverflow.com/questions/tagged/huawei-mobile-services?tab=Votes)，在`huawei-mobile-services`标签下提问，有华为研发专家在线一对一解决您的问题。
 - 到[华为开发者论坛](https://developer.huawei.com/consumer/cn/forum/blockdisplay?fid=18) HMS Core板块与其他开发者进行交流。
 
 如果您在尝试示例代码中遇到问题，请向仓库提交[issue](https://github.com/HMS-Core/hms-video-demo-android/issues)，也欢迎您提交[Pull Request](https://github.com/HMS-Core/hms-video-demo-android/pulls)。
