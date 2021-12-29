@@ -130,4 +130,7 @@
     <string name="subtitle_render">Subtitle Render</string>
     <string name="subtitle_render_demo">VideoKitDemo</string>
     <string name="subtitle_render_player">DmpPlayer</string>
+
+    <string name="speed">Speed</string>
+    <string name="one_times_speed">1.0x</string>
 </resources>

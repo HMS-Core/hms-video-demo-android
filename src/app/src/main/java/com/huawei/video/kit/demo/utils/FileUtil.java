@@ -42,13 +42,13 @@ public class FileUtil {
         InputStreamReader reader = null;
         try {
             reader = new InputStreamReader(context.getAssets().open(PLAY_FILE_NAME), charsetName);
-            char[] buffer = new char[1024];
+            char[] fileBuffer = new char[1024];
             int count = 0;
-            StringBuilder builder = new StringBuilder();
-            while ((count = reader.read(buffer, 0, 1024)) > 0) {
-                builder.append(buffer, 0, count);
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((count = reader.read(fileBuffer, 0, 1024)) > 0) {
+                stringBuilder.append(fileBuffer, 0, count);
             }
-            return builder.toString();
+            return stringBuilder.toString();
         } catch (IOException e) {
             LogUtil.i("get assets file error :" + e.getMessage());
         } finally {

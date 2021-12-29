@@ -121,4 +121,7 @@
     <string name="subtitle_render">字幕渲染</string>
     <string name="subtitle_render_demo">VideoKitDemo渲染</string>
     <string name="subtitle_render_player">播放器渲染</string>
+
+    <string name="speed">倍速</string>
+    <string name="one_times_speed">1.0x</string>
 </resources>

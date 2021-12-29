@@ -32,6 +32,7 @@ import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
@@ -57,16 +58,20 @@ import com.huawei.video.kit.demo.utils.DeviceUtil;
 import com.huawei.video.kit.demo.utils.DialogUtil;
 import com.huawei.video.kit.demo.utils.LogUtil;
 import com.huawei.video.kit.demo.utils.PlayControlUtil;
+import com.huawei.video.kit.demo.utils.SelectDialog;
 import com.huawei.video.kit.demo.utils.StringUtil;
 import com.huawei.video.kit.demo.view.PlayView;
 import com.huawei.hms.videokit.player.AudioTrackInfo;
-import com.huawei.video.kit.demo.utils.SelectDialog;
 import com.huawei.hms.videokit.player.internal.SubtitleInfo;
+
 /**
  * Play Activity
  */
 public class PlayActivity extends AppCompatActivity implements OnPlayWindowListener, OnWisePlayerListener {
     private static final String TAG = "PlayActivity";
+
+    // Seek spacing
+    private static final int SEEK_TIME =  3 * 1000;
 
     // Play view
     private PlayView playView;
@@ -104,8 +109,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     // List of subtitle track info
     private SubtitleTrackInfo[] infoList = null;
 
-    // Play status
-    private boolean isPlaying = false;
+    private boolean isPortraitOrientation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +118,6 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         playControl = new PlayControl(this, this);
         // Some of the properties of preserving vertical screen
         systemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
-        // Set the current vertical screen
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // If failed to initialize, exit the current interface directly
         if (playControl.initPlayFail()) {
@@ -133,7 +135,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         LogUtil.d(TAG, "onResume isSuspend:" + isSuspend);
         isResume = true;
         if (hasSurfaceCreated) {
-            playControl.setBookmark();
+            playControl.setBookmark(Constants.DEFAULT_BOOKMARK_VALUE);
             playControl.playResume(ResumeType.KEEP);
             if (!updateViewHandler.hasMessages(Constants.PLAYING_WHAT)) {
                 updateViewHandler.sendEmptyMessage(Constants.PLAYING_WHAT);
@@ -206,7 +208,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         if (isSuspend) {
             isSuspend = false;
             playControl.playResume(ResumeType.KEEP);
-            if (!updateViewHandler.hasMessages(Constants.PLAYING_WHAT)) {
+            if (updateViewHandler != null && !updateViewHandler.hasMessages(Constants.PLAYING_WHAT)) {
                 updateViewHandler.sendEmptyMessage(Constants.PLAYING_WHAT);
             }
         }
@@ -246,8 +248,8 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                playView.dismissBufferingView();
                 isPlayComplete = false;
+                playView.dismissBufferingView();
             }
         });
     }
@@ -255,15 +257,16 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     @Override
     public boolean onError(WisePlayer wisePlayer, int what, int extra) {
         LogUtil.d(TAG, "onError what:" + what + " extra:" + extra);
-        Toast.makeText(this, "error:" + what + " extra:" + extra, Toast.LENGTH_SHORT).show();
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 playView.dismissBufferingView();
+                Toast.makeText(PlayActivity.this, "error:" + what + " extra:" + extra, Toast.LENGTH_SHORT).show();
             }
         });
-        updateViewHandler.sendEmptyMessageDelayed(Constants.PLAY_ERROR_FINISH, Constants.DELAY_MILLIS_3000);
+        if (updateViewHandler != null) {
+            updateViewHandler.sendEmptyMessageDelayed(Constants.PLAY_ERROR_FINISH, Constants.DELAY_MILLIS_3000);
+        }
         return false;
     }
 
@@ -320,7 +323,45 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         playView.updatePlayProgressView(seekBar.getProgress(), playControl.getBufferTime(),
             playControl.getBufferingSpeed(), playControl.getCurrentBitrate());
         isUserTrackingTouch = false;
-        updateViewHandler.sendEmptyMessageDelayed(Constants.PLAYING_WHAT, Constants.DELAY_MILLIS_500);
+        if (updateViewHandler != null) {
+            updateViewHandler.sendEmptyMessageDelayed(Constants.PLAYING_WHAT, Constants.DELAY_MILLIS_500);
+        }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        if (playView.isBackButtonFocus()) {
+            playView.setFocusViewPosition(PlayView.FOCUS_BACK_VIEW);
+        } else if (playView.isSettingFocus()) {
+            playView.setFocusViewPosition(PlayView.FOCUS_SETTING_VIEW);
+        } else if (playView.isFullScreenFocus()) {
+            playView.setFocusViewPosition(PlayView.FOCUS_FULLSCREEN_VIEW);
+        } else if (playView.isSpeedFocus()) {
+            playView.setFocusViewPosition(PlayView.FOCUS_SPEED_VIEW);
+        } else if (playView.isRefreshFocus()) {
+            playView.setFocusViewPosition(PlayView.FOCUS_REFRESH_VIEW);
+        } else if (playView.isPlayFocus()) {
+            playView.setFocusViewPosition(PlayView.FOCUS_PLAY_VIEW);
+        } else if (playView.isSeekBarFocus()) {
+            playView.clearBackgroundColor();
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    int tempPos = playControl.getCurrentTime() + SEEK_TIME;
+                    playControl.updateCurProgress(tempPos);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    int tempPoss = playControl.getCurrentTime() - SEEK_TIME;
+                    if (tempPoss < 0) {
+                        tempPoss = 0;
+                    }
+                    playControl.updateCurProgress(tempPoss);
+                    return true;
+            }
+        } else {
+            playView.clearBackgroundColor();
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     /**
@@ -461,17 +502,15 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
      * Modify the state of play
      */
     private void changePlayState() {
-        playControl.setPlayData(isPlaying);
-        if (isPlaying) {
-            isPlaying = false;
+        if (playControl.isPlaying()) {
             updateViewHandler.removeCallbacksAndMessages(null);
             playView.setPlayView();
         } else {
-            isPlaying = true;
             isPlayComplete = false;
             updateViewHandler.sendEmptyMessage(Constants.PLAYING_WHAT);
             playView.setPauseView();
         }
+        playControl.setPlayData(playControl.isPlaying());
     }
 
     /**
@@ -662,9 +701,12 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
      * Set up the full screen
      */
     private void setFullScreen() {
-        if (DeviceUtil.isPortrait(getApplicationContext())) {
+        if (!DeviceUtil.isFullScreen(this)) {
             playView.setFullScreenView(playControl.getCurrentPlayName());
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            if (DeviceUtil.isPortrait(this)) {
+                isPortraitOrientation = true;
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
 
             // Set up the full screen
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -690,9 +732,10 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
      * Click the back button in the upper left corner
      */
     private void backPress() {
-        if (!DeviceUtil.isPortrait(getApplicationContext())) {
-            playView.hiddenSwitchBitrateTextView();
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (DeviceUtil.isFullScreen(this)) {
+            if (isPortraitOrientation) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
             playView.setPortraitView();
             // Remove the full screen
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -929,7 +972,6 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
             updateViewHandler.sendEmptyMessageDelayed(Constants.UPDATE_SWITCH_BITRATE_SUCCESS,
                 Constants.DELAY_MILLIS_1000);
         }
-        isPlaying = false;
         return true;
     }
 
@@ -937,9 +979,10 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     public void onPlayEnd(WisePlayer wisePlayer) {
         LogUtil.d(TAG, "onPlayEnd " + wisePlayer.getCurrentTime());
         playControl.clearPlayProgress();
-        isPlaying = false;
         isPlayComplete = true;
-        updateViewHandler.sendEmptyMessageDelayed(Constants.UPDATE_PLAY_STATE, Constants.DELAY_MILLIS_1000);
+        if (updateViewHandler != null){
+            updateViewHandler.sendEmptyMessageDelayed(Constants.UPDATE_PLAY_STATE, Constants.DELAY_MILLIS_1000);
+        }
     }
 
     @Override
@@ -947,7 +990,6 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         this.wisePlayer = wisePlayer;
         LogUtil.d(TAG, "onReady");
         playControl.start();
-        isPlaying = true;
         // Make sure the main thread to update
         runOnUiThread(new Runnable() {
             @Override

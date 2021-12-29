@@ -170,6 +170,11 @@ public class Constants {
     public static final int PLAYER_SET_PREFER_LANG = 10;
 
     /**
+     * Home page setting menu
+     */
+    public static final int SET_HOME_SETTING = 15;
+
+    /**
      * The first options dialog
      */
     public static final int DIALOG_INDEX_ONE = 0;
@@ -221,6 +226,11 @@ public class Constants {
      * Log size
      */
     public static final int LOG_FILE_SIZE = 1024;
+
+    /**
+     * Default bookmark value
+     */
+    public static final int DEFAULT_BOOKMARK_VALUE = -1;
 
     /**
      * Log number

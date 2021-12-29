@@ -178,6 +178,9 @@ public class HomePageControl {
 
     /**
      * Get home page the input data
+     *
+     * @param inputUrl The play url
+     * @return The play entity
      */
     public PlayEntity getInputPlay(String inputUrl) {
         PlayEntity playEntity = new PlayEntity();

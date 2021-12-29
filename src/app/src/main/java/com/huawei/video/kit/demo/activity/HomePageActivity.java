@@ -17,13 +17,11 @@
 package com.huawei.video.kit.demo.activity;
 
 import android.Manifest.permission;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,6 +41,7 @@ import com.huawei.video.kit.demo.utils.DialogUtil;
 import com.huawei.video.kit.demo.utils.LogUtil;
 import com.huawei.video.kit.demo.utils.PermissionUtils;
 import com.huawei.video.kit.demo.utils.PlayControlUtil;
+import com.huawei.video.kit.demo.utils.StringUtil;
 import com.huawei.video.kit.demo.view.HomePageView;
 
 import java.util.ArrayList;
@@ -52,6 +51,8 @@ import java.util.List;
  * Home page activity
  */
 public class HomePageActivity extends AppCompatActivity implements OnHomePageListener {
+    private static final String TAG = "HomePageActivity";
+
     private static final int MSG_REQUEST_WRITE_SDCARD = 1;
 
     // Home page view
@@ -60,10 +61,10 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
     // Home page control
     private HomePageControl homePageControl;
 
-    //parms context
+    // Params context
     private String PARMS_CONTEXT = "gEKQBehAEs5xcnc81KAY8MS7L8fNop7IMq0LaXmTRjUSZVoG9UrBfFDvt76D";
 
-    //abstract
+    // Abstract
     private static WisePlayer.IRecommendVideoCallback recommendVideoCallback =
             new WisePlayer.IRecommendVideoCallback() {
                 @Override
@@ -138,138 +139,143 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                     PlayActivity.startPlayActivity(this, homePageControl.getInputPlay(inputUrl));
                 }
                 break;
+            case R.id.play_list_menu:
+                onSettingDialog();
+                break;
             default:
                 break;
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
+    /**
+     * menu dialog
+     */
+    private void onSettingDialog() {
+        List<String> showTextList = new ArrayList<>();
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_type));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_view_setting));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_mute_setting));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.play_mode));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.automatic_adaptation));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_init_bitrate_setting));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_bitrate_range_setting));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_init_preloader));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_add_single_cache));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_pause_cache));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_resume_cache));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_remove_cache));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_remove_tasks));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.get_recommend_info));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.update_server_country));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.video_set_alg_para));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.subtitle_preset_language_setting));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.audio_set_prefer_audio));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.set_socks_proxy));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.download_link_num));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.set_wake_mode));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.subtitle_render));
+        homePageView.showVideoTypeDialog(Constants.SET_HOME_SETTING, showTextList, 0);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private void doSetting(String itemSelect) {
+        if (TextUtils.isEmpty(itemSelect)) {
+            LogUtil.w(TAG, "setting type is null");
+            return;
+        }
         List<String> list = new ArrayList<>();
-        switch (item.getItemId()) {
-            case R.id.video_type_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.video_on_demand));
-                list.add(getResources().getString(R.string.video_live));
-                homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_MODE, list,
-                        PlayControlUtil.getVideoType());
-                break;
-            case R.id.video_view_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.video_surfaceview_setting));
-                list.add(getResources().getString(R.string.video_textureview_setting));
-                homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_VIEW, list,
-                        PlayControlUtil.isSurfaceView() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
-                break;
-            case R.id.video_mute_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.video_mute));
-                list.add(getResources().getString(R.string.video_not_mute));
-                homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_MUTE, list,
-                        PlayControlUtil.isMute() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
-                break;
-            case R.id.video_play_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.play_video));
-                list.add(getResources().getString(R.string.play_audio));
-                homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_PLAY, list,
-                        PlayControlUtil.getPlayMode());
-                break;
-            case R.id.video_bandwidth_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.open_adaptive_bandwidth));
-                list.add(getResources().getString(R.string.close_adaptive_bandwidth));
-                homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_BANDWIDTH, list,
-                        PlayControlUtil.getBandwidthSwitchMode());
-                break;
-            case R.id.video_init_bitrate_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.video_init_bitrate_use));
-                list.add(getResources().getString(R.string.video_init_bitrate_not_use));
-                homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_INIT_BANDWIDTH, list,
-                        PlayControlUtil.isInitBitrateEnable() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
-                break;
-            case R.id.video_bitrate_range_setting:
-                DialogUtil.showBitrateRangeDialog(this);
-                break;
-            case R.id.video_init_preloader:
-                DialogUtil.initPreloaderDialog(this, new OnDialogConfirmListener() {
-                    @Override
-                    public void onConfirm() {
-                        DialogUtil.addSingleCacheDialog(HomePageActivity.this);
-                    }
-                });
-                break;
-            case R.id.video_add_single_cache:
-                DialogUtil.addSingleCacheDialog(HomePageActivity.this);
-                break;
-            case R.id.video_pause_cache:
-                homePageControl.pauseAllTasks();
-                break;
-            case R.id.video_resume_cache:
-                homePageControl.resumeAllTasks();
-                break;
-            case R.id.video_remove_cache:
-                homePageControl.removeAllCache();
-                break;
-            case R.id.video_remove_tasks:
-                homePageControl.removeAllTasks();
-                break;
-            case R.id.video_set_alg_param:
-                DialogUtil.setInitBufferTimeStrategy(this);
-                break;
-            case R.id.video_update_country:
-                DialogUtil.updateServerCountryDialog(this);
-                break;
-            case R.id.recommend_video_info:
-                RecommendOptions recommendOptions = new RecommendOptions();
-                recommendOptions.setLanguage("zh_CN");
-                VideoKitPlayApplication.getWisePlayerFactory()
-                        .createWisePlayer()
-                        .getRecommendVideoList("8859289", recommendOptions,
-                                "CgB6e3x9cDTitEyidsqxd/Q6cmh/" + PARMS_CONTEXT,
-                                recommendVideoCallback);
-                break;
-            case R.id.subtitle_preset_language_setting:
-                DialogUtil.showSubtitlePresetLanguageDialog(this);
-                break;
-            case R.id.audio_set_prefer_audio:
-                DialogUtil.showPreferAudioLangDialog(this);
-                break;
-            case R.id.socks_proxy:
-                DialogUtil.showProxyInfoDialog(this);
-                break;
-            case R.id.download_link_num_setting:
-                list.clear();
-                list.add(getResources().getString(R.string.download_link_single));
-                list.add(getResources().getString(R.string.download_link_multi));
-                homePageView.showVideoTypeDialog(Constants.DOWNLOAD_LINK_NUM, list,
-                        PlayControlUtil.isDownloadLinkSingle() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
-                break;
-            case R.id.set_wake_mode:
-                list.clear();
-                list.add(getResources().getString(R.string.set_wake_mode));
-                list.add(getResources().getString(R.string.close_wake_mode));
-                homePageView.showVideoTypeDialog(Constants.SET_WAKE_MODE, list,
-                        PlayControlUtil.isWakeOn() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
-                break;
-            case R.id.subtitle_render:
-                list.clear();
-                list.add(getResources().getString(R.string.subtitle_render_player));
-                list.add(getResources().getString(R.string.subtitle_render_demo));
-                homePageView.showVideoTypeDialog(Constants.SET_SUBTITLE_RENDER_MODE, list,
-                        PlayControlUtil.isSubtitleRenderByDemo() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
-                break;
-            default:
-                break;
+        if (TextUtils.equals(itemSelect, getString(R.string.video_type))) {
+            list.clear();
+            list.add(getResources().getString(R.string.video_on_demand));
+            list.add(getResources().getString(R.string.video_live));
+            homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_MODE, list,
+                    PlayControlUtil.getVideoType());
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_view_setting))) {
+            list.clear();
+            list.add(getResources().getString(R.string.video_surfaceview_setting));
+            list.add(getResources().getString(R.string.video_textureview_setting));
+            homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_VIEW, list,
+                    PlayControlUtil.isSurfaceView() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_mute_setting))) {
+            list.clear();
+            list.add(getResources().getString(R.string.video_mute));
+            list.add(getResources().getString(R.string.video_not_mute));
+            homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_MUTE, list,
+                    PlayControlUtil.isMute() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.play_mode))) {
+            list.clear();
+            list.add(getResources().getString(R.string.play_video));
+            list.add(getResources().getString(R.string.play_audio));
+            homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_VIDEO_PLAY, list,
+                    PlayControlUtil.getPlayMode());
+        } else if (TextUtils.equals(itemSelect, getString(R.string.automatic_adaptation))) {
+            list.clear();
+            list.add(getResources().getString(R.string.open_adaptive_bandwidth));
+            list.add(getResources().getString(R.string.close_adaptive_bandwidth));
+            homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_BANDWIDTH, list,
+                    PlayControlUtil.getBandwidthSwitchMode());
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_init_bitrate_setting))) {
+            list.clear();
+            list.add(getResources().getString(R.string.video_init_bitrate_use));
+            list.add(getResources().getString(R.string.video_init_bitrate_not_use));
+            homePageView.showVideoTypeDialog(Constants.PLAYER_SWITCH_INIT_BANDWIDTH, list,
+                    PlayControlUtil.isInitBitrateEnable() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_bitrate_range_setting))) {
+            DialogUtil.showBitrateRangeDialog(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_init_preloader))) {
+            DialogUtil.initPreloaderDialog(this, new OnDialogConfirmListener() {
+                @Override
+                public void onConfirm() {
+                    DialogUtil.addSingleCacheDialog(HomePageActivity.this);
+                }
+            });
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_add_single_cache))) {
+            DialogUtil.addSingleCacheDialog(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_pause_cache))) {
+            homePageControl.pauseAllTasks();
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_resume_cache))) {
+            homePageControl.resumeAllTasks();
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_remove_cache))) {
+            homePageControl.removeAllCache();
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_remove_tasks))) {
+            homePageControl.removeAllTasks();
+        } else if (TextUtils.equals(itemSelect, getString(R.string.update_server_country))) {
+            DialogUtil.updateServerCountryDialog(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.get_recommend_info))) {
+            RecommendOptions recommendOptions = new RecommendOptions();
+            recommendOptions.setLanguage("zh_CN");
+            VideoKitPlayApplication.getWisePlayerFactory()
+                .createWisePlayer()
+                .getRecommendVideoList("8859289", recommendOptions, "CgB6e3x9cDTitEyidsqxd/Q6cmh/" + PARMS_CONTEXT,
+                    recommendVideoCallback);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.video_set_alg_para))) {
+            DialogUtil.setInitBufferTimeStrategy(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.subtitle_preset_language_setting))) {
+            DialogUtil.showSubtitlePresetLanguageDialog(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.audio_set_prefer_audio))) {
+            DialogUtil.showPreferAudioLangDialog(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.set_socks_proxy))) {
+            DialogUtil.showProxyInfoDialog(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.download_link_num))) {
+            list.clear();
+            list.add(getResources().getString(R.string.download_link_single));
+            list.add(getResources().getString(R.string.download_link_multi));
+            homePageView.showVideoTypeDialog(Constants.DOWNLOAD_LINK_NUM, list,
+                    PlayControlUtil.isDownloadLinkSingle() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.set_wake_mode))) {
+            list.clear();
+            list.add(getResources().getString(R.string.set_wake_mode));
+            list.add(getResources().getString(R.string.close_wake_mode));
+            homePageView.showVideoTypeDialog(Constants.SET_WAKE_MODE, list,
+                    PlayControlUtil.isWakeOn() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.subtitle_render))) {
+            list.clear();
+            list.add(getResources().getString(R.string.subtitle_render_player));
+            list.add(getResources().getString(R.string.subtitle_render_demo));
+            homePageView.showVideoTypeDialog(Constants.SET_SUBTITLE_RENDER_MODE, list,
+                    PlayControlUtil.isSubtitleRenderByDemo() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
+        } else {
+            LogUtil.i(TAG, "unavailable type");
         }
-        return true;
     }
 
     @Override
@@ -358,8 +364,21 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                     homePageControl.setSubtitleRenderByDemo(true);
                 }
                 break;
+            case Constants.SET_HOME_SETTING:
+                doSetting(itemSelect);
+                break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (homePageView.menuHasFocus()) {
+            homePageView.setMenuBackgroundColor();
+        } else {
+            homePageView.clearMenuBackgroundColor();
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

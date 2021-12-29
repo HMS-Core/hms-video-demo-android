@@ -12,7 +12,7 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'com.huawei.agconnect:agcp:1.4.2.300'  // HUAWEI agcp plugin
+        classpath 'com.huawei.agconnect:agcp:1.6.0.300'  // HUAWEI agcp plugin
     }
 }
 

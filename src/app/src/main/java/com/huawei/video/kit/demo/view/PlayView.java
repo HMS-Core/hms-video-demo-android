@@ -22,13 +22,13 @@ import android.content.Context;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,6 +54,22 @@ import com.huawei.video.kit.demo.utils.TimeUtil;
  * Play View
  */
 public class PlayView {
+    public static final int FOCUS_BACK_VIEW = 0;
+
+    public static final int FOCUS_SETTING_VIEW = 1;
+
+    public static final int FOCUS_PLAY_VIEW = 2;
+
+    public static final int FOCUS_REFRESH_VIEW = 3;
+
+    public static final int FOCUS_SPEED_VIEW = 4;
+
+    public static final int FOCUS_FULLSCREEN_VIEW = 5;
+
+    private int currentFocusViewPosition = -1;
+
+    private int previousFocusViewPosition = -1;
+
     // Context
     private Context context;
 
@@ -84,8 +100,8 @@ public class PlayView {
     // Video buffer load percentage
     private TextView bufferPercentTv;
 
-    // Back button
-    private TextView backTv;
+    // Back imageView
+    private ImageView backTv;
 
     // Video name
     private TextView currentPlayNameTv;
@@ -96,8 +112,8 @@ public class PlayView {
     // Setting
     private TextView settingsTv;
 
-    // Full screen Button
-    private Button fullScreenBt;
+    // Full screen imageView
+    private ImageView fullScreenBt;
 
     // Video action button layout
     private FrameLayout controlLayout;
@@ -193,9 +209,9 @@ public class PlayView {
             playImg.setOnClickListener(onPlayWindowListener);
             playRefreshImg = (ImageView) view.findViewById(R.id.play_refresh);
             playRefreshImg.setOnClickListener(onPlayWindowListener);
-            backTv = (TextView) view.findViewById(R.id.back_tv);
+            backTv = (ImageView) view.findViewById(R.id.back_tv);
             backTv.setOnClickListener(onPlayWindowListener);
-            fullScreenBt = (Button) view.findViewById(R.id.fullscreen_btn);
+            fullScreenBt = (ImageView) view.findViewById(R.id.fullscreen_btn);
             fullScreenBt.setOnClickListener(onPlayWindowListener);
             videoBufferLayout = (RelativeLayout) view.findViewById(R.id.buffer_rl);
             videoBufferLayout.setVisibility(View.GONE);
@@ -305,6 +321,9 @@ public class PlayView {
      * Update seekBar
      *
      * @param progress progress
+     * @param bufferPosition The buffer position
+     * @param bufferingSpeed The download speed
+     * @param bitrate The bitrate data
      */
     public void updatePlayProgressView(int progress, int bufferPosition, long bufferingSpeed, int bitrate) {
         seekBar.setProgress(progress);
@@ -341,6 +360,7 @@ public class PlayView {
         fullScreenBt.setVisibility(View.VISIBLE);
         contentLayout.setVisibility(View.VISIBLE);
         currentPlayNameTv.setVisibility(View.INVISIBLE);
+		hiddenSwitchBitrateTextView();
         currentPlayNameTv.setText(null);
     }
 
@@ -420,7 +440,7 @@ public class PlayView {
      * 
      * @param gettingType Getting type
      * @param showTextList Setting text list
-     * @param selectValue Default select value
+     * @param selectIndex Default select value
      */
     public void showGettingDialog(int gettingType, List<String> showTextList, int selectIndex) {
         DialogUtil.onGettingDialogSelectIndex(context, gettingType, showTextList, selectIndex, onPlayWindowListener);
@@ -432,7 +452,11 @@ public class PlayView {
      * @param speedText speed value
      */
     public void setSpeedButtonText(String speedText) {
-        speedTv.setText(speedText);
+        if (TextUtils.equals(speedText, context.getString(R.string.one_times_speed))) {
+            speedTv.setText(context.getString(R.string.speed));
+        } else {
+            speedTv.setText(speedText);
+        }
     }
 
     /**
@@ -441,7 +465,7 @@ public class PlayView {
     public void showDefaultValueView() {
         currentTimeTv.setText(TimeUtil.formatLongToTimeStr(0));
         totalTimeTv.setText(TimeUtil.formatLongToTimeStr(0));
-        speedTv.setText("1.0x");
+        speedTv.setText(context.getString(R.string.speed));
         videoNameTv.setText(context.getResources().getString(R.string.video_name, ""));
         videoSizeTv.setText(context.getResources().getString(R.string.video_width_and_height, 0, 0));
         videoTimeTv.setText(context.getResources().getString(R.string.video_time, TimeUtil.formatLongToTimeStr(0)));
@@ -459,6 +483,18 @@ public class PlayView {
         hiddenSwitchingBitrateTextView();
         hiddenSwitchBitrateTextView();
         setSwitchBitrateTv(0);
+    }
+
+    /**
+     * Set view background data
+     *
+     * @param focusViewPosition View to get focus
+     */
+    public void setFocusViewPosition(int focusViewPosition) {
+        previousFocusViewPosition = currentFocusViewPosition;
+        currentFocusViewPosition = focusViewPosition;
+        setFocusViewBackground();
+        clearPreFocusViewBackground();
     }
 
     /**
@@ -489,6 +525,8 @@ public class PlayView {
 
     /**
      * Show switching bitrate textView
+     *
+     * @param textValue The bitrate value
      */
     public void showSwitchingBitrateTextView(String textValue) {
         if (switchingBitrateTv.getVisibility() == View.GONE) {
@@ -513,5 +551,222 @@ public class PlayView {
         if (switchingBitrateTv.getVisibility() == View.VISIBLE) {
             switchingBitrateTv.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Set get focus view background color
+     */
+    private void setFocusViewBackground() {
+        switch (currentFocusViewPosition) {
+            case FOCUS_BACK_VIEW:
+                setBackgroundColor();
+                break;
+            case FOCUS_SETTING_VIEW:
+                setSettingColor();
+                break;
+            case FOCUS_PLAY_VIEW:
+                setPlayColor();
+                break;
+            case FOCUS_REFRESH_VIEW:
+                setRefreshColor();
+                break;
+            case FOCUS_SPEED_VIEW:
+                setSpeedColor();
+                break;
+            case FOCUS_FULLSCREEN_VIEW:
+                setFullScreenColor();
+                break;
+            default:
+                LogUtil.i("Invalid focus view data");
+                break;
+        }
+    }
+
+    /**
+     * Clear the background of the last view to get focus
+     */
+    private void clearPreFocusViewBackground() {
+        switch (previousFocusViewPosition) {
+            case FOCUS_BACK_VIEW:
+                clearMenuBackgroundColor();
+                break;
+            case FOCUS_SETTING_VIEW:
+                clearSettingColor();
+                break;
+            case FOCUS_PLAY_VIEW:
+                clearPlayColor();
+                break;
+            case FOCUS_REFRESH_VIEW:
+                clearRefreshColor();
+                break;
+            case FOCUS_SPEED_VIEW:
+                clearSpeedColor();
+                break;
+            case FOCUS_FULLSCREEN_VIEW:
+                clearFullScreenColor();
+                break;
+            default:
+                LogUtil.i("clear pre focus view fail");
+                break;
+        }
+    }
+
+    /**
+     * whether seekBar gets focus
+     *
+     * @return whether or not
+     */
+    public boolean isSeekBarFocus() {
+        return seekBar.hasFocus();
+    }
+
+    /**
+     * whether the return button obtains focus
+     *
+     * @return whether or not
+     */
+    public boolean isBackButtonFocus() {
+        return backTv.hasFocus();
+    }
+
+    /**
+     * Sets the back button background color
+     */
+    public void setBackgroundColor() {
+        backTv.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear back button background color
+     */
+    private void clearMenuBackgroundColor() {
+        backTv.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
+    }
+
+    /**
+     * Whether the textView gets focus
+     *
+     * @return whether or not
+     */
+    public boolean isSettingFocus() {
+        return settingsTv.hasFocus();
+    }
+
+    /**
+     * Set setting textView color
+     */
+    public void setSettingColor() {
+        settingsTv.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear setting textView color
+     */
+    public void clearSettingColor() {
+        settingsTv.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
+    }
+
+    /**
+     * Whether the full screen textView gets focus
+     *
+     * @return whether or not
+     */
+    public boolean isFullScreenFocus() {
+        return fullScreenBt.hasFocus();
+    }
+
+    /**
+     * Set full screen textView color
+     */
+    public void setFullScreenColor() {
+        fullScreenBt.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear full screen textView color
+     */
+    public void clearFullScreenColor() {
+        fullScreenBt.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
+    }
+
+    /**
+     * Whether the speed textView gets focus
+     *
+     * @return whether or not
+     */
+    public boolean isSpeedFocus() {
+        return speedTv.hasFocus();
+    }
+
+    /**
+     * Set speed textView color
+     */
+    public void setSpeedColor() {
+        speedTv.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear speed textView color
+     */
+    public void clearSpeedColor() {
+        speedTv.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
+    }
+
+    /**
+     * Whether the refresh textView gets focus
+     *
+     * @return whether or not
+     */
+    public boolean isRefreshFocus() {
+        return playRefreshImg.hasFocus();
+    }
+
+    /**
+     * Set refresh imageView color
+     */
+    public void setRefreshColor() {
+        playRefreshImg.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear refresh imageView color
+     */
+    public void clearRefreshColor() {
+        playRefreshImg.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
+    }
+
+    /**
+     * Whether the Play imageView gets focus
+     *
+     * @return whether or not
+     */
+    public boolean isPlayFocus() {
+        return playImg.hasFocus();
+    }
+
+    /**
+     * Set play imageView color
+     */
+    public void setPlayColor() {
+        playImg.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear play imageView color
+     */
+    public void clearPlayColor() {
+        playImg.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
+    }
+
+    /**
+     * Clear background color
+     */
+    public void clearBackgroundColor() {
+        clearMenuBackgroundColor();
+        clearSettingColor();
+        clearFullScreenColor();
+        clearSpeedColor();
+        clearRefreshColor();
+        clearPlayColor();
     }
 }

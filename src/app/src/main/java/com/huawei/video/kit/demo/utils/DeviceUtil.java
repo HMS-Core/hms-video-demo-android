@@ -16,8 +16,10 @@
 
 package com.huawei.video.kit.demo.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.view.WindowManager.LayoutParams;
 
 /**
  * Mobile data acquisition
@@ -46,5 +48,21 @@ public class DeviceUtil {
     public static boolean isPortrait(Context context) {
         int orientation = context.getResources().getConfiguration().orientation;
         return orientation == Configuration.ORIENTATION_PORTRAIT;
+    }
+
+    /**
+     * Whether the full screen
+     * @param activity activity
+     * @return boolean Whether the full screen
+     */
+    public static boolean isFullScreen(Activity activity) {
+        if (activity == null) {
+            return false;
+        }
+        if ((activity.getWindow().getAttributes().flags & LayoutParams.FLAG_FULLSCREEN)== LayoutParams.FLAG_FULLSCREEN) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.huawei.video.kit.demo.utils;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ import android.os.Message;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * The Select dialog
+ */
 public class SelectDialog implements DialogInterface.OnClickListener {
     AlertDialog.Builder builder;
 

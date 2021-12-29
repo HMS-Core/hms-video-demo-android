@@ -30,7 +30,7 @@ Take the Android Studio 3.x version as an example. The steps to run the Video Ki
    1. You should modify the applicationId in the build.gradle.
    2. You should create an app in AppGallery Connect, and obtain the file of agconnect-services.json and add to the project.
    3. You should also generate a signing certificate fingerprint and add the certificate file to the project, and add configuration to build.gradle.
-      See the [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html) guide to configure app in AppGallery Connect.
+      See the [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html?ha_source=hms1) guide to configure app in AppGallery Connect.
    4. In Android Studio, select "File > Open". In the pop-up dialog box, enter the path where the sample code is stored locally, for example: "D:\videokit-player-sample-x.x.x.xxx\VideoKitDemo\src";
    5. Select the src project to be opened, and then click "OK". In the pop-up dialog box, select "New Window" to open the project in a new window.
    6. In Android Studio, replace the URL in the video_kit_demo.txt file with the URL of the video to be played.
@@ -71,7 +71,7 @@ If you want to evaluate more about HMS Core,
 If you have questions about how to use HMS samples, try the following options:
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/huawei-mobile-services) is the best place for any programming questions. Be sure to tag your question with 
 `huawei-mobile-services`.
-- [Huawei Developer Forum](https://forums.developer.huawei.com/forumPortal/en/home?fid=0101187876626530001) HMS Core Module is great for general questions, or seeking recommendations and opinions.
+- [Huawei Developer Forum](https://forums.developer.huawei.com/forumPortal/en/home?fid=0101187876626530001?ha_source=hms1) HMS Core Module is great for general questions, or seeking recommendations and opinions.
 
 If you run into a bug in our samples, please submit an [issue](https://github.com/HMS-Core/hms-scan-demo/issues) to the Repository. Even better you can submit a [Pull Request](https://github.com/HMS-Core/hms-scan-demo/pulls) with a fix.
 

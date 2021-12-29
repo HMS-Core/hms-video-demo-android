@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.huawei.video.kit.demo.R;
@@ -51,6 +52,9 @@ public class HomePageView {
 
     // Play button
     private Button playBt;
+
+    // Menu imageView
+    private ImageView menuBt;
 
     // Load view
     private ProgressBar playLoading;
@@ -92,6 +96,8 @@ public class HomePageView {
         addressEt = (EditText) contentView.findViewById(R.id.input_path_ed);
         playBt = (Button) contentView.findViewById(R.id.main_play_btn);
         playBt.setOnClickListener(onHomePageListener);
+        menuBt = (ImageView) contentView.findViewById(R.id.play_list_menu);
+        menuBt.setOnClickListener(onHomePageListener);
         selectPlayDataAdapter = new SelectPlayDataAdapter(context, onHomePageListener);
         playRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         playRecyclerView.setAdapter(selectPlayDataAdapter);
@@ -132,5 +138,28 @@ public class HomePageView {
      */
     public void showVideoTypeDialog(int playSettingType, List<String> settingList, int defaultSelect) {
         DialogUtil.showVideoTypeDialog(context, playSettingType, settingList, defaultSelect, onHomePageListener);
+    }
+
+    /**
+     * Whether the menu button has focus
+     *
+     * @return boolean Whether the menu button has focus
+     */
+    public boolean menuHasFocus() {
+        return menuBt.hasFocus();
+    }
+
+    /**
+     * Set background color
+     */
+    public void setMenuBackgroundColor() {
+        menuBt.setBackgroundColor(context.getResources().getColor(R.color.select_color));
+    }
+
+    /**
+     * Clear background color
+     */
+    public void clearMenuBackgroundColor() {
+        menuBt.setBackgroundColor(context.getResources().getColor(R.color.transparent_color));
     }
 }

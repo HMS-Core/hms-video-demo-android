@@ -30,7 +30,6 @@ import android.view.TextureView;
 
 import com.huawei.hms.videokit.player.InitBitrateParam;
 import com.huawei.hms.videokit.player.StreamInfo;
-import com.huawei.hms.videokit.player.SubtitleTrackInfo;
 import com.huawei.hms.videokit.player.VideoInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
 import com.huawei.hms.videokit.player.common.PlayerConstants;
@@ -78,6 +77,8 @@ public class PlayControl {
     // Video bitrate list
     private List<String> switchBitrateList;
 
+    private boolean isSuspend = false;
+
     /**
      * Constructor
      *
@@ -115,6 +116,8 @@ public class PlayControl {
             } else {
                 wisePlayer.setSubtitleUpdateListener(null);
             }
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set play Listener fail.");
         }
     }
 
@@ -139,6 +142,8 @@ public class PlayControl {
 
     /**
      * Get the current play data
+     *
+     * @param serializable The play data
      */
     public void setCurrentPlayData(Serializable serializable) {
         if (serializable != null && serializable instanceof PlayEntity) {
@@ -171,7 +176,7 @@ public class PlayControl {
             }
             setProxyInfo();
             setDownloadLink();
-            setBookmark();
+            setBookmark(Constants.DEFAULT_BOOKMARK_VALUE);
             setPlayMode(PlayControlUtil.getPlayMode(), false);
             setMute(PlayControlUtil.isMute());
             setVideoType(PlayControlUtil.getVideoType(), false);
@@ -229,6 +234,8 @@ public class PlayControl {
     public void updateCurProgress(int progress) {
         if (wisePlayer != null) {
             wisePlayer.seek(progress);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, seek fail.");
         }
     }
 
@@ -240,6 +247,8 @@ public class PlayControl {
     public void setSurfaceView(SurfaceView surfaceView) {
         if (wisePlayer != null) {
             wisePlayer.setView(surfaceView);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set surfaceView fail.");
         }
     }
 
@@ -251,6 +260,8 @@ public class PlayControl {
     public void setTextureView(TextureView textureView) {
         if (wisePlayer != null) {
             wisePlayer.setView(textureView);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set textureView fail.");
         }
     }
 
@@ -260,7 +271,12 @@ public class PlayControl {
     public void suspend() {
         if (wisePlayer != null) {
             setBufferingStatus(false, false);
-            wisePlayer.suspend();
+            if (!isSuspend) {
+                wisePlayer.suspend();
+                isSuspend = true;
+            }
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, suspend fail.");
         }
     }
 
@@ -295,6 +311,8 @@ public class PlayControl {
     public void stop() {
         if (wisePlayer != null) {
             wisePlayer.stop();
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, stop fail.");
         }
     }
 
@@ -304,6 +322,10 @@ public class PlayControl {
      * @param isPlaying The player status
      */
     public void setPlayData(boolean isPlaying) {
+        if (wisePlayer == null) {
+            LogUtil.i(TAG, "wisePlayer is null, pause or start fail.");
+            return;
+        }
         if (isPlaying) {
             wisePlayer.pause();
             setBufferingStatus(false, false);
@@ -332,9 +354,13 @@ public class PlayControl {
      * @param play Resume after the player is in a state of play or pause state 0:1: pause play - 1: keep
      */
     public void playResume(int play) {
-        if (wisePlayer != null) {
+        LogUtil.i(TAG, "play resume :" + play);
+        if (wisePlayer != null && isSuspend) {
             setBufferingStatus(true, false);
             wisePlayer.resume(play);
+            isSuspend = false;
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, resume fail.");
         }
     }
 
@@ -352,6 +378,8 @@ public class PlayControl {
             if (isUpdateLocal) {
                 PlayControlUtil.setLoadBuff(status);
             }
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set buffer status fail.");
         }
     }
 
@@ -529,6 +557,8 @@ public class PlayControl {
         if (wisePlayer != null) {
             LogUtil.d(TAG, "switch bitrate smooth : currentBitrate " + currentBitrate);
             wisePlayer.switchBitrateSmooth(currentBitrate);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, switch bitrate smooth fail.");
         }
     }
 
@@ -541,6 +571,8 @@ public class PlayControl {
         if (wisePlayer != null) {
             LogUtil.d(TAG, "switch bitrate designated : currentBitrate " + currentBitrate);
             wisePlayer.switchBitrateDesignated(currentBitrate);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, switch bitrate designated fail.");
         }
     }
 
@@ -611,6 +643,8 @@ public class PlayControl {
     public void closeLogo() {
         if (wisePlayer != null) {
             wisePlayer.closeLogo();
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, close logo fail.");
         }
     }
 
@@ -650,6 +684,8 @@ public class PlayControl {
     public void setCycleMode(boolean isCycleMode) {
         if (wisePlayer != null) {
             wisePlayer.setCycleMode(isCycleMode ? CycleMode.MODE_CYCLE : CycleMode.MODE_NORMAL);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set cycle mode fail.");
         }
     }
 
@@ -674,6 +710,8 @@ public class PlayControl {
     public void setMute(boolean status) {
         if (wisePlayer != null) {
             wisePlayer.setMute(status);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set mute fail.");
         }
         PlayControlUtil.setIsMute(status);
     }
@@ -687,6 +725,8 @@ public class PlayControl {
         if (wisePlayer != null) {
             LogUtil.d(TAG, "current set volume is " + volume);
             wisePlayer.setVolume(volume);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set volume fail.");
         }
     }
 
@@ -699,6 +739,8 @@ public class PlayControl {
     public void setVideoType(int videoType, boolean updateLocate) {
         if (wisePlayer != null) {
             wisePlayer.setVideoType(videoType);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set video type fail.");
         }
         if (updateLocate) {
             PlayControlUtil.setVideoType(videoType);
@@ -711,6 +753,8 @@ public class PlayControl {
     public void setSurfaceChange() {
         if (wisePlayer != null) {
             wisePlayer.setSurfaceChange();
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set surface change fail.");
         }
     }
 
@@ -725,6 +769,8 @@ public class PlayControl {
             initBitrateParam.setWidth(PlayControlUtil.getInitWidth());
             initBitrateParam.setType(PlayControlUtil.getInitType());
             wisePlayer.setInitBitrate(initBitrateParam);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set init bitrate fail.");
         }
     }
 
@@ -735,6 +781,8 @@ public class PlayControl {
         if (PlayControlUtil.isSetBitrateRangeEnable() && wisePlayer != null) {
             wisePlayer.setBitrateRange(PlayControlUtil.getMinBitrate(), PlayControlUtil.getMaxBitrate());
             PlayControlUtil.clearBitrateRange();
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, set bitrate range fail.");
         }
     }
 
@@ -771,12 +819,20 @@ public class PlayControl {
 
     /**
      * Bookmark play position
+     *
+     * @param time The bookmark time
      */
-    public void setBookmark() {
-        if (currentPlayData != null) {
+    public void setBookmark(int time) {
+        if (wisePlayer == null) {
+            LogUtil.i("wisePlayer is null.");
+            return;
+        }
+        if (time != Constants.DEFAULT_BOOKMARK_VALUE) {
+            wisePlayer.setBookmark(time);
+        } else if (currentPlayData != null) {
             int bookmark = PlayControlUtil.getPlayData(currentPlayData.getUrl());
             LogUtil.d("current book mark is " + bookmark);
-            if (wisePlayer != null && bookmark != 0) {
+            if (bookmark != -1) {
                 wisePlayer.setBookmark(bookmark);
             }
         }
@@ -912,11 +968,9 @@ public class PlayControl {
                 LogUtil.d(TAG, "getAudioTracks get null");
                 return null;
             }
-            if (audioTrack instanceof AudioTrackInfo[]) {
-                for (int i = 0; i < audioTrack.length; i++) {
-                    LogUtil.d(TAG, "getAudioTracks is:" + audioTrack[i].getId() + " desc:" + audioTrack[i].getDesc() +
-                            " select:" + audioTrack[i].getSelected());
-                }
+            for (int i = 0; i < audioTrack.length; i++) {
+                LogUtil.d(TAG, "getAudioTracks is:" + audioTrack[i].getId() + " desc:" + audioTrack[i].getDesc()
+                    + " select:" + audioTrack[i].getSelected());
             }
         }
         return audioTrack;
@@ -930,9 +984,9 @@ public class PlayControl {
                 LogUtil.d(TAG, "getSelectedAudioTrack get null");
                 return null;
             }
-            audioTrack = (AudioTrackInfo)obj;
-            LogUtil.d(TAG, "getSelectedAudioTrack is:" + audioTrack.getId() + " desc:" + audioTrack.getDesc() +
-                        " select:" + audioTrack.getSelected());
+            audioTrack = (AudioTrackInfo) obj;
+            LogUtil.d(TAG, "getSelectedAudioTrack is:" + audioTrack.getId() + " desc:" + audioTrack.getDesc()
+                + " select:" + audioTrack.getSelected());
         }
         return audioTrack;
     }
@@ -942,19 +996,16 @@ public class PlayControl {
         if (wisePlayer != null) {
             AudioTrackInfo[] audioTrack = null;
             audioTrack = wisePlayer.getAudioTracks();
-                if (audioTrack == null) {
-                    return;
+            if (audioTrack == null) {
+                return;
+            }
+            for (int i = 0; i < audioTrack.length; i++) {
+                if (audioTrack[i].getDesc().equals(audioTrackname)) {
+                    LogUtil.d(TAG, "switchAudioTrack switch to:" + audioTrack[i].getId());
+                    wisePlayer.selectAudioTrack(audioTrack[i].getId());
+                    break;
                 }
-
-                if (audioTrack instanceof AudioTrackInfo[]) {
-                    for (int i = 0; i < audioTrack.length; i++) {
-                        if (audioTrack[i].getDesc().equals(audioTrackname)) {
-                            LogUtil.d(TAG, "switchAudioTrack switch to:" + audioTrack[i].getId() );
-                            wisePlayer.selectAudioTrack(audioTrack[i].getId());
-                            break;
-                        }
-                    }
-                }
+            }
         }
     }
 
@@ -1001,6 +1052,14 @@ public class PlayControl {
             wisePlayer.setSubtitleUpdateListener(onWisePlayerListener);
         } else {
             wisePlayer.setSubtitleUpdateListener(null);
+        }
+    }
+
+    public boolean isPlaying() {
+        if (wisePlayer != null) {
+            return wisePlayer.isPlaying();
+        } else {
+            return false;
         }
     }
 }

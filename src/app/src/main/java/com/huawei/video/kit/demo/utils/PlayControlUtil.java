@@ -279,6 +279,8 @@ public class PlayControlUtil {
 
     /**
      * Whether need to modify the code bitrate range
+     *
+     * @return Is set bitrate range enable
      */
     public static boolean isSetBitrateRangeEnable() {
         return maxBitrate != 0 || minBitrate != 0;
