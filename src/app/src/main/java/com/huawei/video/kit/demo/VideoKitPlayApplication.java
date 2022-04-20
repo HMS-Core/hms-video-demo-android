@@ -18,55 +18,18 @@ package com.huawei.video.kit.demo;
 
 import android.app.Application;
 
-import com.huawei.hms.videokit.player.InitFactoryCallback;
-import com.huawei.hms.videokit.player.LogConfigInfo;
 import com.huawei.hms.videokit.player.WisePlayerFactory;
-import com.huawei.hms.videokit.player.WisePlayerFactoryOptionsExt;
-import com.huawei.video.kit.demo.utils.Constants;
-import com.huawei.video.kit.demo.utils.LogUtil;
 
 /**
  * Application
  */
 public class VideoKitPlayApplication extends Application {
-    private static final String TAG = VideoKitPlayApplication.class.getSimpleName();
-
     private static WisePlayerFactory wisePlayerFactory = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initPlayer();
     }
-
-    /**
-     * Init the player
-     */
-    private void initPlayer() {
-        // DeviceId test is used in the demo, specific access to incoming deviceId after encryption
-        WisePlayerFactoryOptionsExt.Builder factoryOptions =
-            new WisePlayerFactoryOptionsExt.Builder().setDeviceId("xxx");
-        LogConfigInfo logCfgInfo =
-            new LogConfigInfo(Constants.LEVEL_DEBUG, "", Constants.LOG_FILE_NUM, Constants.LOG_FILE_SIZE);
-        factoryOptions.setLogConfigInfo(logCfgInfo);
-        WisePlayerFactory.initFactory(this, factoryOptions.build(), initFactoryCallback);
-    }
-
-    /**
-     * Player initialization callback
-     */
-    private static InitFactoryCallback initFactoryCallback = new InitFactoryCallback() {
-        @Override
-        public void onSuccess(WisePlayerFactory wisePlayerFactory) {
-            LogUtil.i(TAG, "init player factory success");
-            setWisePlayerFactory(wisePlayerFactory);
-        }
-
-        @Override
-        public void onFailure(int errorCode, String reason) {
-            LogUtil.w(TAG, "init player factory fail reason :" + reason + ", errorCode is " + errorCode);
-        }
-    };
 
     /**
      * Get WisePlayer Factory
@@ -77,7 +40,7 @@ public class VideoKitPlayApplication extends Application {
         return wisePlayerFactory;
     }
 
-    private static void setWisePlayerFactory(WisePlayerFactory wisePlayerFactory) {
+    public static void setWisePlayerFactory(WisePlayerFactory wisePlayerFactory) {
         VideoKitPlayApplication.wisePlayerFactory = wisePlayerFactory;
     }
 

@@ -6,10 +6,10 @@ android {
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.huawei.video.kit.demo"
-        minSdkVersion 19
-        targetSdkVersion 30
-        versionCode 10010300
-        versionName "1.0.10.300"
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 10011300
+        versionName "1.0.11.300"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }

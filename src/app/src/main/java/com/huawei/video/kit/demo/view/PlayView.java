@@ -360,7 +360,7 @@ public class PlayView {
         fullScreenBt.setVisibility(View.VISIBLE);
         contentLayout.setVisibility(View.VISIBLE);
         currentPlayNameTv.setVisibility(View.INVISIBLE);
-		hiddenSwitchBitrateTextView();
+        hiddenSwitchBitrateTextView();
         currentPlayNameTv.setText(null);
     }
 

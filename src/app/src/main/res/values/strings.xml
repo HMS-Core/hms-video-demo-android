@@ -133,4 +133,5 @@
 
     <string name="speed">Speed</string>
     <string name="one_times_speed">1.0x</string>
+    <string name="wait_init_play">Please wait for player initialization to complete</string>
 </resources>

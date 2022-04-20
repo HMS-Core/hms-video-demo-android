@@ -124,4 +124,5 @@
 
     <string name="speed">倍速</string>
     <string name="one_times_speed">1.0x</string>
+    <string name="wait_init_play">请等待播放器初始化完成</string>
 </resources>

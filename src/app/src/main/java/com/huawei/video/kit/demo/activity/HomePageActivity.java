@@ -25,7 +25,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.huawei.hms.videokit.player.InitFactoryCallback;
+import com.huawei.hms.videokit.player.LogConfigInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
+import com.huawei.hms.videokit.player.WisePlayerFactory;
+import com.huawei.hms.videokit.player.WisePlayerFactoryOptionsExt;
 import com.huawei.hms.videokit.player.bean.recommend.RecommendOptions;
 import com.huawei.hms.videokit.player.bean.recommend.RecommendVideo;
 import com.huawei.hms.videokit.player.common.PlayerConstants.BandwidthSwitchMode;
@@ -86,6 +90,7 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
         setContentView(homePageView.getContentView());
         PermissionUtils.requestPermissionsIfNeed(this, new String[]{permission.WRITE_EXTERNAL_STORAGE},
                 MSG_REQUEST_WRITE_SDCARD);
+        initPlayer();
     }
 
     /**
@@ -122,6 +127,10 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
 
     @Override
     public void onItemClick(int pos) {
+        if (VideoKitPlayApplication.getWisePlayerFactory() == null) {
+            Toast.makeText(this, getString(R.string.wait_init_play), Toast.LENGTH_SHORT).show();
+            return;
+        }
         PlayEntity playEntity = homePageControl.getPlayFromPosition(pos);
         if (playEntity != null) {
             PlayActivity.startPlayActivity(this, playEntity);
@@ -381,4 +390,39 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
         }
         return super.dispatchKeyEvent(event);
     }
+
+    /**
+     * Init the player
+     */
+    private void initPlayer() {
+        // Initializing the player is best placed in a child thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // DeviceId test is used in the demo, specific access to incoming deviceId after encryption
+                WisePlayerFactoryOptionsExt.Builder factoryOptions =
+                    new WisePlayerFactoryOptionsExt.Builder().setDeviceId("xxx");
+                LogConfigInfo logCfgInfo =
+                    new LogConfigInfo(Constants.LEVEL_DEBUG, "", Constants.LOG_FILE_NUM, Constants.LOG_FILE_SIZE);
+                factoryOptions.setLogConfigInfo(logCfgInfo);
+                WisePlayerFactory.initFactory(HomePageActivity.this, factoryOptions.build(), initFactoryCallback);
+            }
+        }).start();
+    }
+
+    /**
+     * Player initialization callback
+     */
+    private static InitFactoryCallback initFactoryCallback = new InitFactoryCallback() {
+        @Override
+        public void onSuccess(WisePlayerFactory wisePlayerFactory) {
+            LogUtil.i(TAG, "init player factory success");
+            VideoKitPlayApplication.setWisePlayerFactory(wisePlayerFactory);
+        }
+
+        @Override
+        public void onFailure(int errorCode, String reason) {
+            LogUtil.w(TAG, "init player factory fail reason :" + reason + ", errorCode is " + errorCode);
+        }
+    };
 }
