@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.huawei.video.kit.demo"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 10011300
         versionName "1.0.11.300"
         ndk {
