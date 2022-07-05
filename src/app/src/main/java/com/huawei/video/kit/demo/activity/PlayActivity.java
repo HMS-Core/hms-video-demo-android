@@ -41,6 +41,8 @@ import android.widget.Toast;
 
 import com.huawei.hms.videokit.player.SubtitleTrackInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
+import com.huawei.hms.videokit.player.bean.PreviewPicture;
+import com.huawei.hms.videokit.player.bean.content.PictureItem;
 import com.huawei.hms.videokit.player.common.PlayerConstants;
 import com.huawei.hms.videokit.player.common.PlayerConstants.BandwidthSwitchMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.PlayMode;
@@ -193,11 +195,15 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
      */
     private Serializable getIntentExtra() {
         Intent intent = getIntent();
-        if (intent != null) {
-            return intent.getSerializableExtra(Constants.VIDEO_PLAY_DATA);
-        } else {
-            return null;
+        try {
+            if (intent != null) {
+                return intent.getSerializableExtra(Constants.VIDEO_PLAY_DATA);
+            }
+        } catch (Exception e) {
+            LogUtil.e(TAG, "getIntentExtra:" + e.getMessage());
         }
+
+        return null;
     }
 
     @Override
@@ -284,6 +290,21 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void onPreviewPicNotify(WisePlayer wisePlayer, PreviewPicture previewPicture) {
+        if (previewPicture != null && previewPicture.getPreviewPicture() != null) {
+            for (PictureItem pictureItem : previewPicture.getPreviewPicture()) {
+                if (pictureItem != null) {
+                    LogUtil.i(TAG, "pictureItem is not empty, need to parse the object to get data");
+                } else {
+                    LogUtil.i(TAG, "onPreviewPicNotify: pictureItem is null");
+                }
+            }
+        } else {
+            LogUtil.i(TAG, "onPreviewPicNotify return data is null");
         }
     }
 

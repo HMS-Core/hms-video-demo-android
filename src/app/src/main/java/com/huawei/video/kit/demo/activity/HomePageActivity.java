@@ -34,6 +34,7 @@ import com.huawei.hms.videokit.player.bean.recommend.RecommendOptions;
 import com.huawei.hms.videokit.player.bean.recommend.RecommendVideo;
 import com.huawei.hms.videokit.player.common.PlayerConstants.BandwidthSwitchMode;
 import com.huawei.hms.videokit.player.common.PlayerConstants.PlayMode;
+import com.huawei.hms.videokit.player.common.PlayerConstants.SeekMode;
 import com.huawei.video.kit.demo.R;
 import com.huawei.video.kit.demo.VideoKitPlayApplication;
 import com.huawei.video.kit.demo.contract.OnDialogConfirmListener;
@@ -183,6 +184,10 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
         showTextList.add(StringUtil.getStringFromResId(this, R.string.download_link_num));
         showTextList.add(StringUtil.getStringFromResId(this, R.string.set_wake_mode));
         showTextList.add(StringUtil.getStringFromResId(this, R.string.subtitle_render));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.init_player));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.release_player));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.seek_mode));
+        showTextList.add(StringUtil.getStringFromResId(this, R.string.resume_start_frame_mode));
         homePageView.showVideoTypeDialog(Constants.SET_HOME_SETTING, showTextList, 0);
     }
 
@@ -252,10 +257,14 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
         } else if (TextUtils.equals(itemSelect, getString(R.string.get_recommend_info))) {
             RecommendOptions recommendOptions = new RecommendOptions();
             recommendOptions.setLanguage("zh_CN");
-            VideoKitPlayApplication.getWisePlayerFactory()
-                .createWisePlayer()
-                .getRecommendVideoList("8859289", recommendOptions, "CgB6e3x9cDTitEyidsqxd/Q6cmh/" + PARMS_CONTEXT,
-                    recommendVideoCallback);
+            try {
+                VideoKitPlayApplication.getWisePlayerFactory()
+                    .createWisePlayer()
+                    .getRecommendVideoList("8859289", recommendOptions, "CgB6e3x9cDTitEyidsqxd/Q6cmh/" + PARMS_CONTEXT,
+                        recommendVideoCallback);
+            } catch (Exception e) {
+                LogUtil.w(TAG, "Obtain recommendations error:" + e.getMessage());
+            }
         } else if (TextUtils.equals(itemSelect, getString(R.string.video_set_alg_para))) {
             DialogUtil.setInitBufferTimeStrategy(this);
         } else if (TextUtils.equals(itemSelect, getString(R.string.subtitle_preset_language_setting))) {
@@ -281,7 +290,21 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
             list.add(getResources().getString(R.string.subtitle_render_player));
             list.add(getResources().getString(R.string.subtitle_render_demo));
             homePageView.showVideoTypeDialog(Constants.SET_SUBTITLE_RENDER_MODE, list,
-                    PlayControlUtil.isSubtitleRenderByDemo() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
+                PlayControlUtil.isSubtitleRenderByDemo() ? Constants.DIALOG_INDEX_TWO : Constants.DIALOG_INDEX_ONE);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.init_player))) {
+            initPlayer();
+        } else if (TextUtils.equals(itemSelect, getString(R.string.release_player))) {
+            VideoKitPlayApplication.release(this);
+        } else if (TextUtils.equals(itemSelect, getString(R.string.seek_mode))) {
+            list.clear();
+            list.add(getResources().getString(R.string.seek_previous_sync));
+            list.add(getResources().getString(R.string.seek_closest));
+            homePageView.showVideoTypeDialog(Constants.SET_SEEK_MODE, list, PlayControlUtil.getSeekMode());
+        } else if (TextUtils.equals(itemSelect, getString(R.string.resume_start_frame_mode))) {
+            list.clear();
+            list.add(getResources().getString(R.string.seek_previous_sync));
+            list.add(getResources().getString(R.string.seek_closest));
+            homePageView.showVideoTypeDialog(Constants.SET_RESUME_START_FRAME_MODE, list, PlayControlUtil.getResumeStartFrameMode());
         } else {
             LogUtil.i(TAG, "unavailable type");
         }
@@ -375,6 +398,24 @@ public class HomePageActivity extends AppCompatActivity implements OnHomePageLis
                 break;
             case Constants.SET_HOME_SETTING:
                 doSetting(itemSelect);
+                break;
+            case Constants.SET_SEEK_MODE:
+                if (TextUtils.equals(itemSelect, getResources().getString(R.string.seek_previous_sync))) {
+                    LogUtil.i(TAG, "set preview picture listener");
+                    PlayControlUtil.setSeekMode(SeekMode.PREVIOUS_SYNC);
+                } else {
+                    LogUtil.i(TAG, "cancel preview picture listener");
+                    PlayControlUtil.setSeekMode(SeekMode.CLOSEST);
+                }
+                break;
+            case Constants.SET_RESUME_START_FRAME_MODE:
+                if (TextUtils.equals(itemSelect, getResources().getString(R.string.seek_previous_sync))) {
+                    LogUtil.i(TAG, "set preview picture listener");
+                    PlayControlUtil.setResumeStartFrameMode(SeekMode.PREVIOUS_SYNC);
+                } else {
+                    LogUtil.i(TAG, "cancel preview picture listener");
+                    PlayControlUtil.setResumeStartFrameMode(SeekMode.CLOSEST);
+                }
                 break;
             default:
                 break;

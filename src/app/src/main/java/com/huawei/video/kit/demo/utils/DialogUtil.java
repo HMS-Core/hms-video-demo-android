@@ -311,22 +311,26 @@ public class DialogUtil {
         okBt.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Preloader preloader = VideoKitPlayApplication.getWisePlayerFactory().createPreloader();
-                if (preloader != null && !TextUtils.isEmpty(bitrateMinSetting.getText())
-                    && !TextUtils.isEmpty(bitrateMaxSetting.getText())) {
-                    PlayControlUtil.setPreloader(preloader);
-                    String path = bitrateMinSetting.getText().toString();
-                    if (FileUtil.createFile(path)) {
-                        int size = Integer.parseInt(bitrateMaxSetting.getText().toString());
-                        int result = preloader.initCache(path, size);
-                        PlayControlUtil.setInitResult(result);
-                    } else {
-                        Toast.makeText(context, context.getString(R.string.create_file_fail), Toast.LENGTH_SHORT)
-                            .show();
+                try {
+                    Preloader preloader = VideoKitPlayApplication.getWisePlayerFactory().createPreloader();
+                    if (preloader != null && !TextUtils.isEmpty(bitrateMinSetting.getText())
+                        && !TextUtils.isEmpty(bitrateMaxSetting.getText())) {
+                        PlayControlUtil.setPreloader(preloader);
+                        String path = bitrateMinSetting.getText().toString();
+                        if (FileUtil.createFile(path)) {
+                            int size = Integer.parseInt(bitrateMaxSetting.getText().toString());
+                            int result = preloader.initCache(path, size);
+                            PlayControlUtil.setInitResult(result);
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.create_file_fail), Toast.LENGTH_SHORT)
+                                .show();
+                        }
                     }
+                    onDialogConfirmListener.onConfirm();
+                    dialog.dismiss();
+                } catch (Exception e) {
+                    LogUtil.d(TAG, "init preload error:" + e.getMessage());
                 }
-                onDialogConfirmListener.onConfirm();
-                dialog.dismiss();
             }
         });
         cancelBt.setOnClickListener(new OnClickListener() {

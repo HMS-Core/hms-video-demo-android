@@ -125,4 +125,11 @@
     <string name="speed">倍速</string>
     <string name="one_times_speed">1.0x</string>
     <string name="wait_init_play">请等待播放器初始化完成</string>
+    <string name="init_player">初始化播放器</string>
+    <string name="release_player">释放播放器</string>
+    <string name="need_init_player">需要初始化播放器</string>
+    <string name="seek_mode">seek模式</string>
+    <string name="seek_previous_sync">前一个关键帧</string>
+    <string name="seek_closest">精确帧</string>
+    <string name="resume_start_frame_mode">恢复播放起始帧模式</string>
 </resources>

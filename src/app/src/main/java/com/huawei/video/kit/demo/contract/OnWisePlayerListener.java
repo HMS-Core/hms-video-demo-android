@@ -23,8 +23,8 @@ import com.huawei.hms.videokit.player.WisePlayer;
 /**
  * Player SDK support to listener events
  */
-public interface OnWisePlayerListener extends WisePlayer.ErrorListener, WisePlayer.ReadyListener,
-    WisePlayer.EventListener, WisePlayer.PlayEndListener, WisePlayer.ResolutionUpdatedListener,
-    WisePlayer.SeekEndListener, WisePlayer.LoadingListener, OnSeekBarChangeListener,
-    WisePlayer.SubtitleUpdateListener {
+public interface OnWisePlayerListener
+    extends WisePlayer.ErrorListener, WisePlayer.ReadyListener, WisePlayer.EventListener, WisePlayer.PlayEndListener,
+    WisePlayer.ResolutionUpdatedListener, WisePlayer.SeekEndListener, WisePlayer.LoadingListener,
+    OnSeekBarChangeListener, WisePlayer.SubtitleUpdateListener, WisePlayer.PreviewPicListener {
 }

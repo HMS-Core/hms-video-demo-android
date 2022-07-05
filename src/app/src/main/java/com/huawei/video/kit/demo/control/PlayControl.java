@@ -111,6 +111,7 @@ public class PlayControl {
             wisePlayer.setLoadingListener(onWisePlayerListener);
             wisePlayer.setPlayEndListener(onWisePlayerListener);
             wisePlayer.setSeekEndListener(onWisePlayerListener);
+            wisePlayer.setPreviewPicListener(onWisePlayerListener);
             if (PlayControlUtil.isSubtitleRenderByDemo()) {
                 wisePlayer.setSubtitleUpdateListener(onWisePlayerListener);
             } else {
@@ -137,7 +138,11 @@ public class PlayControl {
         if (VideoKitPlayApplication.getWisePlayerFactory() == null) {
             return;
         }
-        wisePlayer = VideoKitPlayApplication.getWisePlayerFactory().createWisePlayer();
+        try {
+            wisePlayer = VideoKitPlayApplication.getWisePlayerFactory().createWisePlayer();
+        } catch (Exception e) {
+            LogUtil.w(TAG, "Create wisePlayer error:" + e.getMessage());
+        }
     }
 
     /**
@@ -174,6 +179,7 @@ public class PlayControl {
                 setHttpVideo(true);
                 wisePlayer.setPlayUrl(new String[] {currentPlayData.getUrl()});
             }
+            setPreciseSeeking(PlayControlUtil.getResumeStartFrameMode() == PlayerConstants.SeekMode.CLOSEST);
             setProxyInfo();
             setDownloadLink();
             setBookmark(Constants.DEFAULT_BOOKMARK_VALUE);
@@ -233,7 +239,11 @@ public class PlayControl {
      */
     public void updateCurProgress(int progress) {
         if (wisePlayer != null) {
-            wisePlayer.seek(progress);
+            if (PlayControlUtil.getSeekMode() == PlayerConstants.SeekMode.CLOSEST) {
+                wisePlayer.seek(progress, PlayerConstants.SeekMode.CLOSEST);
+            } else if (PlayControlUtil.getSeekMode() == PlayerConstants.SeekMode.PREVIOUS_SYNC) {
+                wisePlayer.seek(progress);
+            }
         } else {
             LogUtil.i(TAG, "wisePlayer is null, seek fail.");
         }
@@ -1060,6 +1070,20 @@ public class PlayControl {
             return wisePlayer.isPlaying();
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Set the front and background switching, pure tone audio-visual mode, and whether the precise seek mode is adopted
+     *
+     * @param enable True: adopt the exact seek method false: back to the previous key frame
+     */
+    public void setPreciseSeeking(boolean enable) {
+        if (wisePlayer != null) {
+            wisePlayer.setProperties(PlayerConstants.Properties.RESUME_START_FRAME_MODE,
+                enable ? PlayerConstants.SeekMode.CLOSEST : PlayerConstants.SeekMode.PREVIOUS_SYNC);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, setPreciseSeeking fail.");
         }
     }
 }

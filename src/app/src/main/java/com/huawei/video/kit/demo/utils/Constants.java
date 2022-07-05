@@ -175,6 +175,16 @@ public class Constants {
     public static final int SET_HOME_SETTING = 15;
 
     /**
+     * Set seek mode
+     */
+    public static final int SET_SEEK_MODE = 16;
+
+    /**
+     * Set resume start frame mode
+     */
+    public static final int SET_RESUME_START_FRAME_MODE = 17;
+
+    /**
      * The first options dialog
      */
     public static final int DIALOG_INDEX_ONE = 0;

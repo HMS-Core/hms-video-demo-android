@@ -17,6 +17,7 @@
 package com.huawei.video.kit.demo;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.huawei.hms.videokit.player.WisePlayerFactory;
 
@@ -44,4 +45,7 @@ public class VideoKitPlayApplication extends Application {
         VideoKitPlayApplication.wisePlayerFactory = wisePlayerFactory;
     }
 
+    public static void release(Context context) {
+        WisePlayerFactory.release(context);
+    }
 }
