@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">HdrVividDemo</string>
+    <string name="video_control_play">播放</string>
+    <string name="video_control_pause">暂停</string>
+    <string name="video_control_stop">停止</string>
+
+    <string name="setting_api_type">接口类型</string>
+    <string name="setting_input_mode">输入模式</string>
+    <string name="setting_output_mode">输出模式</string>
+    <string name="setting_output_color_space">输出色彩空间</string>
+    <string name="setting_output_color_format">输出颜色格式</string>
+    <string name="setting_brightness">显示亮度</string>
+    <string name="setting_choose_file">选择播放文件</string>
+    <string name="setting_start_play">开始播放</string>
+
+    <string name="setting_brightness_tip">(输入范围0~2147483647)</string>
+
+    <string name="tab_title_native_interface">Native接口</string>
+    <string name="tab_title_java_interface">Java接口</string>
+    <string name="tab_title_brightness_interface">亮度接口</string>
+
+    <string name="etof_type">光电转换函数</string>
+
+    <string name="resolution">分辨率</string>
+    <string name="frame_rate">帧率</string>
+    <string name="total_frames">总帧数</string>
+    <string name="btn_info_show">显示信息</string>
+    <string name="btn_info_hide">隐藏信息</string>
+
+    <string name="progress">进度</string>
+
+    <string name="setting_brightness_info">接口返回信息：</string>
+</resources>

@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">HdrVividDemo</string>
+    <string name="video_control_play">Play</string>
+    <string name="video_control_pause">Pause</string>
+    <string name="video_control_stop">Stop</string>
+
+    <string name="setting_api_type">API TYPE</string>
+    <string name="setting_input_mode">Input Mode</string>
+    <string name="setting_output_mode">Output Mode</string>
+    <string name="setting_output_color_space">Output ColorSpace</string>
+    <string name="setting_output_color_format">Output ColorFormat</string>
+    <string name="setting_brightness">Brightness</string>
+    <string name="setting_choose_file">Choose MP4 File</string>
+    <string name="setting_start_play">Start Play</string>
+
+    <string name="setting_brightness_tip">(Input Range: 0~2147483647)</string>
+
+    <string name="tab_title_native_interface">Native API</string>
+    <string name="tab_title_java_interface">Java API</string>
+    <string name="tab_title_brightness_interface">Brightness API</string>
+
+    <string name="etof_type">EOTF type</string>
+
+    <string name="resolution">Resolution</string>
+
+    <string name="progress">Progress</string>
+
+    <string name="frame_rate">Frame Rate</string>
+    <string name="total_frames">Total Frames</string>
+
+    <string name="btn_info_show">Show Info</string>
+    <string name="btn_info_hide">Hide Info</string>
+
+    <string name="setting_brightness_info">Information：</string>
+</resources>
