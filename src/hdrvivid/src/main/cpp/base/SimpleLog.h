@@ -10,7 +10,7 @@
 #include <android/log.h>
 #include <stdint.h>
 
-static const char *const TAG = "HVDemo";
+const char *const TAG = "HVDemo";
 
 #define LOGV(...)   __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
 #define LOGD(...)   __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
@@ -18,6 +18,8 @@ static const char *const TAG = "HVDemo";
 #define LOGW(...)   __android_log_print(ANDROID_LOG_WARN, TAG, __VA_ARGS__)
 #define LOGE(...)   __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 #define LOGF(...)   __android_log_print(ANDROID_LOG_FATAL, TAG, __VA_ARGS__)
+
+int HdrVividLog(int level, const char *avcl, const char *fmt, const va_list vl);
 
 void EasyWriteFile(const char *filePath, const uint8_t *data, int32_t size);
 

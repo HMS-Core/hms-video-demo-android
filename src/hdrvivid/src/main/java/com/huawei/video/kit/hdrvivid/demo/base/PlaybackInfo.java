@@ -5,17 +5,17 @@
 package com.huawei.video.kit.hdrvivid.demo.base;
 
 public class PlaybackInfo {
-    private long ptsUs = 0;
+    private long ptsUs = 0L;
 
     private int totalNum = 0;
 
-    private long startTime = 0;
+    private long startTime = 0L;
 
-    private long statsTime = 0;
+    private long statsTime = 0L;
 
     private int statsNum = 0;
 
-    private float frameRate = 0;
+    private float frameRate = 0.0f;
 
     public float getFrameRate() {
         return frameRate;

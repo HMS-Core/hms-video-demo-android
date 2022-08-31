@@ -9,11 +9,11 @@
     <string name="setting_output_mode">Output Mode</string>
     <string name="setting_output_color_space">Output ColorSpace</string>
     <string name="setting_output_color_format">Output ColorFormat</string>
-    <string name="setting_brightness">Brightness</string>
+    <string name="setting_brightness">Alternative Brightness</string>
     <string name="setting_choose_file">Choose MP4 File</string>
     <string name="setting_start_play">Start Play</string>
 
-    <string name="setting_brightness_tip">(Input Range: 0~2147483647)</string>
+    <string name="setting_brightness_tip">(Input Range: 203~10000)</string>
 
     <string name="tab_title_native_interface">Native API</string>
     <string name="tab_title_java_interface">Java API</string>
@@ -27,7 +27,10 @@
 
     <string name="frame_rate">Frame Rate</string>
     <string name="total_frames">Total Frames</string>
-
+    <string name="btn_hdr_layer">Hdr Layer</string>
+    <string name="btn_hdr_layer_resume">Hdr Layer Resume</string>
+    <string name="btn_caption_layer">Caption Layer</string>
+    <string name="btn_caption_layer_resume">Caption Layer Resume</string>
     <string name="btn_info_show">Show Info</string>
     <string name="btn_info_hide">Hide Info</string>
 

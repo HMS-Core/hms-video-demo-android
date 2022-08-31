@@ -32,6 +32,8 @@ public class SimpleErrorUtils {
 
     public static final int SIMPLE_ERR_MEDIACODEC_INIT_FAILED = 10006;
 
+    public static final int SIMPLE_ERR_HDR_ABILITY_NOT_SUPPORT = 10007;
+
     public static final int SIMPLE_INFO_RENDER_NOT_SUPPORT = 10100;
 
     public static final Map<Integer, String> ERR_MAP = new HashMap<Integer, String>() {
@@ -43,6 +45,7 @@ public class SimpleErrorUtils {
             put(SIMPLE_ERR_WRONG_INPUT_PARAM, "Wrong input param");
             put(SIMPLE_ERR_FORMAT_NOT_SUPPORT, "Video source file format not support");
             put(SIMPLE_ERR_MEDIACODEC_INIT_FAILED, "MediaCodec init failed");
+            put(SIMPLE_ERR_HDR_ABILITY_NOT_SUPPORT, "HDR ability not support");
             put(SIMPLE_INFO_RENDER_NOT_SUPPORT,
                 "Rendering only supported RGBA format image in this demo project, You can check the files in the output directory.");
         }

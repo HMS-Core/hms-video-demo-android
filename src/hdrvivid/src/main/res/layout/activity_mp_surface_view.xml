@@ -15,6 +15,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
+        android:gravity="left|top"
+        android:orientation="horizontal">
+
+        <com.huawei.video.kit.hdrvivid.demo.ui.CaptionView
+            android:id="@+id/my_caption_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"></com.huawei.video.kit.hdrvivid.demo.ui.CaptionView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
         android:gravity="right|top"
         android:orientation="horizontal">
 
@@ -52,12 +66,11 @@
             android:text="@string/video_control_stop"
             android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/mp_surface_btn_info"
+        <Spinner
+            android:id="@+id/brightness_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.5"
-            android:text="@string/btn_info_show"
-            android:textAllCaps="false" />
+            android:alpha="0.5"></Spinner>
+
     </LinearLayout>
 </RelativeLayout>

@@ -16,6 +16,7 @@
 void *SimpleGLThread(void *argv);
 
 constexpr int32_t SIMPLE_PLAYER_SLEEP_US = 5 * 1000;
+constexpr int32_t SIMPLE_PLAYER_SIZE_MAX = 8192 * 4096 * 4;
 
 class SimplePlayer {
 public:

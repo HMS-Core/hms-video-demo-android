@@ -52,6 +52,7 @@ public class DeviceUtil {
 
     /**
      * Whether the full screen
+     * 
      * @param activity activity
      * @return boolean Whether the full screen
      */
@@ -59,7 +60,8 @@ public class DeviceUtil {
         if (activity == null) {
             return false;
         }
-        if ((activity.getWindow().getAttributes().flags & LayoutParams.FLAG_FULLSCREEN)== LayoutParams.FLAG_FULLSCREEN) {
+        if ((activity.getWindow().getAttributes().flags
+            & LayoutParams.FLAG_FULLSCREEN) == LayoutParams.FLAG_FULLSCREEN) {
             return true;
         } else {
             return false;

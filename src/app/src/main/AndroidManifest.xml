@@ -28,7 +28,8 @@
         <activity
             android:name=".activity.HomePageActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,6 +41,13 @@
             android:name=".activity.PlayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SmallVideoActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

@@ -6,13 +6,11 @@ package com.huawei.video.kit.hdrvivid.demo;
 
 import java.nio.ByteBuffer;
 
-import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.Surface;
 
 import com.huawei.video.kit.hdrvivid.demo.base.SimplePacket;
-import com.huawei.video.kit.hdrvivid.demo.utils.DeviceUtils;
 import com.huawei.video.kit.hdrvivid.demo.utils.SimpleErrorUtils;
 import com.huawei.video.kit.hdrvivid.demo.utils.SimpleSetting;
 import com.huawei.video.kit.hdrvivid.demo.utils.VideoInfoUtils;
@@ -58,7 +56,6 @@ public class SimpleJni {
         }
 
         nativeInit(simpleSetting);
-        nativeSetScreenHdr(isScreenHdr);
         status = true;
     }
 
@@ -212,12 +209,4 @@ public class SimpleJni {
     public native void nativeRender(ByteBuffer buffer, int dataSize);
 
     public native void nativeStopRender();
-
-    // Native Ability
-
-    public native String nativeGetSupportedHdrType();
-
-    public native boolean nativeSetHdrAbility(boolean status);
-
-    public native void nativeSetScreenHdr(boolean isScreenHdr);
 }

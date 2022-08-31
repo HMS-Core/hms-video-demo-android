@@ -2,8 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
-def sdkVersionCode = 10012300
-def sdkVersionName = "1.0.12.300"
+def sdkVersionCode = 10013300
+def sdkVersionName = "1.0.13.300"
 
 android {
     compileSdkVersion 31
@@ -69,4 +69,6 @@ dependencies {
 
     // maven depend
     implementation "com.huawei.hms:videokit-hdrvivid:${android.defaultConfig.versionName}"
+    implementation "com.huawei.hms:videokit-hdrability:${android.defaultConfig.versionName}"
+
 }

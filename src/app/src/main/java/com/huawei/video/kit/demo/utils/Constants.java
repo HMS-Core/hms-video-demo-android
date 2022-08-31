@@ -28,16 +28,16 @@ public class Constants {
     /**
      * The delay time
      */
-    public static final long DELAY_MILLIS_500 = 500;
+    public static final long DELAY_MILLIS_500 = 500L;
 
-    public static final long DELAY_MILLIS_3000 = 3000;
+    public static final long DELAY_MILLIS_3000 = 3000L;
 
-    public static final long DELAY_MILLIS_1000 = 1000;
+    public static final long DELAY_MILLIS_1000 = 1000L;
 
     /**
      * Under the vertical screen SurfaceView height
      */
-    public static final float HEIGHT_DP = 300;
+    public static final float HEIGHT_DP = 300.0f;
 
     /**
      * present Current Position
@@ -112,7 +112,7 @@ public class Constants {
     /**
      * Get Audio track
      */
-    public static final int PLAYER_GET_AUDIO_TRACKS = 17; 
+    public static final int PLAYER_GET_AUDIO_TRACKS = 17;
 
     /**
      * Switch Audio track

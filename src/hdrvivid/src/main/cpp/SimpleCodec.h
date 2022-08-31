@@ -38,7 +38,7 @@ public:
 private:
     void ThreadMc();
 
-    AMediaCodec *InitMc();
+    AMediaCodec *InitMc(SimpleExtractor *se);
 
     void RefreshStaticMetaData(SimplePacket *simplePacket);
 

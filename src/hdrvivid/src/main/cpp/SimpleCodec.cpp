@@ -116,17 +116,19 @@ void SimpleCodec::ThreadMc()
 {
     LOGI("%s begin", __FUNCTION__);
 
-    AMediaCodec *mc = InitMc();
-    if (mc == nullptr) {
-        LOGI("%s init mediacodec failed", __FUNCTION__);
-        return;
-    }
-
     auto *se = new SimpleExtractor();
     if (!se->Open(m_filePath.c_str())) {
         LOGW("%s open file failed, filePath=%s", __FUNCTION__, m_filePath.c_str());
+        se->Close();
         delete se;
-        AMediaCodec_delete(mc);
+        return;
+    }
+
+    AMediaCodec *mc = InitMc(se);
+    if (mc == nullptr) {
+        LOGI("%s init mediacodec failed", __FUNCTION__);
+        se->Close();
+        delete se;
         return;
     }
 
@@ -218,7 +220,7 @@ void SimpleCodec::ThreadMc()
     LOGI("%s end", __FUNCTION__);
 }
 
-AMediaCodec *SimpleCodec::InitMc()
+AMediaCodec *SimpleCodec::InitMc(SimpleExtractor *se)
 {
     AMediaCodec *mc = AMediaCodec_createCodecByName(m_decoderName.c_str());
     if (mc == nullptr) {
@@ -226,14 +228,35 @@ AMediaCodec *SimpleCodec::InitMc()
         return nullptr;
     }
 
-    media_status_t status = AMEDIA_OK;
-
     AMediaFormat *mf = AMediaFormat_new();
     AMediaFormat_setString(mf, AMEDIAFORMAT_KEY_MIME, mimeHevc);
     AMediaFormat_setInt32(mf, AMEDIAFORMAT_KEY_WIDTH, m_width);
     AMediaFormat_setInt32(mf, AMEDIAFORMAT_KEY_HEIGHT, m_height);
 
-    status = AMediaCodec_configure(mc, mf, m_surface, nullptr, 0);
+    AMediaFormat *srcMf = se->GetMediaFormat();
+    if (srcMf != nullptr) {
+        void *csdData{nullptr};
+        size_t csdSize{0};
+
+        if (AMediaFormat_getBuffer(srcMf, AMEDIAFORMAT_KEY_CSD, &csdData, &csdSize)) {
+            LOGI("%s get CSD, size=%zu", __FUNCTION__, csdSize);
+            AMediaFormat_setBuffer(mf, AMEDIAFORMAT_KEY_CSD, csdData, csdSize);
+        }
+        if (AMediaFormat_getBuffer(srcMf, AMEDIAFORMAT_KEY_CSD_0, &csdData, &csdSize)) {
+            LOGI("%s get CSD_0, size=%zu", __FUNCTION__, csdSize);
+            AMediaFormat_setBuffer(mf, AMEDIAFORMAT_KEY_CSD_0, csdData, csdSize);
+        }
+        if (AMediaFormat_getBuffer(srcMf, AMEDIAFORMAT_KEY_CSD_1, &csdData, &csdSize)) {
+            LOGI("%s get CSD_1, size=%zu", __FUNCTION__, csdSize);
+            AMediaFormat_setBuffer(mf, AMEDIAFORMAT_KEY_CSD_1, csdData, csdSize);
+        }
+        if (AMediaFormat_getBuffer(srcMf, AMEDIAFORMAT_KEY_CSD_2, &csdData, &csdSize)) {
+            LOGI("%s get CSD_2, size=%zu", __FUNCTION__, csdSize);
+            AMediaFormat_setBuffer(mf, AMEDIAFORMAT_KEY_CSD_2, csdData, csdSize);
+        }
+    }
+
+    media_status_t status = AMediaCodec_configure(mc, mf, m_surface, nullptr, 0);
     if (status != AMEDIA_OK) {
         LOGW("%s config mediacodec failed", __FUNCTION__);
         AMediaFormat_delete(mf);

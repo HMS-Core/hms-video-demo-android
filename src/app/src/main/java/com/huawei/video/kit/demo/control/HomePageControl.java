@@ -239,6 +239,7 @@ public class HomePageControl {
 
     /**
      * Set whether to use single connection Download
+     * 
      * @param isDownloadLinkSingle Whether to use single connection Download
      */
     public void setDownloadLink(boolean isDownloadLinkSingle) {
@@ -247,6 +248,7 @@ public class HomePageControl {
 
     /**
      * Set whether to keep wake up
+     * 
      * @param isWakeOn whether to keep wake up
      */
     public void setWakeMode(boolean isWakeOn) {
@@ -255,6 +257,7 @@ public class HomePageControl {
 
     /**
      * Set subtitle render mode
+     * 
      * @param isRenderByDemo wheather to render by Demo
      */
     public void setSubtitleRenderByDemo(boolean isRenderByDemo) {

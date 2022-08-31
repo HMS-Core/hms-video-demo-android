@@ -4,8 +4,12 @@
 
 package com.huawei.video.kit.hdrvivid.demo.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,12 +17,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.huawei.hms.videokit.hdrability.ability.HdrAbility;
 import com.huawei.hms.videokit.hdrvivid.render.HdrVividRender;
 import com.huawei.video.kit.hdrvivid.demo.R;
 import com.huawei.video.kit.hdrvivid.demo.SimpleProcessor;
@@ -36,11 +44,15 @@ import com.huawei.video.kit.hdrvivid.demo.utils.VideoInfoUtils;
 public class SimplePreview extends AppCompatActivity {
     private static final String TAG = "SimplePreview";
 
+    private static final long DELAY_MILLIS = 100L;
+
     Handler handler = new Handler();
 
     private boolean isShowInfo = false;
 
     private SurfaceView surfaceView;
+
+    private CaptionView captionView;
 
     private SurfaceHolder surfaceHolder;
 
@@ -48,13 +60,11 @@ public class SimplePreview extends AppCompatActivity {
 
     private Button btnStop;
 
-    private Button btnInfo;
-
     private TextView textViewVideoInfo;
 
-    private SimpleProcessor simpleProcessor = null;
+    private Spinner brightnessSpinner;
 
-    private final long DELAY_MILLIS = 100;
+    private SimpleProcessor simpleProcessor = null;
 
     Runnable runnable = new Runnable() {
         @Override
@@ -99,16 +109,21 @@ public class SimplePreview extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (SimpleSetting.getInstance().getOutputMode() == Constants.OUT_MODE_BUFFER) {
-            changeSurfaceViewSize(VideoInfoUtils.getInstance().getVideoInfo().getWidth(),
-                VideoInfoUtils.getInstance().getVideoInfo().getHeight());
-        }
+        changeSurfaceViewSize(VideoInfoUtils.getInstance().getVideoInfo().getWidth(),
+            VideoInfoUtils.getInstance().getVideoInfo().getHeight());
 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
             || newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (simpleProcessor.status == SimpleProcessor.STATUS_PAUSEED) {
                 simpleProcessor.resumePlay();
                 btnPlay.setText(getApplicationContext().getString(R.string.video_control_pause));
+            }
+
+            // Avoid the layout misalignment during rotation.
+            if (brightnessSpinner.getSelectedItemId() == 2) {
+                brightnessSpinner.setSelection(3);
+            } else {
+                brightnessSpinner.setSelection(2);
             }
         }
     }
@@ -134,24 +149,27 @@ public class SimplePreview extends AppCompatActivity {
         surfaceView = findViewById(R.id.my_surface_view);
         btnPlay = findViewById(R.id.mp_surface_btn_play);
         btnStop = findViewById(R.id.mp_surface_btn_stop);
-        btnInfo = findViewById(R.id.mp_surface_btn_info);
+        brightnessSpinner = findViewById(R.id.brightness_spinner);
         textViewVideoInfo = findViewById(R.id.play_info);
         textViewVideoInfo.getBackground().setAlpha(0);
+
+        captionView = findViewById(R.id.my_caption_view);
+        captionView.setZOrderOnTop(true);
+        captionView.getHolder().setFormat(PixelFormat.TRANSPARENT);
 
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 Log.d(TAG, "surfaceCreated, apiType: " + SimpleSetting.getInstance().getApiType());
+                simpleProcessor.initHdrAbility(surfaceView);
 
                 simpleProcessor.init(getApplicationContext());
 
                 simpleProcessor.setOutputSurface(surfaceView);
 
-                if (SimpleSetting.getInstance().getOutputMode() == Constants.OUT_MODE_BUFFER) {
-                    changeSurfaceViewSize(VideoInfoUtils.getInstance().getVideoInfo().getWidth(),
-                        VideoInfoUtils.getInstance().getVideoInfo().getHeight());
-                }
+                changeSurfaceViewSize(VideoInfoUtils.getInstance().getVideoInfo().getWidth(),
+                    VideoInfoUtils.getInstance().getVideoInfo().getHeight());
 
                 simpleProcessor.startPlay();
 
@@ -171,6 +189,7 @@ public class SimplePreview extends AppCompatActivity {
                 simpleProcessor.stopPlay();
                 simpleProcessor.release();
                 stopShowVideoInfo();
+                simpleProcessor.releaseHdrAbility();
                 Log.d(TAG, "surfaceDestroyed end");
             }
         });
@@ -188,17 +207,6 @@ public class SimplePreview extends AppCompatActivity {
             }
         });
 
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isShowInfo) {
-                    hideVideoInfo();
-                } else {
-                    showVideoInfo();
-                }
-            }
-        });
-
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,17 +216,61 @@ public class SimplePreview extends AppCompatActivity {
                 finish();
             }
         });
+
+        List<String> actions = new ArrayList<>();
+        actions.add(getApplicationContext().getString(R.string.btn_hdr_layer));
+        actions.add(getApplicationContext().getString(R.string.btn_hdr_layer_resume));
+        actions.add(getApplicationContext().getString(R.string.btn_caption_layer));
+        actions.add(getApplicationContext().getString(R.string.btn_caption_layer_resume));
+        actions.add(getApplicationContext().getString(R.string.btn_info_show));
+        actions.add(getApplicationContext().getString(R.string.btn_info_hide));
+        ArrayAdapter<String> adapter =
+            new ArrayAdapter<>(getApplicationContext(), R.layout.action_spinner_item, actions);
+        brightnessSpinner.setAdapter(adapter);
+        brightnessSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        HdrAbility.setHdrLayer(surfaceView, true);
+                        break;
+                    case 1:
+                        HdrAbility.setHdrLayer(surfaceView, false);
+                        break;
+                    case 2:
+                        HdrAbility.setCaptionsLayer(captionView, 1.5f);
+                        break;
+                    case 3:
+                        HdrAbility.setCaptionsLayer(captionView, 1.0f);
+                        break;
+                    case 4:
+                        showVideoInfo();
+                        break;
+                    case 5:
+                        hideVideoInfo();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void hideVideoInfo() {
         textViewVideoInfo.setVisibility(View.INVISIBLE);
-        btnInfo.setText(getApplicationContext().getString(R.string.btn_info_show));
+        captionView.setVisibility(View.INVISIBLE);
         isShowInfo = false;
     }
 
     private void showVideoInfo() {
         textViewVideoInfo.setVisibility(View.VISIBLE);
-        btnInfo.setText(getApplicationContext().getString(R.string.btn_info_hide));
+        captionView.setVisibility(View.VISIBLE);
+        captionView.draw();
         isShowInfo = true;
         handler.post(runnable);
     }

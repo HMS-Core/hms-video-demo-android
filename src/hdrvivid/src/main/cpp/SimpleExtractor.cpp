@@ -56,7 +56,7 @@ bool SimpleExtractor::Open(const char *filePath)
         return false;
     }
     fseek(m_fp, 0, SEEK_END);
-    int32_t fileSize = ftell(m_fp);
+    int64_t fileSize = ftell(m_fp);
     fseek(m_fp, 0, SEEK_SET);
 
     if (m_me != nullptr) {
@@ -181,6 +181,11 @@ bool SimpleExtractor::IsEof() const
 int64_t SimpleExtractor::GetDurationUs() const
 {
     return m_durationUs;
+}
+
+AMediaFormat *SimpleExtractor::GetMediaFormat() const
+{
+    return m_mf;
 }
 
 bool SimpleExtractor::SetTrc()

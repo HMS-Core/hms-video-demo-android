@@ -52,6 +52,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class DialogUtil {
     private static final String TAG = "DialogUtil";
+
     /**
      * Set Bitrate dialog
      *
@@ -139,7 +140,7 @@ public class DialogUtil {
     }
 
     /**
-     *  Play activity Gettings dialog
+     * Play activity Gettings dialog
      *
      * @param context Context
      * @param gettingType Get the play type
@@ -259,9 +260,9 @@ public class DialogUtil {
     public static void showSubtitlePresetLanguageDialog(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.subtitle_preset_language_dialog, null);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(StringUtil.getStringFromResId(context, R.string.subtitle_preset_language_setting_title))
-                .setView(view)
-                .create();
+            .setTitle(StringUtil.getStringFromResId(context, R.string.subtitle_preset_language_setting_title))
+            .setView(view)
+            .create();
         dialog.show();
         final EditText subtitleLanguageSetting = (EditText) view.findViewById(R.id.subtitle_language_setting);
         Button okBt = (Button) view.findViewById(R.id.set_volume_bt_ok);
@@ -423,9 +424,9 @@ public class DialogUtil {
     public static void setInitBufferTimeStrategy(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.set_alg_para, null);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(StringUtil.getStringFromResId(context, R.string.video_set_alg_para))
-                .setView(view)
-                .create();
+            .setTitle(StringUtil.getStringFromResId(context, R.string.video_set_alg_para))
+            .setView(view)
+            .create();
         dialog.show();
         AtomicInteger maxBufferTime = new AtomicInteger();
         StringBuilder stringBuilder = new StringBuilder();
@@ -456,7 +457,8 @@ public class DialogUtil {
             stringBuilder.append("-");
             stringBuilder.append(topDelay);
             stringBuilder.append(",");
-            downloadMultipleZones.add(new InitBufferTimeStrategy.DownloadMultipleZone(minBitrate, Integer.MAX_VALUE, topDelay));
+            downloadMultipleZones
+                .add(new InitBufferTimeStrategy.DownloadMultipleZone(minBitrate, Integer.MAX_VALUE, topDelay));
             displayValue.setText(stringBuilder.toString());
         });
         final EditText algDelay = (EditText) view.findViewById(R.id.alg_delay);
@@ -482,7 +484,8 @@ public class DialogUtil {
             stringBuilder.append(bitDelayValue);
             stringBuilder.append(",");
             try {
-                downloadMultipleZones.add(new InitBufferTimeStrategy.DownloadMultipleZone(birateMin, birateMax, bitDelayValue));
+                downloadMultipleZones
+                    .add(new InitBufferTimeStrategy.DownloadMultipleZone(birateMin, birateMax, bitDelayValue));
             } catch (IllegalArgumentException e) {
                 Toast.makeText(context, "IllegalArgumentException", Toast.LENGTH_LONG).show();
             }
@@ -531,9 +534,9 @@ public class DialogUtil {
     public static void updateServerCountryDialog(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.update_country_dialog, null);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(StringUtil.getStringFromResId(context, R.string.update_server_country_title))
-                .setView(view)
-                .create();
+            .setTitle(StringUtil.getStringFromResId(context, R.string.update_server_country_title))
+            .setView(view)
+            .create();
         dialog.show();
         final EditText bitrateMaxSetting = (EditText) view.findViewById(R.id.server_country_setting);
         Button okBt = (Button) view.findViewById(R.id.set_volume_bt_ok);
@@ -542,11 +545,15 @@ public class DialogUtil {
             @Override
             public void onClick(View v) {
                 if (bitrateMaxSetting.getText() == null || TextUtils.isEmpty(bitrateMaxSetting.getText().toString())) {
-                    Toast.makeText(context, context.getString(R.string.update_server_country_toast_empty), Toast.LENGTH_SHORT)
-                            .show();
+                    Toast
+                        .makeText(context, context.getString(R.string.update_server_country_toast_empty),
+                            Toast.LENGTH_SHORT)
+                        .show();
                 } else if (bitrateMaxSetting.getText().length() != 2) {
-                    Toast.makeText(context, context.getString(R.string.update_server_country_toast_length), Toast.LENGTH_SHORT)
-                            .show();
+                    Toast
+                        .makeText(context, context.getString(R.string.update_server_country_toast_length),
+                            Toast.LENGTH_SHORT)
+                        .show();
                 } else {
                     WisePlayerFactory.updateServeCountry(bitrateMaxSetting.getText().toString());
                     dialog.dismiss();
@@ -569,9 +576,9 @@ public class DialogUtil {
     public static void showPreferAudioLangDialog(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.set_prefer_audio, null);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(StringUtil.getStringFromResId(context, R.string.audio_set_prefer_audio))
-                .setView(view)
-                .create();
+            .setTitle(StringUtil.getStringFromResId(context, R.string.audio_set_prefer_audio))
+            .setView(view)
+            .create();
         dialog.show();
         final EditText preferlangSetting = (EditText) view.findViewById(R.id.prefer_audio_setting);
         preferlangSetting.setText(PlayControlUtil.getPreferAudio());
@@ -597,9 +604,9 @@ public class DialogUtil {
     public static void showProxyInfoDialog(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.set_proxy_info, null);
         final AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle(StringUtil.getStringFromResId(context, R.string.socks_proxy_setting))
-                .setView(view)
-                .create();
+            .setTitle(StringUtil.getStringFromResId(context, R.string.socks_proxy_setting))
+            .setView(view)
+            .create();
         dialog.show();
         final EditText proxyIPSetting = (EditText) view.findViewById(R.id.socks_proxy_ip);
         final EditText proxyPortSetting = (EditText) view.findViewById(R.id.socks_proxy_port);

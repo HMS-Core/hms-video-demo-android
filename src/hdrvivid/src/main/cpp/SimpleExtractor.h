@@ -28,6 +28,8 @@ public:
 
     int64_t GetDurationUs() const;
 
+    AMediaFormat *GetMediaFormat() const;
+
 private:
     bool SetTrc();
 

@@ -9,11 +9,11 @@
     <string name="setting_output_mode">输出模式</string>
     <string name="setting_output_color_space">输出色彩空间</string>
     <string name="setting_output_color_format">输出颜色格式</string>
-    <string name="setting_brightness">显示亮度</string>
+    <string name="setting_brightness">备选亮度</string>
     <string name="setting_choose_file">选择播放文件</string>
     <string name="setting_start_play">开始播放</string>
 
-    <string name="setting_brightness_tip">(输入范围0~2147483647)</string>
+    <string name="setting_brightness_tip">(输入范围203~10000)</string>
 
     <string name="tab_title_native_interface">Native接口</string>
     <string name="tab_title_java_interface">Java接口</string>
@@ -24,6 +24,10 @@
     <string name="resolution">分辨率</string>
     <string name="frame_rate">帧率</string>
     <string name="total_frames">总帧数</string>
+    <string name="btn_hdr_layer">视频提亮</string>
+    <string name="btn_hdr_layer_resume">视频恢复</string>
+    <string name="btn_caption_layer">字幕提亮</string>
+    <string name="btn_caption_layer_resume">字幕恢复</string>
     <string name="btn_info_show">显示信息</string>
     <string name="btn_info_hide">隐藏信息</string>
 

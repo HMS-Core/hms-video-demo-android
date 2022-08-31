@@ -73,7 +73,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
     private static final String TAG = "PlayActivity";
 
     // Seek spacing
-    private static final int SEEK_TIME =  3 * 1000;
+    private static final int SEEK_TIME = 3 * 1000;
 
     // Play view
     private PlayView playView;
@@ -285,8 +285,8 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 if (subtitles[i] instanceof SubtitleInfo) {
                     subtmp[i] = (SubtitleInfo) subtitles[i];
                     if (subtmp[i] != null) {
-                        LogUtil.d(TAG, "onSubtitleUpdate subtitle:" + subtmp[i].getSubtitle() + ",startTS:" +
-                                subtmp[i].getStartTS() + ",endTS:" + subtmp[i].getEndTS());
+                        LogUtil.d(TAG, "onSubtitleUpdate subtitle:" + subtmp[i].getSubtitle() + ",startTS:"
+                            + subtmp[i].getStartTS() + ",endTS:" + subtmp[i].getEndTS());
                     }
                 }
             }
@@ -861,14 +861,14 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 } else if (TextUtils.equals(itemSelect,
                     StringUtil.getStringFromResId(PlayActivity.this, R.string.video_set_volume))) {
                     setVideoVolume();
-                } else if (TextUtils.equals(itemSelect, 
-                        StringUtil.getStringFromResId(PlayActivity.this, R.string.switch_audio_track))) {
+                } else if (TextUtils.equals(itemSelect,
+                    StringUtil.getStringFromResId(PlayActivity.this, R.string.switch_audio_track))) {
                     getSwitchAudioTrack();
-                } else if (TextUtils.equals(itemSelect,  
-                        StringUtil.getStringFromResId(PlayActivity.this, R.string.get_audio_track_info))) {
+                } else if (TextUtils.equals(itemSelect,
+                    StringUtil.getStringFromResId(PlayActivity.this, R.string.get_audio_track_info))) {
                     getAudioTracks();
                 } else if (TextUtils.equals(itemSelect,
-                        StringUtil.getStringFromResId(PlayActivity.this, R.string.set_wake_mode))) {
+                    StringUtil.getStringFromResId(PlayActivity.this, R.string.set_wake_mode))) {
                     setWakeMode();
                 } else {
                     LogUtil.i(TAG, "current settings type is " + itemSelect);
@@ -940,7 +940,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 break;
             case Constants.PLAYER_GET_AUDIO_TRACKS:
                 if (TextUtils.equals(itemSelect,
-                        StringUtil.getStringFromResId(PlayActivity.this, R.string.current_audio_track))) {
+                    StringUtil.getStringFromResId(PlayActivity.this, R.string.current_audio_track))) {
                     LogUtil.d(TAG, "getSelectedAudioTrack is :" + itemSelect);
                     playControl.getSelectedAudioTrack();
                 } else {
@@ -953,7 +953,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
                 break;
             case Constants.PLAYER_SET_WAKE_MODE:
                 if (TextUtils.equals(itemSelect,
-                        StringUtil.getStringFromResId(PlayActivity.this, R.string.set_wake_mode))) {
+                    StringUtil.getStringFromResId(PlayActivity.this, R.string.set_wake_mode))) {
                     playControl.setWakeMode(true);
                 } else {
                     playControl.setWakeMode(false);
@@ -1001,7 +1001,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         LogUtil.d(TAG, "onPlayEnd " + wisePlayer.getCurrentTime());
         playControl.clearPlayProgress();
         isPlayComplete = true;
-        if (updateViewHandler != null){
+        if (updateViewHandler != null) {
             updateViewHandler.sendEmptyMessageDelayed(Constants.UPDATE_PLAY_STATE, Constants.DELAY_MILLIS_1000);
         }
     }
@@ -1049,7 +1049,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
         list.add(getResources().getString(R.string.set_wake_mode));
         list.add(getResources().getString(R.string.close_wake_mode));
         playView.showSettingDialog(Constants.PLAYER_SET_WAKE_MODE, list,
-                PlayControlUtil.isWakeOn() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
+            PlayControlUtil.isWakeOn() ? Constants.DIALOG_INDEX_ONE : Constants.DIALOG_INDEX_TWO);
     }
 
     public void getSwitchAudioTrack() {
@@ -1065,7 +1065,7 @@ public class PlayActivity extends AppCompatActivity implements OnPlayWindowListe
             SelectDialog dialog = new SelectDialog(this);
             dialog.setTitle("switchAudio  no audiotrack");
             dialog.setHandler(updateViewHandler, Constants.PLAYER_SWITCH_AUDIO_TRACK);
-            dialog.setNegativeButton("Cancle",null);
+            dialog.setNegativeButton("Cancle", null);
             dialog.show();
             return;
         }

@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.huawei.video.kit.hdrvivid.demo.base.SimplePacket;
+import com.huawei.video.kit.hdrvivid.demo.utils.Constants;
 
 /**
  * wrapper of MediaCodec
@@ -52,12 +53,12 @@ public class SimpleCodec {
         simpleExtractor = new SimpleExtractor();
     }
 
-    public void start(Surface surface, String filePath, int width, int height) {
+    public void start(Surface surface, String filePath, int width, int height, int outputMode) {
         Log.i(TAG, "startDecoderThread begin=" + decoderThread);
 
         if (decoderThread == null) {
             Log.i(TAG, "startDecoderThread create and start thread");
-            decoderThread = new DecoderThread(surface, filePath, width, height);
+            decoderThread = new DecoderThread(surface, filePath, width, height, outputMode);
             threadRun = true;
             decoderThread.start();
         }
@@ -117,16 +118,23 @@ public class SimpleCodec {
 
         private int height;
 
-        public DecoderThread(Surface surface, String filePath, int width, int height) {
+        private int outputMode;
+
+        public DecoderThread(Surface surface, String filePath, int width, int height, int outputMode) {
             this.surface = surface;
             this.filePath = filePath;
             this.width = width;
             this.height = height;
+            this.outputMode = outputMode;
         }
 
         @Override
         public void run() {
             MediaFormat mediaFormat = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_HEVC, width, height);
+            if (outputMode == Constants.OUT_MODE_BUFFER) {
+                // If the output mode is buffer mode, set not allow drop frame
+                mediaFormat.setInteger(MediaFormat.KEY_ALLOW_FRAME_DROP, 0);
+            }
             MediaCodec decoder = createCodec(mediaFormat, surface);
             if (decoder == null) {
                 return;

@@ -46,7 +46,7 @@
 - [API参考](https://developer.huawei.com/consumer/cn/doc/development/Media-References/video-description-0000001076873506?ha_source=hms1)
 
 ## 环境要求
-推荐使用EMUI 5.0及以上版本、JDK 1.8及以上版本。
+推荐使用Android 10/Emui 10及以上版本、JDK 1.8及以上版本。
 
 ## 运行结果
 <img src="hdrvividsdk_result_1.jpg" width = 30% height = 30%>

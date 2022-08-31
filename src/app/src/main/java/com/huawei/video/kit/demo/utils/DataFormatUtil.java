@@ -73,9 +73,7 @@ public class DataFormatUtil {
      */
     public static List<PlayEntity> getPlayList(Context context) {
         try {
-            List<PlayEntity> playList =
-                DataFormatUtil.getPlayList(FileUtil.parseAssetsFile(context, FileUtil.ENCODE_UTF_8));
-            return playList;
+            return DataFormatUtil.getPlayList(FileUtil.parseAssetsFile(context, FileUtil.ENCODE_UTF_8));
         } catch (Exception e) {
             LogUtil.i("get play list error : " + e.getMessage());
         }
@@ -121,6 +119,7 @@ public class DataFormatUtil {
 
     /**
      * Get video height text
+     * 
      * @param context Context
      * @param videoHeight The video height
      * @return video height text

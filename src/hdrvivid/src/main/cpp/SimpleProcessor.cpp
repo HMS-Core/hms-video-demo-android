@@ -34,6 +34,7 @@ static void OnBufferAvailable(JNIEnv *env, void *context, HdrVividRender *render
 SimpleProcessor::SimpleProcessor(JavaVM *vm)
 {
     LOGI("%s begin", __FUNCTION__);
+    HdrVividRenderSetLogCallBack(HdrVividLog);
     m_hdrVividRender = HdrVividRenderInit(vm);
     m_simpleCodec.setJavaVm(vm);
     LOGI("%s end", __FUNCTION__);

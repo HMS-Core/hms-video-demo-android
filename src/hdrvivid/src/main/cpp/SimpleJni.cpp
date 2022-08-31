@@ -30,6 +30,7 @@ void OnUpdateTexImageCallback(JNIEnv *env, void *context, HdrVividRender *render
         simpleProcessor->SetStaticMetaData();
         simpleProcessor->SetDynamicMetaData(ptsUs);
         texImageInfo->ptsUs = ptsUs;
+        texImageInfo->flags = 0;
     } else {
         LOGW("%s, context is nullptr, ptsUs=%" PRId64, __FUNCTION__, ptsUs);
     }
@@ -479,38 +480,4 @@ static void SetHdrMetaData(JNIEnv *env, jobject simplePacket, SimplePacket *sPac
 
     env->DeleteLocalRef(jClassHdrMetaData);
     env->DeleteLocalRef(objHdm);
-}
-
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeGetSupportedHdrType(JNIEnv *env, jobject thiz)
-{
-    if (g_simpleProcessor == nullptr) {
-        return env->NewStringUTF("");
-    }
-
-    const char *supportHdrType = HdrVividRenderGetSupportedHdrType(g_simpleProcessor->GetHdrVividRender());
-    if (supportHdrType == nullptr || strlen(supportHdrType) <= 0) {
-        return env->NewStringUTF("");
-    }
-    return env->NewStringUTF(supportHdrType);
-}
-
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeSetHdrAbility(JNIEnv *env, jobject thiz, jboolean status)
-{
-    if (g_simpleProcessor == nullptr) {
-        return false;
-    }
-
-    return HdrVividRenderSetHdrAbility(g_simpleProcessor->GetHdrVividRender(), status);
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeSetScreenHdr(JNIEnv *env, jobject thiz, jboolean isScreenHdr)
-{
-    if (g_simpleProcessor == nullptr) {
-        return;
-    }
-
-    HdrVividRenderSetScreenHdr(g_simpleProcessor->GetHdrVividRender(), isScreenHdr);
 }

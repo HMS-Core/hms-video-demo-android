@@ -30,9 +30,9 @@ import com.huawei.video.kit.hdrvivid.demo.utils.SimpleSetting;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
-    private final String[] PERMISSIONS_STORAGE =
+    private static final String[] PERMISSIONS_STORAGE =
         {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private TabLayout tabLayout;

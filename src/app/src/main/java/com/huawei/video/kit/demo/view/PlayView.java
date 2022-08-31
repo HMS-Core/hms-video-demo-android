@@ -517,7 +517,8 @@ public class PlayView {
 
     /**
      * set switch bitrate textView
-     * @param videoHeight  video height
+     * 
+     * @param videoHeight video height
      */
     public void setSwitchBitrateTv(int videoHeight) {
         switchBitrateTv.setText(DataFormatUtil.getVideoQuality(context, videoHeight));

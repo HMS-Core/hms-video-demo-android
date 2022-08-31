@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "com.huawei.video.kit.demo"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 10012300
-        versionName "1.0.12.300"
+        targetSdkVersion 31
+        versionCode 10013300
+        versionName "1.0.13.300"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
@@ -46,4 +46,5 @@ dependencies {
 
     // Dependency on a remote binary
     implementation "com.huawei.hms:videokit-player:${android.defaultConfig.versionName}"
+
 }

@@ -10,7 +10,11 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +29,7 @@ import android.widget.Spinner;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.huawei.hms.videokit.hdrability.ability.HdrAbility;
 import com.huawei.hms.videokit.hdrvivid.render.HdrVividRender;
 import com.huawei.video.kit.hdrvivid.demo.R;
 import com.huawei.video.kit.hdrvivid.demo.utils.Constants;
@@ -86,27 +91,41 @@ public class BaseFragment extends Fragment {
     private void listAllMp4Files() {
         Log.d(TAG, "listAllMp4Files begin");
         spinner = view.findViewById(R.id.spinner);
-        File file = new File(Constants.SRC_MOVIE_FILE_DIR);
 
-        if (file.canRead()) {
-            if (file.isDirectory()) {
-                List<String> fileNames = new ArrayList<>();
-                File[] files = file.listFiles();
-                for (File f : files) {
-                    if (f.isFile()) {
-                        fileNames.add(f.getName());
-                    }
-                }
-
-                ArrayAdapter<String> adapter =
-                    new ArrayAdapter<String>(getContext(), R.layout.file_spinner_item, fileNames);
-                spinner.setAdapter(adapter);
-            } else {
-                Log.d(TAG, "wrong path");
-            }
-        } else {
+        final File file = new File(Constants.SRC_MOVIE_FILE_DIR);
+        if (!file.canRead()) {
             Log.d(TAG, "has no permission");
+            return;
         }
+
+        if (!file.isDirectory()) {
+            Log.d(TAG, "wrong path");
+            return;
+        }
+
+        MediaScannerConnection.scanFile(getContext(), new String[] {Constants.SRC_MOVIE_FILE_DIR}, null,
+            new MediaScannerConnection.OnScanCompletedListener() {
+                @Override
+                public void onScanCompleted(String s, Uri uri) {
+                    Handler mainHandler = new Handler(Looper.getMainLooper());
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            File[] files = file.listFiles();
+                            List<String> fileNames = new ArrayList<>();
+                            for (File f : files) {
+                                if (f.isFile()) {
+                                    fileNames.add(f.getName());
+                                }
+                            }
+
+                            ArrayAdapter<String> adapter =
+                                new ArrayAdapter<String>(getContext(), R.layout.file_spinner_item, fileNames);
+                            spinner.setAdapter(adapter);
+                        }
+                    });
+                }
+            });
     }
 
     private boolean getDemoSetting() {
@@ -177,16 +196,17 @@ public class BaseFragment extends Fragment {
         if (!brightnessStr.isEmpty()) {
             try {
                 int brightness = Integer.parseInt(brightnessStr);
-                if (brightness > Integer.MAX_VALUE) {
-                    this.brightnessEditText.setError("0~" + Integer.MAX_VALUE);
+                if (brightness < HdrAbility.BRIGHTNESS_NIT_MIN || brightness > HdrAbility.BRIGHTNESS_NIT_MAX) {
+                    this.brightnessEditText
+                        .setError(HdrAbility.BRIGHTNESS_NIT_MIN + "~" + HdrAbility.BRIGHTNESS_NIT_MAX);
                     return false;
                 }
             } catch (NumberFormatException e) {
-                brightnessEditText.setError("0~" + Integer.MAX_VALUE);
+                this.brightnessEditText.setError(HdrAbility.BRIGHTNESS_NIT_MIN + "~" + HdrAbility.BRIGHTNESS_NIT_MAX);
                 return false;
             }
         } else {
-            brightnessEditText.setError("0~" + Integer.MAX_VALUE);
+            this.brightnessEditText.setError(HdrAbility.BRIGHTNESS_NIT_MIN + "~" + HdrAbility.BRIGHTNESS_NIT_MAX);
             return false;
         }
 
@@ -253,6 +273,7 @@ public class BaseFragment extends Fragment {
                         break;
                     case R.id.output_buffer:
                         RadioButton output709 = view.findViewById(R.id.output_709);
+                        RadioButton output2020 = view.findViewById(R.id.output_2020);
                         RadioButton outputFormatR8G8B8A8 = view.findViewById(R.id.outputFormat_R8G8B8A8);
 
                         for (int index = 0; index < outputColorSpaceRadioGroup.getChildCount(); index++) {

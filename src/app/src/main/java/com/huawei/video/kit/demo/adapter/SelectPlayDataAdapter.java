@@ -53,7 +53,7 @@ public class SelectPlayDataAdapter extends RecyclerView.Adapter<SelectPlayDataAd
     /**
      * Constructor
      *
-     * @param context             Context
+     * @param context Context
      * @param onItemClickListener Listener
      */
     public SelectPlayDataAdapter(Context context, OnItemClickListener onItemClickListener) {

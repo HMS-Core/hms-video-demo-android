@@ -34,6 +34,7 @@ import com.huawei.hms.videokit.player.VideoInfo;
 import com.huawei.hms.videokit.player.WisePlayer;
 import com.huawei.hms.videokit.player.common.PlayerConstants;
 import com.huawei.hms.videokit.player.common.PlayerConstants.CycleMode;
+import com.huawei.hms.videokit.player.common.PlayerConstants.DeviceType;
 import com.huawei.hms.videokit.player.common.PlayerConstants.ScenarioType;
 import com.huawei.video.kit.demo.VideoKitPlayApplication;
 import com.huawei.video.kit.demo.contract.OnWisePlayerListener;
@@ -94,7 +95,7 @@ public class PlayControl {
     /**
      * Init
      */
-    public void init() {
+    private void init() {
         initPlayer();
         setPlayListener();
     }
@@ -174,11 +175,13 @@ public class PlayControl {
                 wisePlayer.setPlayUrl(strings);
             } else if (currentPlayData.getUrlType() == UrlType.URL_JSON_FORMAT) {
                 setHttpVideo(false);
-                wisePlayer.setPlayUrl(currentPlayData.getUrl(), currentPlayData.getAppId(), ScenarioType.ONLINE, currentPlayData.getVideoFormat());
+                wisePlayer.setPlayUrl(currentPlayData.getUrl(), currentPlayData.getAppId(), ScenarioType.ONLINE,
+                    currentPlayData.getVideoFormat());
             } else {
                 setHttpVideo(true);
                 wisePlayer.setPlayUrl(new String[] {currentPlayData.getUrl()});
             }
+            setDeviceType(DeviceType.MOBILE);
             setPreciseSeeking(PlayControlUtil.getResumeStartFrameMode() == PlayerConstants.SeekMode.CLOSEST);
             setProxyInfo();
             setDownloadLink();
@@ -974,7 +977,7 @@ public class PlayControl {
         AudioTrackInfo[] audioTrack = null;
         if (wisePlayer != null) {
             audioTrack = wisePlayer.getAudioTracks();
-            if (audioTrack == null || audioTrack.length == 0 ) {
+            if (audioTrack == null || audioTrack.length == 0) {
                 LogUtil.d(TAG, "getAudioTracks get null");
                 return null;
             }
@@ -1044,7 +1047,8 @@ public class PlayControl {
     public void setDownloadLink() {
         if (wisePlayer != null) {
             LogUtil.d("setDownloadLink, is download link single:" + PlayControlUtil.isDownloadLinkSingle());
-            wisePlayer.setProperties(PlayerConstants.Properties.SINGLE_LINK_DOWNLOAD, PlayControlUtil.isDownloadLinkSingle());
+            wisePlayer.setProperties(PlayerConstants.Properties.SINGLE_LINK_DOWNLOAD,
+                PlayControlUtil.isDownloadLinkSingle());
         }
     }
 
@@ -1084,6 +1088,20 @@ public class PlayControl {
                 enable ? PlayerConstants.SeekMode.CLOSEST : PlayerConstants.SeekMode.PREVIOUS_SYNC);
         } else {
             LogUtil.i(TAG, "wisePlayer is null, setPreciseSeeking fail.");
+        }
+    }
+
+    /**
+     * @param type 0: mobile 1: TV
+     */
+    public void setDeviceType(int type) {
+        LogUtil.i(TAG, "setDeviceType.");
+        if (wisePlayer != null) {
+            LogUtil.i(TAG, "setDeviceType type: " + type);
+            wisePlayer.setProperties(PlayerConstants.Properties.DEVICE_TYPE,
+                type == 0 ? PlayerConstants.DeviceType.MOBILE : PlayerConstants.DeviceType.TV);
+        } else {
+            LogUtil.i(TAG, "wisePlayer is null, setDeviceType fail.");
         }
     }
 }

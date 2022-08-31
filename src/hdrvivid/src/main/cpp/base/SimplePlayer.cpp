@@ -100,6 +100,9 @@ void SimplePlayer::InitGL()
 void SimplePlayer::OnBufferAvailable(uint8_t *data, uint32_t size)
 {
     if (bufferData == nullptr) {
+        if (size <= 0 || size > SIMPLE_PLAYER_SIZE_MAX) {
+            return;
+        }
         bufferData = (uint8_t *) malloc(size);
         bufferSize = size;
     }

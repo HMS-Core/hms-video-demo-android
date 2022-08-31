@@ -38,7 +38,7 @@ Take the Android Studio 3.x version as an example. The steps to run the HDR Vivi
 - [References](https://developer.huawei.com/consumer/en/doc/development/Media-References/video-description-0000001076873506?ha_source=hms1)
 
 ## Supported Environments
-   It is recommended that the EMUI version be 5.0 or later and the JDK version be 1.8 or later.
+   It is recommended that the Android version be 10 or later/EMUI version be 10 or later and the JDK version be 1.8 or later.
 
 ## Result
    <img src="result_1.jpg" width = 30% height = 30%>

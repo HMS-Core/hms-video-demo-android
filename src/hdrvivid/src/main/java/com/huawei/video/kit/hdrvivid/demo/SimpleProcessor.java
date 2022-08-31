@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 
-import com.huawei.hms.videokit.hdrvivid.ability.HdrAbility;
+import com.huawei.hms.videokit.hdrability.ability.HdrAbility;
 import com.huawei.hms.videokit.hdrvivid.render.HdrVividRender;
 import com.huawei.video.kit.hdrvivid.demo.base.SimplePacket;
 import com.huawei.video.kit.hdrvivid.demo.hdr.HdrMetaData;
@@ -90,11 +90,40 @@ public class SimpleProcessor {
         simpleJni.release();
     }
 
+    public void initHdrAbility(SurfaceView surfaceView) {
+        Log.i(TAG, "initHdrAbility");
+
+        int ret = SimpleErrorUtils.SIMPLE_SUCCESS;
+        ret = HdrAbility.init(surfaceView.getContext());
+        if (ret != HdrAbility.HDR_ABILITY_SUCCESS) {
+            Log.i(TAG, "HdrAbility init failed");
+            SimpleErrorUtils.showInfoToast(SimpleErrorUtils.SIMPLE_ERR_HDR_ABILITY_NOT_SUPPORT);
+        }
+        boolean success = HdrAbility.setHdrAbility(true);
+        if (!success) {
+            Log.i(TAG, "HdrAbility setHdrAbility failed");
+            SimpleErrorUtils.showInfoToast(SimpleErrorUtils.SIMPLE_ERR_HDR_ABILITY_NOT_SUPPORT);
+        }
+        ret = HdrAbility.setBrightness(SimpleSetting.getInstance().getBrightness());
+        if (ret != HdrAbility.HDR_ABILITY_SUCCESS) {
+            Log.i(TAG, "HdrAbility setBrightness failed");
+            SimpleErrorUtils.showInfoToast(SimpleErrorUtils.SIMPLE_ERR_HDR_ABILITY_NOT_SUPPORT);
+        }
+    }
+
+    public void releaseHdrAbility() {
+        Log.i(TAG, "releaseHdrAbility");
+        boolean success = HdrAbility.setHdrAbility(false);
+        if (!success) {
+            Log.i(TAG, "HdrAbility setHdrAbility failed");
+            SimpleErrorUtils.showInfoToast(SimpleErrorUtils.SIMPLE_ERR_HDR_ABILITY_NOT_SUPPORT);
+        }
+    }
+
     public void startPlay() {
         Log.i(TAG, "startPlay begin, filePath=" + SimpleSetting.getInstance().getFilePath());
         int ret = SimpleErrorUtils.SIMPLE_SUCCESS;
 
-        HdrAbility.setHdrAbility(true);
         if (SimpleSetting.getInstance().getApiType() == Constants.API_TYPE_JAVA) {
             ret = startPlayWithJavaAPI();
         } else {
@@ -137,7 +166,6 @@ public class SimpleProcessor {
         status = STATUS_STOPED;
 
         if (SimpleSetting.getInstance().getApiType() == Constants.API_TYPE_JAVA) {
-            HdrAbility.setHdrAbility(false);
             if (simpleCodec != null) {
                 simpleCodec.stop();
                 simpleCodec = null;
@@ -216,16 +244,37 @@ public class SimpleProcessor {
         lastStaticMetaData = new HdrVividRender.StaticMetaData();
 
         hdrVividRender = new HdrVividRender();
+
+        Log.i(TAG, "setLogCallBack");
+        hdrVividRender.setLogCallBack(new HdrVividRender.LogCallback() {
+            @Override
+            public int onOutputLogInfo(int level, String info) {
+                String avcl = "HVDemoJava";
+                switch (level) {
+                    case HdrVividRender.HDRVIVID_LOG_INFO:
+                        Log.i(avcl, info);
+                        break;
+                    case HdrVividRender.HDRVIVID_LOG_DEBUG:
+                        Log.d(avcl, info);
+                        break;
+                    case HdrVividRender.HDRVIVID_LOG_WARN:
+                        Log.w(avcl, info);
+                        break;
+                    case HdrVividRender.HDRVIVID_LOG_ERROR:
+                        Log.e(avcl, info);
+                        break;
+                    default:
+                        Log.i(avcl, info);
+                        break;
+                }
+                return 0;
+            }
+        });
         if (!hdrVividRender.init()) {
             return SimpleErrorUtils.SIMPLE_ERR_SDK_START_FAILED;
         }
-        hdrVividRender.setScreenHdr(isScreenHdr);
 
         ret = hdrVividRender.setTransFunc(videoInfoUtils.getVideoInfo().getTf());
-        if (ret != HdrVividRender.HDRVIVID_SUCCESS) {
-            return SimpleErrorUtils.SIMPLE_ERR_SDK_START_FAILED;
-        }
-        ret = hdrVividRender.setBrightness(SimpleSetting.getInstance().getBrightness());
         if (ret != HdrVividRender.HDRVIVID_SUCCESS) {
             return SimpleErrorUtils.SIMPLE_ERR_SDK_START_FAILED;
         }
@@ -280,8 +329,8 @@ public class SimpleProcessor {
                     if (status == STATUS_PLAYING) {
                         renderBuffer(byteBuffer, VideoInfoUtils.getInstance().getVideoInfo().getWidth(),
                             VideoInfoUtils.getInstance().getVideoInfo().getHeight());
-                        byteBuffer.position(0);
                     }
+                    byteBuffer.position(0);
                 }
             });
             if (ret != HdrVividRender.HDRVIVID_SUCCESS) {
@@ -301,7 +350,8 @@ public class SimpleProcessor {
         }
 
         simpleCodec.start(inputSurface, SimpleSetting.getInstance().getFilePath(),
-            videoInfoUtils.getVideoInfo().getWidth(), videoInfoUtils.getVideoInfo().getHeight());
+            videoInfoUtils.getVideoInfo().getWidth(), videoInfoUtils.getVideoInfo().getHeight(),
+            SimpleSetting.getInstance().getOutputMode());
 
         return SimpleErrorUtils.SIMPLE_SUCCESS;
     }
@@ -318,6 +368,9 @@ public class SimpleProcessor {
     }
 
     private void onGetDynamicMetaData(long pts) {
+        if (simpleCodec == null) {
+            return;
+        }
         SimplePacket simplePacket = simpleCodec.getSimplePacket(pts);
         setStaticMetaData(simplePacket);
         setDynamicMetaData(simplePacket);
@@ -325,20 +378,13 @@ public class SimpleProcessor {
     }
 
     private void setStaticMetaData(SimplePacket simplePacket) {
-        if (simplePacket == null || lastStaticMetaData == null) {
+        if (simplePacket == null) {
             return;
         }
 
         HdrMetaData hmd = simplePacket.hmd;
 
-        if (hmd.gX == lastStaticMetaData.gDisplayPrimariesX && hmd.gY == lastStaticMetaData.gDisplayPrimariesY
-            && hmd.bX == lastStaticMetaData.bDisplayPrimariesX && hmd.bY == lastStaticMetaData.bDisplayPrimariesY
-            && hmd.rX == lastStaticMetaData.rDisplayPrimariesX && hmd.rY == lastStaticMetaData.rDisplayPrimariesY
-            && hmd.whitePointX == lastStaticMetaData.whitePointX && hmd.whitePointY == lastStaticMetaData.whitePointY
-            && hmd.maxDisplayMasteringLum == lastStaticMetaData.maxDisplayMasteringLum
-            && hmd.minDisplayMasteringLum == lastStaticMetaData.minDisplayMasteringLum
-            && hmd.maxContentLightLevel == lastStaticMetaData.maxContentLightLevel
-            && hmd.maxPicAverageLightLevel == lastStaticMetaData.maxPicAverageLightLevel) {
+        if (isEquals(hmd)) {
             return;
         }
 
@@ -368,6 +414,17 @@ public class SimpleProcessor {
         if (ret != HdrVividRender.HDRVIVID_SUCCESS) {
             Log.e(TAG, "setStaticMetaData, ret: " + ret);
         }
+    }
+
+    private boolean isEquals(HdrMetaData hmd) {
+        return hmd.gX == lastStaticMetaData.gDisplayPrimariesX && hmd.gY == lastStaticMetaData.gDisplayPrimariesY
+            && hmd.bX == lastStaticMetaData.bDisplayPrimariesX && hmd.bY == lastStaticMetaData.bDisplayPrimariesY
+            && hmd.rX == lastStaticMetaData.rDisplayPrimariesX && hmd.rY == lastStaticMetaData.rDisplayPrimariesY
+            && hmd.whitePointX == lastStaticMetaData.whitePointX && hmd.whitePointY == lastStaticMetaData.whitePointY
+            && hmd.maxDisplayMasteringLum == lastStaticMetaData.maxDisplayMasteringLum
+            && hmd.minDisplayMasteringLum == lastStaticMetaData.minDisplayMasteringLum
+            && hmd.maxContentLightLevel == lastStaticMetaData.maxContentLightLevel
+            && hmd.maxPicAverageLightLevel == lastStaticMetaData.maxPicAverageLightLevel;
     }
 
     private void setDynamicMetaData(SimplePacket simplePacket) {
