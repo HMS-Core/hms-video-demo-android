@@ -38,10 +38,11 @@ Take the Android Studio 3.x version as an example. The steps to run the HDR Vivi
 - [References](https://developer.huawei.com/consumer/en/doc/development/Media-References/video-description-0000001076873506?ha_source=hms1)
 
 ## Supported Environments
-   It is recommended that the Android version be 10 or later/EMUI version be 10 or later and the JDK version be 1.8 or later.
-
+   1. It is recommended that the Android version be 10 or later/EMUI version be 10 or later.
+   2. JDK version be 1.8 or later.
+   3. CMake version must be 3.18.3.
 ## Result
-   <img src="result_1.jpg" width = 30% height = 30%>
+   <img src="hdrvividsdk_result_1.jpg" width = 30% height = 30%>
 
 ## Technical Support
 You can visit the [Reddit community](https://www.reddit.com/r/HuaweiDevelopers/) to obtain the latest information about HMS Core and communicate with other developers.
