@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <media/NdkMediaExtractor.h>
 #include "SimplePacket.h"
+#include "MediaFormatBuffer.h"
 
 class SimpleExtractor {
 public:
@@ -29,6 +30,8 @@ public:
     int64_t GetDurationUs() const;
 
     AMediaFormat *GetMediaFormat() const;
+
+    MediaFormatBuffer *GetMediaFormatBuffer(const char *name);
 
 private:
     bool SetTrc();
@@ -59,6 +62,7 @@ private:
 
     uint8_t m_sample[sampleCapacity];
     uint8_t m_ebsp[sampleCapacity];
+    MediaFormatBuffer m_mediaFormatBuffer;
 };
 
 #endif // SIMPLE_EXTRACTOR_H

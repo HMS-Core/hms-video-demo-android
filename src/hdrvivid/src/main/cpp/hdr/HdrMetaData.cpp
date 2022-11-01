@@ -85,9 +85,7 @@ bool HdrMetaData::ParseDm(const uint8_t *payload, int32_t size)
     int32_t readBytes = 0;
     int32_t countryCode = TE_ReadBits(teS, 8);
     readBytes++;
-    int32_t countryCodeExtension = 0;
     if (countryCode == 0xFF) {
-        countryCodeExtension = TE_ReadBits(teS, 8);
         readBytes++;
     }
 

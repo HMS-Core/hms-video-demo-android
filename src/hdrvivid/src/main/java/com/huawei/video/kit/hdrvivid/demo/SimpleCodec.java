@@ -22,6 +22,7 @@ import android.media.MediaFormat;
 import android.util.Log;
 import android.view.Surface;
 
+import com.huawei.video.kit.hdrvivid.demo.base.MediaFormatBuffer;
 import com.huawei.video.kit.hdrvivid.demo.base.SimplePacket;
 import com.huawei.video.kit.hdrvivid.demo.utils.Constants;
 
@@ -38,6 +39,16 @@ public class SimpleCodec {
     private static final int CODEC_OUT_TIMEOUT_US = 50 * 1000;
 
     private static final int RENDER_SLEEP_MS = 5;
+
+    private static final int US2MS = 1000;
+
+    private static final String MEDIAFORMAT_KEY_CSD = "csd";
+
+    private static final String MEDIAFORMAT_KEY_CSD_0 = "csd-0";
+
+    private static final String MEDIAFORMAT_KEY_CSD_1 = "csd-1";
+
+    private static final String MEDIAFORMAT_KEY_CSD_2 = "csd-2";
 
     private Hashtable<Long, SimplePacket> packetTable = new Hashtable<>(10);
 
@@ -135,12 +146,15 @@ public class SimpleCodec {
                 // If the output mode is buffer mode, set not allow drop frame
                 mediaFormat.setInteger(MediaFormat.KEY_ALLOW_FRAME_DROP, 0);
             }
+
+            simpleExtractor.openSimpleExtractor(filePath);
+            setMediaFormatCSDInfo(mediaFormat);
+
             MediaCodec decoder = createCodec(mediaFormat, surface);
             if (decoder == null) {
                 return;
             }
 
-            simpleExtractor.openSimpleExtractor(filePath);
             SimplePacket simplePacket = new SimplePacket();
 
             decoder.start();
@@ -200,7 +214,7 @@ public class SimpleCodec {
                             firstPts = info.presentationTimeUs;
                         }
 
-                        while ((info.presentationTimeUs - firstPts) / 1000 > System.currentTimeMillis() - startMs) {
+                        while ((info.presentationTimeUs - firstPts) / US2MS > System.currentTimeMillis() - startMs) {
                             try {
                                 sleep(RENDER_SLEEP_MS);
                             } catch (InterruptedException e) {
@@ -316,5 +330,22 @@ public class SimpleCodec {
         }
 
         return dstPacket;
+    }
+
+    private void setMediaFormatBuffer(MediaFormat mediaFormat, String name) {
+        MediaFormatBuffer mediaFormatBuffer = new MediaFormatBuffer();
+        if (simpleExtractor.getMediaFormatBuffer(mediaFormatBuffer, name)) {
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mediaFormatBuffer.size);
+            byteBuffer.put(mediaFormatBuffer.data);
+            byteBuffer.position(0);
+            mediaFormat.setByteBuffer(name, byteBuffer);
+        }
+    }
+
+    private void setMediaFormatCSDInfo(MediaFormat mediaFormat) {
+        setMediaFormatBuffer(mediaFormat, MEDIAFORMAT_KEY_CSD);
+        setMediaFormatBuffer(mediaFormat, MEDIAFORMAT_KEY_CSD_0);
+        setMediaFormatBuffer(mediaFormat, MEDIAFORMAT_KEY_CSD_1);
+        setMediaFormatBuffer(mediaFormat, MEDIAFORMAT_KEY_CSD_2);
     }
 }

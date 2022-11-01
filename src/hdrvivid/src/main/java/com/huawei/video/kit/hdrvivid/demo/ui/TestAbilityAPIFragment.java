@@ -51,6 +51,27 @@ public class TestAbilityAPIFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.registerScreenBrightnessObserver).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textResult.setText(String.valueOf(HdrAbility.registerScreenBrightnessObserver(getContext())));
+            }
+        });
+
+        view.findViewById(R.id.getScreenBrightness).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textResult.setText(String.valueOf(HdrAbility.getScreenBrightness()));
+            }
+        });
+
+        view.findViewById(R.id.unregisterScreenBrightnessObserver).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textResult.setText(String.valueOf(HdrAbility.unregisterScreenBrightnessObserver()));
+            }
+        });
+
         return view;
     }
 }

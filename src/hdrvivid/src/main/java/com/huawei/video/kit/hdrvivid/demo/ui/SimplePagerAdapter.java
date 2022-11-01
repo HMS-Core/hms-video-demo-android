@@ -18,6 +18,11 @@ import com.huawei.video.kit.hdrvivid.demo.R;
  * @since 2022/5/5
  */
 public class SimplePagerAdapter extends FragmentPagerAdapter {
+    public static final int POSITION_IDX_NATIVE_RENDER = 0;
+
+    public static final int POSITION_IDX_JAVA_RENDER = 1;
+
+    public static final int POSITION_IDX_BRIGHTNESS = 2;
     private final String[] titles;
 
     public SimplePagerAdapter(FragmentManager fm, Context context) {
@@ -29,11 +34,11 @@ public class SimplePagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0) {
+        if (position == POSITION_IDX_NATIVE_RENDER) {
             return new TestNativeRenderAPIFragment();
-        } else if (position == 1) {
+        } else if (position == POSITION_IDX_JAVA_RENDER) {
             return new TestJavaRenderAPIFragment();
-        } else if (position == 2) {
+        } else if (position == POSITION_IDX_BRIGHTNESS) {
             return new TestAbilityAPIFragment();
         }
         return null;

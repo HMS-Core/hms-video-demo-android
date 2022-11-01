@@ -28,6 +28,10 @@ public class Constants {
 
     public static final char COLON = ':';
 
+    public static final char LEFT_SLASH = '/';
+
+    public static final char MULIT = '*';
+
     public static final String FILE_NAME_DATE_FORMAT = "_yyyy_MM_dd_HH_mm_ss";
 
     public static final String SRC_FILE_NAME_SUFFIX = ".mp4";
@@ -35,4 +39,28 @@ public class Constants {
     public static final String DST_FILE_NAME_SUFFIX = ".dat";
 
     public static final boolean BUFFER_OUTPUT_ENABLE = true;
+
+    public static final String DESC_API_TYPE_JAVA = "Java";
+
+    public static final String DESC_API_TYPE_NATIVE = "Native";
+
+    public static final String DESC_MODE_SURFACE = "Surface";
+
+    public static final String DESC_MODE_BUFFER = "Buffer";
+
+    public static final String DESC_COLORSPACE_BT709 = "BT.709";
+
+    public static final String DESC_COLORSPACE_P3 = "P3";
+
+    public static final String DESC_COLORSPACE_BT2020 = "BT.2020";
+
+    public static final String DESC_COLORFORMAT_NV12 = "NV12";
+
+    public static final String DESC_COLORFORMAT_YUV420P10 = "YUV420P10";
+
+    public static final String DESC_COLORFORMAT_R8G8B8A8 = "R8G8B8";
+
+    public static final String DESC_TRANSFUNC_PQ = "PQ";
+
+    public static final String DESC_TRANSFUNC_HLG = "HLG";
 }

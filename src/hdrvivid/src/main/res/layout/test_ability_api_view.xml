@@ -31,6 +31,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="setHdrAbility" />
+
+            <RadioButton
+                android:id="@+id/registerScreenBrightnessObserver"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="registerScreenBrightnessObserver" />
+
+            <RadioButton
+                android:id="@+id/getScreenBrightness"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="getScreenBrightness" />
+
+            <RadioButton
+                android:id="@+id/unregisterScreenBrightnessObserver"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="unregisterScreenBrightnessObserver" />
         </RadioGroup>
 
         <LinearLayout

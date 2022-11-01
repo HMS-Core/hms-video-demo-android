@@ -10,7 +10,7 @@ package com.huawei.video.kit.hdrvivid.demo.utils;
  * @since 2022/5/5
  */
 public class SimpleSetting {
-    private static SimpleSetting simpleSetting = null;
+    private static volatile SimpleSetting simpleSetting = null;
 
     private int apiType = Constants.API_TYPE_NATIVE;
 

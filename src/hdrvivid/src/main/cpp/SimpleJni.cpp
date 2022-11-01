@@ -301,6 +301,41 @@ Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeGetNextPacket(JNIEnv *en
     return true;
 }
 
+static void SetMediaFormatBuffer(JNIEnv *env, jobject mediaFormatBuffer, MediaFormatBuffer *info);
+
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeGetMediaFormatBuffer(JNIEnv *env, jobject clazz,
+                                                                             jlong handleExtractor,
+                                                                             jobject mediaFormatBuffer, jstring name)
+{
+    LOGD("%s begin, handleExtractor=%" PRId64, __FUNCTION__, handleExtractor);
+
+    if (handleExtractor == INVALID_HANDLE) {
+        return false;
+    }
+    auto *se = reinterpret_cast<SimpleExtractor *>(handleExtractor);
+    if (se == nullptr) {
+        return false;
+    }
+    if (name == nullptr) {
+        return false;
+    }
+    const char *cName = env->GetStringUTFChars(name, nullptr);
+    if (cName == nullptr) {
+        return false;
+    }
+
+    MediaFormatBuffer *info = se->GetMediaFormatBuffer(cName);
+    if (info == nullptr) {
+        return false;
+    }
+
+    SetMediaFormatBuffer(env, mediaFormatBuffer, info);
+
+    LOGD("%s end", __FUNCTION__);
+    return true;
+}
+
 extern "C" JNIEXPORT jboolean JNICALL
 Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeIsEof(JNIEnv *env, jobject clazz, jlong handleExtractor)
 {
@@ -480,4 +515,20 @@ static void SetHdrMetaData(JNIEnv *env, jobject simplePacket, SimplePacket *sPac
 
     env->DeleteLocalRef(jClassHdrMetaData);
     env->DeleteLocalRef(objHdm);
+}
+
+
+static void SetMediaFormatBuffer(JNIEnv *env, jobject mediaFormatBuffer, MediaFormatBuffer *info)
+{
+    jclass jClassMediaFormatBuffer = env->FindClass("com/huawei/video/kit/hdrvivid/demo/base/MediaFormatBuffer");
+    if (info->GetSize() > 0) {
+        jbyteArray byteArray = env->NewByteArray(info->GetSize());
+        env->SetByteArrayRegion(byteArray, 0, info->GetSize(), reinterpret_cast<const jbyte *>(info->GetData()));
+        jfieldID data = env->GetFieldID(jClassMediaFormatBuffer, "data", "[B");
+        env->SetObjectField(mediaFormatBuffer, data, byteArray);
+    }
+
+    jfieldID size = env->GetFieldID(jClassMediaFormatBuffer, "size", "I");
+    env->SetIntField(mediaFormatBuffer, size, info->GetSize());
+    env->DeleteLocalRef(jClassMediaFormatBuffer);
 }

@@ -32,7 +32,7 @@ import com.huawei.video.kit.hdrvivid.demo.utils.VideoInfoUtils;
 public class SimpleProcessor {
     private static final String TAG = "SimpleProcessor";
 
-    private static SimpleProcessor simpleProcessor = null;
+    private static volatile SimpleProcessor simpleProcessor = null;
 
     public static final int STATUS_PLAYING = 1;
 

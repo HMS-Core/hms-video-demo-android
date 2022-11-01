@@ -10,6 +10,7 @@ import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.Surface;
 
+import com.huawei.video.kit.hdrvivid.demo.base.MediaFormatBuffer;
 import com.huawei.video.kit.hdrvivid.demo.base.SimplePacket;
 import com.huawei.video.kit.hdrvivid.demo.utils.SimpleErrorUtils;
 import com.huawei.video.kit.hdrvivid.demo.utils.SimpleSetting;
@@ -25,7 +26,7 @@ public class SimpleJni {
 
     private static final int THREAD_SLEEP_MS = 100;
 
-    private static SimpleJni simpleJni = null;
+    private static volatile SimpleJni simpleJni = null;
 
     private SurfaceTexture nativeSurfaceTexture = null;
 
@@ -195,6 +196,9 @@ public class SimpleJni {
     public native void nativeCloseExtractor(long handleExtractor);
 
     public native boolean nativeGetNextPacket(long handleExtractor, SimplePacket simplePacket);
+
+    public native boolean nativeGetMediaFormatBuffer(long handleExtractor, MediaFormatBuffer mediaFormatBuffer,
+        String name);
 
     public native boolean nativeIsEof(long handleExtractor);
 

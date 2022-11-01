@@ -23,7 +23,8 @@ add_library(SimpleJni SHARED
         ${CMAKE_CURRENT_SOURCE_DIR}/base/SimplePlayer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/base/GlContext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/utils/JniUtil.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/hdr/HdrMetaData.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/hdr/HdrMetaData.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/base/MediaFormatBuffer.cpp)
 
 target_include_directories(SimpleJni PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include

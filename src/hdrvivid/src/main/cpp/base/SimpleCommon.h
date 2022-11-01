@@ -32,11 +32,6 @@ constexpr int32_t INPUT_MODE_SURFACE = 1;
 constexpr int32_t OUT_MODE_SURFACE = 1;
 constexpr int32_t OUT_MODE_BUFFER = 2;
 
-constexpr int32_t HALF = 2;
-constexpr int32_t LINE_0 = 0;
-constexpr int32_t LINE_1 = 1;
-constexpr int32_t LINE_2 = 2;
-
 enum SimpleStatus {
     SIMPLE_SUCCESS = 0,
     SIMPLE_ERR_UNKNOWN = 10000,

@@ -4,6 +4,7 @@
 
 package com.huawei.video.kit.hdrvivid.demo;
 
+import com.huawei.video.kit.hdrvivid.demo.base.MediaFormatBuffer;
 import com.huawei.video.kit.hdrvivid.demo.base.SimplePacket;
 
 /**
@@ -48,6 +49,14 @@ public class SimpleExtractor {
         }
 
         return simpleJni.nativeGetNextPacket(handleExtractor, simplePacket);
+    }
+
+    public boolean getMediaFormatBuffer(MediaFormatBuffer mediaFormatBuffer, String name) {
+        if (handleExtractor == INVALID_HANDLE) {
+            return false;
+        }
+
+        return simpleJni.nativeGetMediaFormatBuffer(handleExtractor, mediaFormatBuffer, name);
     }
 
     public long getDurationUs() {

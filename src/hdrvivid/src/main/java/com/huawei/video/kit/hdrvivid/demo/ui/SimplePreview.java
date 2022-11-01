@@ -46,7 +46,11 @@ public class SimplePreview extends AppCompatActivity {
 
     private static final long DELAY_MILLIS = 100L;
 
-    Handler handler = new Handler();
+    private static final float RATIO_HIGHLIGHT = 1.5f;
+
+    private static final float RATIO_NORMAL = 1.0f;
+
+    private Handler handler = new Handler();
 
     private boolean isShowInfo = false;
 
@@ -63,6 +67,18 @@ public class SimplePreview extends AppCompatActivity {
     private TextView textViewVideoInfo;
 
     private Spinner brightnessSpinner;
+
+    private static final int SPINNER_POSITION_HDR_LAYER = 0;
+
+    private static final int SPINNER_POSITION_HDR_LAYER_RESUME = 1;
+
+    private static final int SPINNER_POSITION_CAPTION_LAYER = 2;
+
+    private static final int SPINNER_POSITION_CAPTION_LAYER_RESUME = 3;
+
+    private static final int SPINNER_POSITION_INFO_SHOW = 4;
+
+    private static final int SPINNER_POSITION_INFO_HIDE = 5;
 
     private SimpleProcessor simpleProcessor = null;
 
@@ -120,10 +136,10 @@ public class SimplePreview extends AppCompatActivity {
             }
 
             // Avoid the layout misalignment during rotation.
-            if (brightnessSpinner.getSelectedItemId() == 2) {
-                brightnessSpinner.setSelection(3);
+            if (brightnessSpinner.getSelectedItemId() == SPINNER_POSITION_CAPTION_LAYER) {
+                brightnessSpinner.setSelection(SPINNER_POSITION_CAPTION_LAYER_RESUME);
             } else {
-                brightnessSpinner.setSelection(2);
+                brightnessSpinner.setSelection(SPINNER_POSITION_CAPTION_LAYER);
             }
         }
     }
@@ -231,22 +247,22 @@ public class SimplePreview extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch (position) {
-                    case 0:
+                    case SPINNER_POSITION_HDR_LAYER:
                         HdrAbility.setHdrLayer(surfaceView, true);
                         break;
-                    case 1:
+                    case SPINNER_POSITION_HDR_LAYER_RESUME:
                         HdrAbility.setHdrLayer(surfaceView, false);
                         break;
-                    case 2:
-                        HdrAbility.setCaptionsLayer(captionView, 1.5f);
+                    case SPINNER_POSITION_CAPTION_LAYER:
+                        HdrAbility.setCaptionsLayer(captionView, RATIO_HIGHLIGHT);
                         break;
-                    case 3:
-                        HdrAbility.setCaptionsLayer(captionView, 1.0f);
+                    case SPINNER_POSITION_CAPTION_LAYER_RESUME:
+                        HdrAbility.setCaptionsLayer(captionView, RATIO_NORMAL);
                         break;
-                    case 4:
+                    case SPINNER_POSITION_INFO_SHOW:
                         showVideoInfo();
                         break;
-                    case 5:
+                    case SPINNER_POSITION_INFO_HIDE:
                         hideVideoInfo();
                         break;
                     default:
@@ -288,10 +304,10 @@ public class SimplePreview extends AppCompatActivity {
         sb.append(context.getString(R.string.setting_api_type)).append(Constants.COLON);
         switch (SimpleSetting.getInstance().getApiType()) {
             case Constants.API_TYPE_JAVA:
-                sb.append("Java");
+                sb.append(Constants.DESC_API_TYPE_JAVA);
                 break;
             case Constants.API_TYPE_NATIVE:
-                sb.append("Native");
+                sb.append(Constants.DESC_API_TYPE_NATIVE);
                 break;
             default:
                 break;
@@ -300,7 +316,7 @@ public class SimplePreview extends AppCompatActivity {
         sb.append(context.getString(R.string.setting_input_mode)).append(Constants.COLON);
         switch (SimpleSetting.getInstance().getInputMode()) {
             case Constants.INPUT_MODE_SURFACE:
-                sb.append("Surface");
+                sb.append(Constants.DESC_MODE_SURFACE);
                 break;
             default:
                 break;
@@ -310,22 +326,22 @@ public class SimplePreview extends AppCompatActivity {
         sb.append(context.getString(R.string.setting_output_mode)).append(Constants.COLON);
         switch (SimpleSetting.getInstance().getOutputMode()) {
             case Constants.OUT_MODE_SURFACE:
-                sb.append("Surface");
+                sb.append(Constants.DESC_MODE_SURFACE);
                 break;
             case Constants.OUT_MODE_BUFFER:
-                sb.append("Buffer");
+                sb.append(Constants.DESC_MODE_BUFFER);
 
                 sb.append(Constants.CR_LF);
                 sb.append(context.getString(R.string.setting_output_color_space)).append(Constants.COLON);
                 switch (SimpleSetting.getInstance().getOutputColorSpace()) {
                     case HdrVividRender.COLORSPACE_BT709:
-                        sb.append("BT.709");
+                        sb.append(Constants.DESC_COLORSPACE_BT709);
                         break;
                     case HdrVividRender.COLORSPACE_P3:
-                        sb.append("P3");
+                        sb.append(Constants.DESC_COLORSPACE_P3);
                         break;
                     case HdrVividRender.COLORSPACE_BT2020:
-                        sb.append("BT.2020");
+                        sb.append(Constants.DESC_COLORSPACE_BT2020);
                         break;
                     default:
                         break;
@@ -335,13 +351,13 @@ public class SimplePreview extends AppCompatActivity {
                 sb.append(context.getString(R.string.setting_output_color_format)).append(Constants.COLON);
                 switch (SimpleSetting.getInstance().getOutputColorFormat()) {
                     case HdrVividRender.COLORFORMAT_NV12:
-                        sb.append("NV12");
+                        sb.append(Constants.DESC_COLORFORMAT_NV12);
                         break;
                     case HdrVividRender.COLORFORMAT_YUV420P10:
-                        sb.append("YUV420P10");
+                        sb.append(Constants.DESC_COLORFORMAT_YUV420P10);
                         break;
                     case HdrVividRender.COLORFORMAT_R8G8B8A8:
-                        sb.append("R8G8B8");
+                        sb.append(Constants.DESC_COLORFORMAT_R8G8B8A8);
                         break;
                     default:
                         break;
@@ -360,10 +376,10 @@ public class SimplePreview extends AppCompatActivity {
         sb.append(context.getString(R.string.etof_type)).append(Constants.COLON);
         switch (videoInfo.getTf()) {
             case HdrVividRender.TRANSFUNC_PQ:
-                sb.append("PQ");
+                sb.append(Constants.DESC_TRANSFUNC_PQ);
                 break;
             case HdrVividRender.TRANSFUNC_HLG:
-                sb.append("HLG");
+                sb.append(Constants.DESC_TRANSFUNC_HLG);
                 break;
             default:
                 break;
@@ -372,14 +388,14 @@ public class SimplePreview extends AppCompatActivity {
         sb.append(context.getString(R.string.resolution))
             .append(Constants.COLON)
             .append(videoInfo.getWidth())
-            .append("*")
+            .append(Constants.MULIT)
             .append(videoInfo.getHeight());
 
         sb.append(Constants.CR_LF);
         sb.append(context.getString(R.string.progress))
             .append(Constants.COLON)
             .append(SimpleTimeUtils.getTimeString(VideoInfoUtils.getInstance().getPlaybackInfo().getPtsUs()))
-            .append("/")
+            .append(Constants.LEFT_SLASH)
             .append(SimpleTimeUtils.getTimeString(videoInfo.getDurationUs()));
 
         sb.append(Constants.CR_LF);

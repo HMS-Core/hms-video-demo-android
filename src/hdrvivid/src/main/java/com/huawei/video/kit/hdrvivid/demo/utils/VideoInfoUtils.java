@@ -17,7 +17,9 @@ import com.huawei.video.kit.hdrvivid.demo.base.VideoInfo;
 public class VideoInfoUtils {
     private static final String TAG = "VideoInfoUtils";
 
-    private static VideoInfoUtils videoInfoUtils = null;
+    private static final String FORMAT_PATTERN = "0.00";
+
+    private static volatile VideoInfoUtils videoInfoUtils = null;
 
     private SimpleExtractor simpleExtractor = null;
 
@@ -96,7 +98,7 @@ public class VideoInfoUtils {
         long statsTime = playbackInfo.getStatsTime();
         long currentTimeMillis = System.currentTimeMillis();
         long timeSpanMs = currentTimeMillis - statsTime;
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        DecimalFormat decimalFormat = new DecimalFormat(FORMAT_PATTERN);
 
         if (timeSpanMs < SimpleTimeUtils.SEC2MS) {
             return decimalFormat.format(playbackInfo.getFrameRate());

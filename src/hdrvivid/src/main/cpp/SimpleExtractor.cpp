@@ -212,6 +212,21 @@ bool SimpleExtractor::SetColorSpace()
     return true;
 }
 
+MediaFormatBuffer *SimpleExtractor::GetMediaFormatBuffer(const char *name)
+{
+    if (m_mf == nullptr) {
+        return nullptr;
+    }
+    void *csdData{nullptr};
+    size_t csdSize{0};
+    if (AMediaFormat_getBuffer(m_mf, name, &csdData, &csdSize)) {
+        m_mediaFormatBuffer.SetData(static_cast<uint8_t *>(csdData));
+        m_mediaFormatBuffer.SetSize(csdSize);
+        return &m_mediaFormatBuffer;
+    }
+    return nullptr;
+}
+
 int CheckStartCode(const unsigned char *p)
 {
     if (p[NALU_STARTCODE_FIRST] == 0 && p[NALU_STARTCODE_SECOND] == 0 && p[NALU_STARTCODE_THIRD] == 1) {
