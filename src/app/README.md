@@ -4,8 +4,8 @@
  * [Introduction](#Introduction)
  * [Installation](#Installation)
  * [Configuration](#Configuration)
- * [Supported Environments](#Supported Environments)
- * [Sample Code](#Sample Code)
+ * [Supported Environments](#Supported-Environments)
+ * [Sample Code](#Sample-Code)
  * [Result](#Result)
  * [License](#License)
 

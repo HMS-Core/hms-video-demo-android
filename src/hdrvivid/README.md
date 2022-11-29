@@ -3,7 +3,7 @@
 ## Table of Contents
  * [Introduction](#Introduction)
  * [Installation](#Installation)
- * [Supported Environments](#Supported Environments)
+ * [Supported Environments](#Supported-Environments)
  * [Result](#Result)
  * [Technical Support](#Technical-Support)
  * [License](#License)
