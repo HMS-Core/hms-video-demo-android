@@ -1,12 +1,12 @@
 # Video Kit Sample Code
 
 ## Table of Contents
- * [Introduction](#Introduction)
- * [Installation](#Installation)
- * [Supported Environments](#Supported-Environments)
- * [Result](#Result)
- * [Technical Support](#Technical-Support)
- * [License](#License)
+* [Introduction](#Introduction)
+* [Installation](#Installation)
+* [Supported Environments](#Supported-Environments)
+* [Result](#Result)
+* [Technical Support](#Technical-Support)
+* [License](#License)
 
 ## Introduction
    The sample code is used to implement the function of playing HDR Vivid videos through the HDR Vivid SDK.
@@ -39,8 +39,9 @@ Take the Android Studio 3.x version as an example. The steps to run the HDR Vivi
 
 ## Supported Environments
    1. It is recommended that the Android version be 10 or later/EMUI version be 10 or later.
-   2. JDK version be 1.8 or later.
+   2. JDK version be 1.8.211 or later.
    3. CMake version must be 3.18.3.
+
 ## Result
    <img src="hdrvividsdk_result_1.jpg" width = 30% height = 30%>
 

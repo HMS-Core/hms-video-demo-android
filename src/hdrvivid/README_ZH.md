@@ -47,8 +47,8 @@
 
 ## 环境要求
 1. 推荐使用Android 10/Emui 10及以上版本。
-2. JDK 1.8及以上版本。
-3. cmake 3.18.3版本。
+2. JDK 1.8.211及以上版本。
+3. CMake 3.18.3版本。
 
 ## 运行结果
 <img src="hdrvividsdk_result_1.jpg" width = 30% height = 30%>

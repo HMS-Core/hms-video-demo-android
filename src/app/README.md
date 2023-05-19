@@ -44,7 +44,7 @@ Data structure in video_kit_demo.txt:
    name:        Name of the video.
 
 ## Supported Environments
-   It is recommended that the EMUI version be 3.0 or later and the JDK version be 1.8 or later.
+   It is recommended that the EMUI version be 3.1 or later and the JDK version be 1.8.211 or later.
 To play a video using the sample code, ensure that HMS Core (APK) 5.0.0.300 or a later version has been installed on your phone.
 
 ## Sample Code

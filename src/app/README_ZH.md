@@ -37,7 +37,7 @@
 - [API参考](https://developer.huawei.com/consumer/cn/doc/development/Media-References/video-description-0000001076873506?ha_source=hms1)
 
 ## 环境要求
-推荐使用EMUI 3.0及以上版本、JDK 1.8及以上版本。使用示例代码播放视频时，请确保您的手机已安装HMS Core (APK) 5.0.0.300及以上版本。
+推荐使用EMUI 3.1及以上版本、JDK 1.8.211及以上版本。使用示例代码播放视频时，请确保您的手机已安装HMS Core (APK) 5.0.0.300及以上版本。
 
 ## 运行结果
 <img src="result_1.jpg" width = 30% height = 30%> <img src="result_2.jpg" width = 30% height = 30%> <img src="result_3.jpg" width = 30% height = 30%> <img src="result_4.jpg" width = 30% height = 30%>
