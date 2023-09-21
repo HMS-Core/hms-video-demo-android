@@ -50,6 +50,7 @@ private:
 
 private:
     static constexpr const char *mimeHevc{"video/hevc"};
+    static constexpr const char *keyAllowFrameDrop{"allow-frame-drop"};
     static constexpr int32_t threadSleepUs{500 * 1000};
     static constexpr int32_t codecInTimeoutUs{5 * 1000};
     static constexpr int32_t codecOutTimeoutUs{50 * 1000};

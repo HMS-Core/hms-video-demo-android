@@ -120,8 +120,8 @@ Java_com_huawei_video_kit_hdrvivid_demo_SimpleJni_nativeInit(
     jstring filePath = (jstring) env->GetObjectField(setting, filePathField);
 
     const char *cFilePath = env->GetStringUTFChars(filePath, nullptr);
-    LOGD("filePath：%s inputMode：%d outputMode：%d outputColorSpace：%d outputColorFormat：%d brightness：%d",
-         cFilePath, inputMode, outputMode, outputColorSpace, outputColorFormat, brightness);
+    LOGD("inputMode：%d outputMode：%d outputColorSpace：%d outputColorFormat：%d brightness：%d",
+         inputMode, outputMode, outputColorSpace, outputColorFormat, brightness);
 
     g_simpleProcessor = new SimpleProcessor(g_jvm);
     g_simpleProcessor->SetConfig(cFilePath, inputMode, outputMode, (HdrVividColorSpace) outputColorSpace, (HdrVividColorFormat) outputColorFormat, brightness);

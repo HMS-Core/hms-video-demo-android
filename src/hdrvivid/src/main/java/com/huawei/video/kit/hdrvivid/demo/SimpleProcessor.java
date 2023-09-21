@@ -121,7 +121,7 @@ public class SimpleProcessor {
     }
 
     public void startPlay() {
-        Log.i(TAG, "startPlay begin, filePath=" + SimpleSetting.getInstance().getFilePath());
+        Log.d(TAG, "startPlay begin, filePath=" + SimpleSetting.getInstance().getFilePath());
         int ret = SimpleErrorUtils.SIMPLE_SUCCESS;
 
         if (SimpleSetting.getInstance().getApiType() == Constants.API_TYPE_JAVA) {

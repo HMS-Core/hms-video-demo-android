@@ -286,7 +286,6 @@ public class SimplePreview extends AppCompatActivity {
     private void showVideoInfo() {
         textViewVideoInfo.setVisibility(View.VISIBLE);
         captionView.setVisibility(View.VISIBLE);
-        captionView.draw();
         isShowInfo = true;
         handler.post(runnable);
     }

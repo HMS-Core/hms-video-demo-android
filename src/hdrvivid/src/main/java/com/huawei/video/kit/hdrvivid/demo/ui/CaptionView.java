@@ -20,14 +20,12 @@ import androidx.annotation.NonNull;
  *
  * @since 2022/5/5
  */
-public class CaptionView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+public class CaptionView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "CaptionView";
 
     private Paint mPaint;
 
     private SurfaceHolder mSurfaceHolder;
-
-    private Thread mThread;
 
     private String info = "This video is wonderful.";
 
@@ -38,9 +36,6 @@ public class CaptionView extends SurfaceView implements SurfaceHolder.Callback, 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
-
-        mThread = new Thread(this);
-
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
     }
@@ -53,16 +48,6 @@ public class CaptionView extends SurfaceView implements SurfaceHolder.Callback, 
     public CaptionView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initial();
-    }
-
-    public void setCaptionInfo(String info) {
-        this.info = info;
-    }
-
-    @Override
-    public void run() {
-        Log.d(TAG, "run");
-        draw();
     }
 
     public void draw() {
@@ -86,7 +71,7 @@ public class CaptionView extends SurfaceView implements SurfaceHolder.Callback, 
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        mThread.start();
+        draw();
     }
 
     @Override

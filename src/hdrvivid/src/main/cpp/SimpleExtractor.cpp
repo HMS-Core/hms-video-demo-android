@@ -44,7 +44,7 @@ SimpleExtractor::~SimpleExtractor()
 
 bool SimpleExtractor::Open(const char *filePath)
 {
-    LOGI("%s, filePath=%s", __FUNCTION__, filePath);
+    LOGI("%s", __FUNCTION__);
 
     if (m_fp != nullptr) {
         fclose(m_fp);

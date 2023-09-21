@@ -140,8 +140,8 @@ void SimpleProcessor::SetConfig(std::string filePath, uint32_t inputMode, uint32
     m_simpleSetting.outputColorFormat = outputColorFormat;
     m_simpleSetting.brightness = brightness;
 
-    LOGI("%s: filePath=%s, ioMode=%d/%d, output[cs/cf]=%d/%d, brightness=%d",
-         __FUNCTION__, m_simpleSetting.filePath.c_str(), m_simpleSetting.inputMode, m_simpleSetting.outputMode,
+    LOGI("%s: ioMode=%d/%d, output[cs/cf]=%d/%d, brightness=%d",
+         __FUNCTION__, m_simpleSetting.inputMode, m_simpleSetting.outputMode,
          m_simpleSetting.outputColorSpace, m_simpleSetting.outputColorFormat, m_simpleSetting.brightness);
 }
 

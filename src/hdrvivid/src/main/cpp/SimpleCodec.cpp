@@ -118,7 +118,7 @@ void SimpleCodec::ThreadMc()
 
     auto *se = new SimpleExtractor();
     if (!se->Open(m_filePath.c_str())) {
-        LOGW("%s open file failed, filePath=%s", __FUNCTION__, m_filePath.c_str());
+        LOGW("%s open file failed", __FUNCTION__);
         se->Close();
         delete se;
         return;
@@ -232,6 +232,7 @@ AMediaCodec *SimpleCodec::InitMc(SimpleExtractor *se)
     AMediaFormat_setString(mf, AMEDIAFORMAT_KEY_MIME, mimeHevc);
     AMediaFormat_setInt32(mf, AMEDIAFORMAT_KEY_WIDTH, m_width);
     AMediaFormat_setInt32(mf, AMEDIAFORMAT_KEY_HEIGHT, m_height);
+    AMediaFormat_setInt32(mf, keyAllowFrameDrop, 0);
 
     AMediaFormat *srcMf = se->GetMediaFormat();
     if (srcMf != nullptr) {

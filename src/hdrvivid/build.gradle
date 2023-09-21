@@ -2,8 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
-def sdkVersionCode = 10014300
-def sdkVersionName = "1.0.14.300"
+def sdkVersionCode = 10015302
+def sdkVersionName = "1.0.15.302"
 
 android {
     compileSdkVersion 31

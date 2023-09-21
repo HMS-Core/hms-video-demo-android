@@ -60,6 +60,8 @@ public class SimpleCodec {
 
     private SimpleExtractor simpleExtractor = null;
 
+    private final Object lock = new Object();
+
     public SimpleCodec() {
         simpleExtractor = new SimpleExtractor();
     }
@@ -106,7 +108,7 @@ public class SimpleCodec {
 
     public SimplePacket getSimplePacket(long ptsUs) {
         SimplePacket simplePacket = null;
-        synchronized (packetTable) {
+        synchronized (lock) {
             Set<Map.Entry<Long, SimplePacket>> entrySet = packetTable.entrySet();
             for (Map.Entry<Long, SimplePacket> entry : entrySet) {
                 if (entry.getKey() == ptsUs) {

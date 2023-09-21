@@ -8,8 +8,8 @@ android {
         applicationId "com.huawei.video.kit.demo"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 10014300
-        versionName "1.0.14.300"
+        versionCode 10015302
+        versionName "1.0.15.302"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }

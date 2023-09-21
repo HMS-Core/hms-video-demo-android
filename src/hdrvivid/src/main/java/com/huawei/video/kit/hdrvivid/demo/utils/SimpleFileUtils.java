@@ -35,8 +35,7 @@ public class SimpleFileUtils {
         SimpleDateFormat df = new SimpleDateFormat(Constants.FILE_NAME_DATE_FORMAT);
         String date = df.format(new Date());
         String outputFilePath = Constants.BUFFER_OUTPUT_DIR + fileName + date + Constants.DST_FILE_NAME_SUFFIX;
-
-        Log.i(TAG, "output buffer file path is " + outputFilePath);
+        Log.d(TAG, "outputFilePath:" + outputFilePath);
         return outputFilePath;
     }
 
